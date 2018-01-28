@@ -58,6 +58,16 @@ const options = {
     schemes: [
       'http'
     ],
+    securityDefinitions: {
+      'jwt': {
+        'type': 'apiKey',
+        'name': 'Authorization',
+        'in': 'header'
+      }
+    },
+    security: [{
+      jwt: []
+    }],
     basePath: '/'
   },
   apis: [
