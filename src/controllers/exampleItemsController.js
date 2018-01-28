@@ -7,12 +7,15 @@ class ExampleItemsController {
   // also demonstrating using the constructor here as our dependency injection
   constructor(reverseStringDependency, db, logger) {
     this.reverseString = reverseStringDependency
-    this.db = db
+    this.items = db.ref('items')
     this.logger = logger
   }
 
   list(req, res) {
     try {
+      this.items.on('value', function(snapshot) {
+        this.logger.info(snapshot.val())
+      })
       const stringInReverse = this.reverseString('someTestName')
       const lines = [{ name: stringInReverse}, { name: 'anotherTestName' } ]
       res.status(200).send(lines)
