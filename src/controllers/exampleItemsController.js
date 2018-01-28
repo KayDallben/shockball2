@@ -12,15 +12,16 @@ class ExampleItemsController {
   }
 
   list(req, res) {
+    const logger = this.logger
     try {
       this.items.on('value', function(snapshot) {
-        this.logger.info(snapshot.val())
+        logger.info(snapshot.val())
       })
       const stringInReverse = this.reverseString('someTestName')
       const lines = [{ name: stringInReverse}, { name: 'anotherTestName' } ]
       res.status(200).send(lines)
     } catch (error) {
-      this.logger.error(error)
+      logger.error(error)
       res.status(400).send(error)
     }
   }
