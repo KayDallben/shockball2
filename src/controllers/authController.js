@@ -17,14 +17,15 @@ class AuthController {
   listOne(req, res) {
     const validation = Joi.validate(req.query, AuthSchema.listOneParams)
     if (validation.error === null) {
-      const {uid} = req.query
+      const {
+        uid
+      } = req.query
       try {
-        admin.auth().createCustomToken(uid).then(function(customToken) {
-            res.status(200).send(customToken)
+        admin.auth().createCustomToken(uid).then(function (customToken) {
+          res.status(200).send(customToken)
+        }).catch(function (error) {
+          this.logger.error('Error creating custom token:', error)
         })
-        .catch(function(error) {
-            this.logger.error("Error creating custom token:", error);
-        });
       } catch (error) {
         this.logger.error(error)
         res.status(400).send(error)

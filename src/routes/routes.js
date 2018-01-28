@@ -22,7 +22,7 @@ export default (db, logger) => {
    *   Auth:
    *     properties:
    *       uid:
-   *         type: "string" 
+   *         type: "string"
    */
 
   /**
