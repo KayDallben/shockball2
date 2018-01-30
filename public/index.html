@@ -65,12 +65,26 @@
 
   </defs>
 </svg>
+<div class="auth-container">
+  <div id="swcUser"></div>
+  <a href="http://www.swcombine.com/ws/oauth2/auth/?scope=character_read%20character_skills%20character_credits&state=&redirect_uri=http://localhost:8080/authorize/index.html&response_type=token&client_id=ac3e2848095aa5cb82f91f7fc7ac7ad53b5a51a1" id="swc-auth">
+    Login to SW Combine
+  </a>
+</div>
 <div id="swagger-ui"></div>
 
 <script src="./swagger-ui-bundle.js"> </script>
 <script src="./swagger-ui-standalone-preset.js"> </script>
 <script>
   window.onload = function() {
+    // set token authorization if exists
+    function setAuthToken() {
+      var token = sessionStorage.getItem('swcToken');
+      if (token) {
+        $("#swcUser").append("<div class=\"access-token\">" + token + "</div>");
+      }
+    }
+
     // Build a system
     const ui = SwaggerUIBundle({
       url: "http://localhost:8080/swagger.json",
@@ -87,6 +101,8 @@
     })
 
     window.ui = ui
+
+    setAuthToken();
   }
 </script>
 </body>

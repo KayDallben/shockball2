@@ -5,12 +5,10 @@ const routes = Router()
 // Internal code/packages
 import authCheck from '../lib/authCheck'
 import ExampleItemsController from '../controllers/exampleItemsController'
-import AuthController from '../controllers/authController'
 import { reverseString } from '../lib/util'
 
 export default (db, logger) => {
   const exampleItemsController = new ExampleItemsController(reverseString, db, logger)
-  const authController = new AuthController(db, logger)
 
   /**
    * @swagger
@@ -18,10 +16,6 @@ export default (db, logger) => {
    *   ExampleItem:
    *     properties:
    *       name:
-   *         type: "string"
-   *   Auth:
-   *     properties:
-   *       uid:
    *         type: "string"
    */
 
@@ -77,35 +71,6 @@ export default (db, logger) => {
    */
   routes.get('/exampleItems/:id', authCheck, (req, res) => {
     exampleItemsController.listOne(req, res)
-  })
-
-  /**
-   * @swagger
-   * /api/auth:
-   *   x-swagger-router-controller: ../controllers/authController
-   *   get:
-   *     tags:
-   *       - Auth
-   *     description: Get auth token via uid
-   *     operationId: listOne
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - uid: unique id
-   *         description: unique id of user
-   *         in: query
-   *         name: uid
-   *         required: true
-   *         schema:
-   *           $ref: '#/definitions/Auth'
-   *     responses:
-   *       200:
-   *         description: Success
-   *         schema:
-   *           $ref: "#/definitions/Auth"
-   */
-  routes.get('/auth', (req, res) => {
-    authController.listOne(req, res)
   })
 
   return routes
