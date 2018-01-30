@@ -1,5 +1,4 @@
 //third party
-import * as admin from 'firebase-admin'
 import axios from 'axios'
 
 //internal
@@ -15,11 +14,9 @@ export default function isAuthenticated(req, res, next) {
         access_token: swcToken
       }
     }).then(function(response) {
-      console.log('success!')
-      console.log(response)
+      logger.info(response)
       next()
     }).catch(function(error) {
-      console.log(error)
       logger.error(error)
       res.status(401).send(error)
     })
