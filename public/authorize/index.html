@@ -1,0 +1,28 @@
+<script>
+  window.onload = function() {
+    
+    function returnToDocs() {
+      var url = window.location.protocol + "//" + window.location.host + "/";
+      console.log(url);
+      window.location.href = url;
+    }
+
+    function getAccessToken() {
+      var existingToken = sessionStorage.getItem("swcToken");
+      if (existingToken) {
+        returnToDocs()
+      } else {
+        var url = window.location.href;
+        var token = url.substring(url.lastIndexOf("#access_token=")+14,url.lastIndexOf("&expires_in="));
+        sessionStorage.setItem("swcToken", token.toString())
+        returnToDocs()
+      }
+    }
+
+    //we try to get/set token anytime this page loads
+    getAccessToken();
+  }
+</script>
+
+
+<div>This is the authorize page.</div>

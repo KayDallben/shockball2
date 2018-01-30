@@ -1,34 +1,24 @@
-import * as admin from 'firebase-admin'
-import firebase from 'firebase'
+//third party
+import axios from 'axios'
+
+//internal
 import logger from './logger'
 
-firebase.initializeApp({
-  apiKey: 'AIzaSyAe_-Xten-mSxNIdrThMhEWgJxHVgPnke0',
-  authDomain: 'swc-shockball3.firebaseapp.com',
-  databaseURL: 'https://swc-shockball3.firebaseio.com',
-  projectId: 'swc-shockball3',
-  storageBucket: 'swc-shockball3.appspot.com',
-  messagingSenderId: '577301617429'
-})
 
 export default function isAuthenticated(req, res, next) {
-  const customToken = req.header('Authorization')
-  if (customToken) {
-    firebase.auth().signInWithCustomToken(customToken).then(user => {
-      user.getIdToken().then(idToken => {
-        admin.auth().verifyIdToken(idToken).then(decodedToken => {
-          res.locals.user = decodedToken
-          next()
-        }).catch(error => {
-          // Handle error
-          logger.error(error)
-          res.send(401).send(error)
-        })
-      })
+  const swcToken = req.header('Authorization')
+  if (swcToken) {
+    //validate with swc token endpoint that this access token is legitimate
+    axios.get('https://www.swcombine.com/ws/oauth2/tokeninfo', {
+      params: {
+        access_token: swcToken
+      }
+    }).then(function(response) {
+      logger.info(response)
+      next()
     }).catch(function(error) {
-      // Handle Errors here.
-      logger.error(error.message)
-      // ...
+      logger.error(error)
+      res.status(401).send(error)
     })
   } else {
     logger.error('Authorization header not found')
