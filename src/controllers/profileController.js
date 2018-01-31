@@ -2,7 +2,7 @@
 import Joi from 'joi'
 import axios from 'axios'
 import * as admin from 'firebase-admin'
-const FieldValue = admin.firestore.FieldValue;
+const FieldValue = admin.firestore.FieldValue
 
 
 //internal
@@ -18,7 +18,6 @@ class ProfileController {
   async listOne(req, res) {
     const validation = Joi.validate(req.query, ProfileSchema.listOneParams)
     if (validation.error === null) {
-      const {access_token} = req.query
       try {
         const player = await this.checkIfPlayerExists(req.uid)
         if (player) {
@@ -45,7 +44,7 @@ class ProfileController {
   async createNewPlayer(uid, accessToken) {
     try {
       const swcCharacter = await this.getCharacterInfo(uid, accessToken)
-      const setGamePlayer = await this.players.doc(uid).set({
+      await this.players.doc(uid).set({
         name: swcCharacter.character.name,
         image: swcCharacter.character.image,
         gender: swcCharacter.character.gender,
@@ -69,7 +68,7 @@ class ProfileController {
         return false
       }
     }).catch(error => {
-      this.logger.error('error getting player document')
+      this.logger.error(error)
     })
   }
 

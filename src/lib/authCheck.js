@@ -1,25 +1,25 @@
 //third party
-import axios from 'axios'
-import serializeError from 'serialize-error'
+// import axios from 'axios'
+// import serializeError from 'serialize-error'
 
 //internal
-import logger from './logger'
+// import logger from './logger'
 
-function validateToken(token) {
-  return axios.get('http://www.swcombine.com/ws/oauth2/tokeninfo', {
-    params: {
-      access_token: token
-    },
-    headers: {
-      'Accept': 'application/json'
-    }
-  }).then(response => {
-    return response
-  }).catch(error => {
-    const swcError = new Error(error.message)
-    return swcError
-  })
-}
+// function validateToken(token) {
+//   return axios.get('http://www.swcombine.com/ws/oauth2/tokeninfo', {
+//     params: {
+//       access_token: token
+//     },
+//     headers: {
+//       'Accept': 'application/json'
+//     }
+//   }).then(response => {
+//     return response
+//   }).catch(error => {
+//     const swcError = new Error(error.message)
+//     return swcError
+//   })
+// }
 
 // export default async function isAuthenticated(req, res, next) {
 //   const swcToken = req.header('Authorization')
@@ -34,7 +34,7 @@ function validateToken(token) {
 //       res.uid = validToken.user_id
 //       res.swcToken = swcToken
 //       next()
-//     } 
+//     }
 //   } else {
 //     logger.error('Authorization header not found')
 //     res.status(401).send()

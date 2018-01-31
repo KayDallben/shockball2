@@ -11,7 +11,7 @@ class PlayersController {
 
   listOne(req, res) {
     // we use Joi validation library to validate the req.params is in the model we defined in /models/ExampleItems.js
-    const validation = Joi.validate(req.params, PlayerSchema.listOneParams)
+    const validation = Joi.validate(req.params, PlayersSchema.listOneParams)
     if (validation.error === null) {
       const {id} = req.params
       try {
