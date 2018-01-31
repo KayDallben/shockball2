@@ -19,6 +19,7 @@ function testPromise() {
   })
   return promise
 }
+
 export {
   reverseString,
   testPromise

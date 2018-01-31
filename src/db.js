@@ -8,7 +8,7 @@ export default callback => {
     databaseURL: 'https://swc-shockball3.firebaseio.com/'
   })
 
-  let db = admin.database()
+  let db = admin.firestore()
 
   callback(db)
 }
