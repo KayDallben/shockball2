@@ -50,9 +50,9 @@ app.use(helmet())
 const options = {
   swaggerDefinition: {
     info: {
-      title: 'testgen1', // Title (required)
+      title: 'Shockball2', // Title (required)
       version: '0.1.0', // Version (required)
-      description: 'To try to take over the world!'
+      description: 'Fantasy Sports Simulation for Star Wars Combine'
     },
     host: 'localhost:8080',
     schemes: [
