@@ -54,7 +54,7 @@ const options = {
       version: '0.1.0', // Version (required)
       description: 'Fantasy Sports Simulation for Star Wars Combine'
     },
-    host: 'localhost:8080',
+    host: process.env.FIREBASE_DATABASE_URL ? 'shockball3.herokuapp.com' : 'localhost:8080',
     schemes: [
       'http'
     ],
@@ -85,7 +85,7 @@ app.get('/swagger.json', (req, res) => {
 })
 
 // connect to db, and ensure it is up before we start our api
-initializeDb( db => {
+initializeDb(app, db => {
   app.use('/api', routes(db, logger))
 })
 
