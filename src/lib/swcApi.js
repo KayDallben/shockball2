@@ -1,10 +1,6 @@
 //third party
 import axios from 'axios'
 import qs from 'qs'
-// import serializeError from 'serialize-error'
-
-//internal
-import logger from './logger'
 
 function getPlayerUid(token) {
   return axios.get('http://www.swcombine.com/ws/v1.0/character/?access_token=' + token, {

@@ -1,7 +1,3 @@
-//third party
-import axios from 'axios'
-import serializeError from 'serialize-error'
-
 //internal
 import logger from './logger'
 import * as swcApi from './swcApi'
