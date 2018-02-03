@@ -40,12 +40,8 @@ function getAccessToken(authCode) {
       'Accept': 'application/json'
     }
   }).then(response => {
-    console.log('=========================RESPONSE IS========================') //eslint-disable-line no-console
-    console.log(response) //eslint-disable-line no-console
     return response
   }).catch(error => {
-    console.log('**********************ERROR IS***********************************') //eslint-disable-line no-console
-    console.log(error) //eslint-disable-line no-console
     const swcError = new Error(error.message)
     return swcError
   })
