@@ -1,4 +1,5 @@
 // 3rd party packages
+import * as babelPolyfill from 'babel-polyfill'
 import http from 'http'
 import logger from './lib/logger'
 

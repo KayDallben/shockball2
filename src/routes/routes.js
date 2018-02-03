@@ -7,12 +7,14 @@ import authCheck from '../lib/authCheck'
 import ExampleItemsController from '../controllers/exampleItemsController'
 import PlayersController from '../controllers/playersController'
 import ProfileController from '../controllers/profileController'
+import LoginController from '../controllers/loginController'
 import { reverseString } from '../lib/util'
 
 export default (db, logger) => {
   const exampleItemsController = new ExampleItemsController(reverseString, db, logger)
   const playersController = new PlayersController(db, logger)
   const profileController = new ProfileController(db, logger)
+  const loginController = new LoginController(logger)
 
   /**
    * @swagger
@@ -28,6 +30,10 @@ export default (db, logger) => {
    *   Profile:
    *     properties:
    *       access_token:
+   *         type: "string"
+   *   Login:
+   *     properties:
+   *       authorization_code:
    *         type: "string"
    */
 
@@ -140,6 +146,35 @@ export default (db, logger) => {
    */
   routes.get('/profile', authCheck, (req, res) => {
     profileController.listOne(req, res)
+  })
+
+    /**
+   * @swagger
+   * /api/login:
+   *   x-swagger-router-controller: ../controllers/loginController
+   *   get:
+   *     tags:
+   *       - Login
+   *     description: Login the user and get player access token from SWC api
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - authorization_code: authorization code
+   *         description: SWC authorization code of the current user
+   *         in: query
+   *         name: authorization_code
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Login'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Login"
+   */
+  routes.get('/login', (req, res) => {
+    loginController.listOne(req, res)
   })
 
   return routes
