@@ -61,7 +61,7 @@ class ProfileController {
 
   checkIfPlayerExists(uid) {
     return this.players.doc(uid).get().then(doc => {
-      if (!doc.exists) {
+      if (doc.exists) {
         return doc.data()
       } else {
         return false
@@ -80,12 +80,8 @@ class ProfileController {
         'Accept': 'application/json'
       }
     }).then(response => {
-      console.log('=============================RESPONSE IS========================') //eslint-disable-line no-console
-      console.log(response) //eslint-disable-line no-console
       return response.data
     }).catch(error => {
-      console.log('****************************ERROR IS*****************************') //eslint-disable-line no-console
-      console.log(error) //eslint-disable-line no-console
       this.logger.error('Error calling character info at SWC')
       this.logger.error(error)
       return error

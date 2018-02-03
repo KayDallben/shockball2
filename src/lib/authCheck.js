@@ -3,7 +3,7 @@ import logger from './logger'
 import * as swcApi from './swcApi'
 
 export default async function isAuthenticated(req, res, next) {
-  const swcToken = req.header('Authorization')
+  const swcToken = req.query.access_token
   try {
     const validCombinePlayer = await swcApi.getPlayerUid(swcToken)
     req.uid = validCombinePlayer.data.character.uid
