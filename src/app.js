@@ -7,6 +7,7 @@ import favicon from 'serve-favicon'
 import compression from 'compression'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import cors from 'cors'
 
 // our files/packages
 import logger from './lib/logger'
@@ -28,6 +29,9 @@ app.use(morgan('dev', {
     return res.statusCode >= 400
   }, stream: process.stdout
 }))
+
+//enable cors
+app.use(cors())
 
 // Enforce http body limit
 app.use(bodyParser.json({
