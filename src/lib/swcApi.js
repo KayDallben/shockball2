@@ -1,6 +1,15 @@
 //third party
 import axios from 'axios'
 import qs from 'qs'
+if (!process.env.FIREBASE_DATABASE_URL) {
+  const serviceAccount = require('../../firebase-security.json') //eslint-disable-line no-unused-vars
+}
+if (!process.env.SWC_CLIENT_SECRET) {
+  const swcSecurity = require('../../swc-security.json')
+  process.env.SWC_CLIENT_SECRET = swcSecurity.swc_client_secret
+  process.env.SWC_CLIENT_ID = swcSecurity.swc_client_id
+  process.env.SWC_REDIRECT_URI = swcSecurity.swc_redirect_uri
+}
 
 function getPlayerUid(token) {
   return axios.get('http://www.swcombine.com/ws/v1.0/character/?access_token=' + token, {
@@ -21,10 +30,10 @@ function getAccessToken(authCode) {
     method: 'POST',
     data: qs.stringify({
       code: authCode,
-      client_id: 'ac3e2848095aa5cb82f91f7fc7ac7ad53b5a51a1',
-      client_secret: '1d8947cae3a26314a5eb9404138f30f8526cf63d',
+      client_id: process.env.SWC_CLIENT_ID,
+      client_secret: process.env.SWC_CLIENT_SECRET,
       grant_type: 'authorization_code',
-      redirect_uri: 'http://localhost:8080/authServer/index.html',
+      redirect_uri: process.env.SWC_REDIRECT_URI,
       access_type: 'offline'
     }),
     headers: {

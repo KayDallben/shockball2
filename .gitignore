@@ -5,3 +5,4 @@
 .DS_Store
 /coverage
 firebase-security.json
+swc-security.json

@@ -34,10 +34,11 @@
     }
 
     function getAccessToken(authCode) {
+      var url = window.location.protocol + "//" + window.location.host + "/";
       var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "http://localhost:8080/api/login?authorization_code=" + authCode,
+        "url": url + "api/login?authorization_code=" + authCode,
         "method": "GET"
       }
 
