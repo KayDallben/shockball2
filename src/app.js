@@ -60,7 +60,7 @@ const options = {
     },
     host: process.env.FIREBASE_DATABASE_URL ? 'shockball2.herokuapp.com' : 'localhost:8080',
     schemes: [
-      'http'
+      'http','https'
     ],
     securityDefinitions: {
       'jwt': {
