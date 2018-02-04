@@ -15,6 +15,7 @@ class ProfileController {
   }
 
   async listOne(req, res) {
+    console.log('got in the listOne controller') //eslint-disable-line no-console
     const validation = Joi.validate(req.query, ProfileSchema.listOneParams)
     if (validation.error === null) {
       console.log('req.uid is actually%%%%%%%%%%%%%%%%%%%%%%') //eslint-disable-line no-console
