@@ -48,7 +48,8 @@ class ProfileController {
         image: swcCharacter.character.image,
         gender: swcCharacter.character.gender,
         race: swcCharacter.character.race.value,
-        created: FieldValue.serverTimestamp()
+        created: FieldValue.serverTimestamp(),
+        createdAsUid: uid
       })
       return await this.players.doc(uid).get().then(doc => {
         return doc.data()
@@ -72,9 +73,6 @@ class ProfileController {
   }
 
   getCharacterInfo(uid, accessToken) {
-    console.log('got into getCharacterInfo call') //eslint-disable-line no-console
-    console.log(uid) //eslint-disable-line no-console
-    console.log(accessToken) //eslint-disable-line no-console
     return axios({
       url: `http://www.swcombine.com/ws/v1.0/character/${uid}/`,
       method: 'GET',
@@ -85,12 +83,8 @@ class ProfileController {
         'Accept': 'application/json'
       }
     }).then(response => {
-      console.log('response from swc character endpoint call was') //eslint-disable-line no-console
-      console.log(response) //eslint-disable-line no-console
       return response.data
     }).catch(error => {
-      console.log('error from swc character endpoint was') //eslint-disable-line no-console
-      console.log(error) //eslint-disable-line no-console
       this.logger.error('Error calling character info at SWC')
       this.logger.error(error)
       return error
