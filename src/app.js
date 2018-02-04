@@ -51,6 +51,7 @@ app.use(compression())
 app.use(helmet())
 
 // create swagger configuration: https://github.com/Surnet/swagger-jsdoc
+const schemeType = process.env.HEROKU ? 'https': 'http'
 const options = {
   swaggerDefinition: {
     info: {
@@ -60,7 +61,7 @@ const options = {
     },
     host: process.env.FIREBASE_DATABASE_URL ? 'shockball2.herokuapp.com' : 'localhost:8080',
     schemes: [
-      'http','https'
+      schemeType
     ],
     securityDefinitions: {
       'jwt': {
