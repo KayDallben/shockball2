@@ -72,7 +72,11 @@ class ProfileController {
   }
 
   getCharacterInfo(uid, accessToken) {
-    return axios.get(`http://www.swcombine.com/ws/v1.0/character/${uid}/`, {
+    console.log('uid is========================== ') //eslint-disable-line no-console
+    console.log(uid) //eslint-disable-line no-console
+    return axios({
+      url: `http://www.swcombine.com/ws/v1.0/character/${uid}`,
+      method: 'GET',
       params: {
         'access_token': accessToken
       },
@@ -80,6 +84,8 @@ class ProfileController {
         'Accept': 'application/json'
       }
     }).then(response => {
+      console.log('response from swc /character call is==================') //eslint-disable-line no-console
+      console.log(response) //eslint-disable-line no-console
       return response.data
     }).catch(error => {
       this.logger.error('Error calling character info at SWC')
