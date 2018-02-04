@@ -6,10 +6,10 @@
   },
   "description": "second iteration of shockball for star wars combine",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
-    "build": "babel src -s -D -d dist --presets es2015,stage-0 --ignore src/**/*.test.js",
-    "start": "cross-env NODE_ENV=production npm run build && nodemon dist",
-    "lint": "eslint src",
+    "dev": "nodemon -w server/src --exec \"babel-node server/src --presets es2015,stage-0\"",
+    "build": "babel server/src -s -D -d server/dist --presets es2015,stage-0 --ignore server/src/**/*.test.js",
+    "start": "cross-env NODE_ENV=production npm run build && nodemon server/dist",
+    "lint": "eslint server/src",
     "test": "jest",
     "coverage": "jest --coverage",
     "precommit": "npm run lint && npm test"

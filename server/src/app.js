@@ -38,11 +38,11 @@ app.use(bodyParser.json({
   limit : '100kb'
 }))
 
-// No view engine, serve public folder (index.html) instead
-app.use(express.static(path.join(__dirname, '..', 'public')))
+// No view engine, serve client folder (index.html) instead
+app.use(express.static(path.join(__dirname, '../../', 'public')))
 
 // use custom favicon
-app.use(favicon(path.join(__dirname, '..', 'public', 'images', 'favicon.ico')))
+app.use(favicon(path.join(__dirname, '../../', 'public', 'docs', 'images', 'favicon.ico')))
 
 // enabling gzip compression of responses: https://github.com/expressjs/compression
 app.use(compression())
@@ -76,7 +76,7 @@ const options = {
     basePath: '/'
   },
   apis: [
-    './src/routes/routes.js'
+    './server/src/routes/routes.js'
   ]
 }
 
