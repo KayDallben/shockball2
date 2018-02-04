@@ -58,7 +58,7 @@ const options = {
       version: '0.1.0', // Version (required)
       description: 'Fantasy Sports Simulation for Star Wars Combine'
     },
-    host: process.env.FIREBASE_DATABASE_URL ? 'shockball3.herokuapp.com' : 'localhost:8080',
+    host: process.env.FIREBASE_DATABASE_URL ? 'shockball2.herokuapp.com' : 'localhost:8080',
     schemes: [
       'http'
     ],
