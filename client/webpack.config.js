@@ -18,7 +18,7 @@ var path = require('path');
                  query: {
                      presets: ['es2015']
                  }
-             }
+             } 
          ]
      },
      stats: {

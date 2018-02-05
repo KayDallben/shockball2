@@ -1,10 +1,10 @@
-html, body, main {
+html, body, sim {
     height:100%;
 }
 .wrapper {
     height:100%;
 }
-main > div {
+main, sim, sim > div  {
     height: 100%;
 }
 body {
@@ -37,12 +37,12 @@ h1 {
     display: inline-block;
     max-width: 475px;
 }
-main {
+sim {
     background-color: #F5F5F5;
 }
 
-main > div {
-    background-image: url(./shockball2.jpg);
+sim > div {
+    background-image: url("./img/shockball2.jpg");
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -447,9 +447,9 @@ li.left .eventTime {
     transition: none;
 }
 .rz-pointer {
-    background-image:    url("shockballLogo.png");
-    background-size:     cover;
-    background-repeat:   no-repeat;
+    background-image: url("./img/shockballLogo.png");
+    background-size: cover;
+    background-repeat: no-repeat;
     background-position: center center;
     background-color: transparent!important;
 }
