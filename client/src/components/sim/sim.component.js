@@ -30,8 +30,8 @@ export const simComponent = {
           <div class="fa fa-clock-o"></div>
         </div>
         <div class="scoreboard">
-          <div class="leftTeamLogo" back-img="{{simCtrl.leftPlayers[0]['teamPicUrl']}}"></div>
-          <div class="rightTeamLogo" back-img="{{simCtrl.rightPlayers[0]['teamPicUrl']}}"></div>
+          <div class="leftTeamLogo" back-opacity="0.9" back-img="{{simCtrl.leftPlayers[0]['teamPicUrl']}}"></div>
+          <div class="rightTeamLogo" back-opacity="0.9" back-img="{{simCtrl.rightPlayers[0]['teamPicUrl']}}"></div>
           <div class="venue">
             <div class="viewerRelativeTime">{{simCtrl.matchViewerRelativeTime}}</div>
             <div class="matchLocation">{{::simCtrl.world[0]['pitchOwnedBy']}}</div>
