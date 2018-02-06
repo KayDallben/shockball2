@@ -83,10 +83,10 @@ app.use(_bodyParser2.default.json({
 }));
 
 // No view engine, serve client folder (index.html) instead
-app.use(_express2.default.static(_path2.default.join(__dirname, '../../', 'client')));
+app.use(_express2.default.static(_path2.default.join(__dirname, '../../', 'public')));
 
 // use custom favicon
-app.use((0, _serveFavicon2.default)(_path2.default.join(__dirname, '../../', 'client', 'docs', 'images', 'favicon.ico')));
+app.use((0, _serveFavicon2.default)(_path2.default.join(__dirname, '../../', 'public', 'docs', 'images', 'favicon.ico')));
 
 // enabling gzip compression of responses: https://github.com/expressjs/compression
 app.use((0, _compression2.default)());
