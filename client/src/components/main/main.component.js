@@ -1,20 +1,24 @@
 export const mainComponent = {
+  // template: `
+	// 	<sim></sim>
+  // `,
   template: `
-		<sim></sim>
-	`,
+    <div class="main-wrapper" back-radius="0" back-opacity="1" back-img="{{mainCtrl.background}}">
+      <div class="overlay"></div>  
+      <top-header></top-header>
+      <navigation></navigation>
+    </div>
+  `,
   bindings: {
-    demoAttr1: '=',
-    demoAttr2: '='
   },
   controllerAs: 'mainCtrl',
   controller: class MainController {
     constructor(data) {
       this.data = data;
-      this.title = 'test title'
+      this.background = './img/shockballProto.jpg'
     }
 
     init() {
-      this.title = this.data.login();
     }
 
     // injection here
