@@ -13,7 +13,7 @@
     "lintMac": "DEBUG=eslint:cli-engine && eslint server/src --ignore-pattern client/src/docs/",
     "lintWindows": "set DEBUG=eslint:cli-engine && eslint server/src --ignore-pattern client/src/docs/",
     "precommit": "npm run lintWindows && npm test",
-    "buildClient": "cd client && npm run build",
+    "buildClient": "cd client && npm install && npm run build",
     "startClient": "cd client && npm run start",
     "buildServer": "babel server/src -s -D -d server/dist --presets es2015,stage-0 --ignore server/src/**/*.test.js",
     "startServer": "nodemon -w server/src --exec \"babel-node server/src --presets es2015,stage-0\""

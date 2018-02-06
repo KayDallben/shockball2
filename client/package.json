@@ -17,9 +17,7 @@
     "chance": "^1.0.13",
     "json-tree2": "^0.1.5",
     "live-server": "^1.2.0",
-    "moment": "^2.20.1"
-  },
-  "devDependencies": {
+    "moment": "^2.20.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
