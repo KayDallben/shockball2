@@ -1,0 +1,464 @@
+body {
+  color: green!important;
+}
+.jamaica {
+  color: blue;
+}
+html, body, sim {
+  height:100%;
+}
+.wrapper {
+  height:100%;
+}
+main, sim, sim > div  {
+  height: 100%;
+}
+body {
+  color:black;
+}
+h1 {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 0;
+  margin-top: 0;
+  padding-left: 10px;
+}
+.header-title {
+  color: #fff;
+  margin: 8px;
+  display: inline-block;
+  width: auto;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 6px;
+}
+.header-title:hover {
+  cursor: pointer;
+}
+.gameObject {
+  color:Red;
+  background-color: #ddd;
+  border-radius: 5px;
+  padding: 12px;
+  display: inline-block;
+  max-width: 475px;
+}
+sim {
+  background-color: #F5F5F5;
+}
+
+sim > div {
+  background-image: url("./img/shockball2.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+/* timeline section  */
+.live-indicator {
+  background-color: #60CA82;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 6px;
+  padding-left: 15px;
+}
+.fa-clock-o {
+  position: absolute;
+  right: 15px;
+}
+.playByPlay {
+  position: absolute;
+  width: 600px;
+  top: 55px;
+  left: 28%;
+}
+
+.scoreboard {
+  width: 100%;
+  display: block;
+  height: 300px;
+  background-color: #212531;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.scoreboard img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.leftTeamLogo {
+  position: absolute;
+  left: 3%;
+  top: 35px;
+  width: 230px;
+  height: 230px;
+}
+
+.rightTeamLogo {
+  position: absolute;
+  right: 3%;
+  top: 35px;
+  width: 230px;
+  height: 230px;
+}
+
+.venue {
+  display: block;
+  width: 100%;
+  color: #ffffff;
+  text-align: center;
+  padding-top: 10px;
+}
+.vewerRelativeTime {
+  padding: 5px;
+  font-weight: 900;
+}
+
+.teamNames {
+  height: 90px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  font-size: 1.8em;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.leftTeamName {
+  flex:2;
+}
+.nameSpacer {
+  flex:1;
+  font-size: 2em;
+}
+.rightTeamName {
+  flex:2;
+}
+
+.scoreCount {
+  height: 90px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.leftTeamScore {
+  flex:2;
+  font-size: 5em;
+}
+.gameTime {
+  flex:1;
+  font-size: 1.8em;
+  font-weight: 100;
+  position: relative;
+}
+.timeSpinner {
+  height: 48px;
+  width: 48px;
+  line-height: 46px;
+  position: absolute;
+  top: 6px;
+  left: 36px;
+}
+.rightTeamScore {
+  flex:2;
+  font-size: 5em;
+}
+
+.timeline {
+  overflow: hidden;
+  position: absolute;
+  width:100%;
+}
+
+.timeline ul {
+  background: #ffffff;
+  padding: 50px 0;
+  margin-top: 0;
+  padding-top:0;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-right:20px;
+  width:103%;
+}
+
+.timeline ul li {
+  list-style-type: none;
+  position: relative;
+  width: 3px;
+  margin: 0 auto;
+  padding-top: 50px;
+  background:#60C984;
+}
+
+.timeline ul li::after {
+  content: '';
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+}
+
+.timeline ul li > div {
+  position: relative;
+  bottom: -4px;
+  width: 250px;
+  /* background: #F45B69; */
+}
+
+.timeline ul li > div::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  width: 0;
+  height: 0;
+  /* border-style: solid; */
+}
+
+.timeline ul li.right > div {
+  left: 45px;
+  text-align: left;
+}
+
+.timeline ul li.right > div::before {
+  left: -15px;
+  /* border-width: 8px 16px 8px 0; */
+  /* border-color: transparent #F45B69 transparent transparent; */
+}
+
+.timeline ul li.left > div {
+  left: -290px;
+  text-align: right;
+}
+
+.timeline ul li.left > div::before {
+  right: -15px;
+}
+
+li.right .eventTime {
+  position: absolute!important;
+  left: -55px!important;
+  bottom: 12px!important; 
+  color: #60C984;
+  font-size: 1.2em;   
+}
+
+li.left .eventTime {
+  position: absolute!important;
+  left: -190px!important;
+  bottom: 12px!important;
+  color: #60C984;
+  font-size: 1.2em; 
+}
+
+.name {
+  display: inline-block;
+  width: auto;
+  font-weight: bold;
+  color: #222430;
+  font-size: 1.2em;
+}
+
+.middleDot {
+  display: inline-block;
+  color: #bcbcbc;
+  font-size: 2.5em;
+  vertical-align: middle;
+}
+
+.action {
+
+  display: inline-block;
+  width: auto;
+  color: #5b5b5b;
+  font-size: 1.2em;
+}
+
+.eventText {
+  color: #b9b9b9;
+  margin-top: -10px;
+}
+
+.shot:before {
+  content: "\f111";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  color: #212531;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+
+.pass:before {
+  content: "\f178";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.run:before {
+  content: "\f176";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.tackleBall:before {
+  content: "\f0e7";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.tacklePlayer:before {
+  content: "\f255";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.passBlocked:before {
+  content: "\f256";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.goalBlocked:before {
+  content: "\f1cd";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.goal:before {
+  content: "\f091";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.sub:before {
+  content: "\f111";
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 74px;
+  z-index: 2;
+  left: -22px;
+  border: 3px solid #60CA82;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+}
+.ball-position {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  position: absolute;
+  bottom: -7px;
+}
+.rz-bubble {
+  display: none!important;
+}
+.rzslider .rz-pointer {
+  transition: left cubic-bezier(.42, 0, .58, 1) 1.0s;
+}
+.rzslider:hover .rz-pointer {
+  transition: none;
+}
+.rzslider.noanimate .rz-pointer {
+  transition: none;
+}
+.rz-pointer {
+  background-image: url("./img/shockballLogo.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: transparent!important;
+}
+.rz-pointer:after {
+  display: none!important;
+}

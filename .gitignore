@@ -62,12 +62,12 @@ typings/
 .next
 
 # shockball specific
-/dist
+/server/dist
 /logs
 /npm-debug.log
 /node_modules
+/client/node_modules
 .DS_Store
 /coverage
 firebase-security.json
 swc-security.json
-/client/node_modules

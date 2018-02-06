@@ -4,6 +4,9 @@ import angularJson from 'json-tree2'
 import scrollGlue from 'angularjs-scroll-glue'
 import angularSlider from 'angularjs-slider'
 
+//import less
+import css from './app.less'
+
 //import angular app
 import { mainComponent } from './components/main/main.component'
 import { simComponent } from './components/sim/sim.component'

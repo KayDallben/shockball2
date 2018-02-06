@@ -1906,7 +1906,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(146)("./" + name);
+                __webpack_require__(153)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -8324,7 +8324,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         window.chance = new Chance();
     }
 })();
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(133).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(140).Buffer))
 
 /***/ }),
 /* 5 */
@@ -20375,107 +20375,28 @@ var _angularjsSlider = __webpack_require__(130);
 
 var _angularjsSlider2 = _interopRequireDefault(_angularjsSlider);
 
-var _main = __webpack_require__(131);
+var _app = __webpack_require__(131);
 
-var _main2 = _interopRequireDefault(_main);
+var _app2 = _interopRequireDefault(_app);
 
-var _world = __webpack_require__(139);
+var _main = __webpack_require__(136);
 
-var _world2 = _interopRequireDefault(_world);
+var _sim = __webpack_require__(137);
 
-var _player = __webpack_require__(140);
+var _data = __webpack_require__(154);
 
-var _player2 = _interopRequireDefault(_player);
+var _data2 = _interopRequireDefault(_data);
 
-var _pitch = __webpack_require__(141);
+var _backgroundImage = __webpack_require__(155);
 
-var _pitch2 = _interopRequireDefault(_pitch);
-
-var _board = __webpack_require__(142);
-
-var _board2 = _interopRequireDefault(_board);
-
-var _ball = __webpack_require__(143);
-
-var _ball2 = _interopRequireDefault(_ball);
-
-var _record = __webpack_require__(144);
-
-var _record2 = _interopRequireDefault(_record);
-
-var _matchData = __webpack_require__(145);
-
-var _matchData2 = _interopRequireDefault(_matchData);
+var _backgroundImage2 = _interopRequireDefault(_backgroundImage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var moment = __webpack_require__(0);
+//import angular app
+_angular2.default.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-round-progressbar', 'rzModule']).service('data', _data2.default).component('sim', _sim.simComponent).component('main', _main.mainComponent).directive('backImg', _backgroundImage2.default);
 
-var matchData = new _matchData2.default();
-var record = new _record2.default();
-var fps = 3000;
-var maxGameTime = 70;
-
-var main = new _main2.default(matchData, _world2.default, _player2.default, _pitch2.default, _board2.default, _ball2.default, record);
-
-main.beginGame(fps, maxGameTime);
-
-// create the front-end ui with angular
-var mainComponent = {
-  controller: function controller($scope, $interval) {
-    var ctrl = this;
-    ctrl.isRunning = false;
-    ctrl.showDebug = false;
-    ctrl.game = main;
-    ctrl.gameInterval = null;
-    ctrl.world = ctrl.game.world.objects;
-    ctrl.sliderOptions = {
-      floor: ctrl.world[0]['goalPit']['left'],
-      ceil: ctrl.world[0]['goalPit']['right'],
-      disabled: true
-    };
-    ctrl.leftPlayers = ctrl.game.world.leftPlayers;
-    ctrl.rightPlayers = ctrl.game.world.rightPlayers;
-    ctrl.gameEvents = record.records;
-    ctrl.matchViewerRelativeTime = 'ON LIVE';
-    ctrl.setViewerRelativeTime = function () {
-      if (ctrl.game.stopSim) {
-        ctrl.matchViewerRelativeTime = moment(ctrl.world[1]['startTime']).format('MMMM Do YYYY, h:mm:ss');
-        ctrl.isRunning = false;
-        ctrl.stopGameInterval();
-      }
-    }, ctrl.$onInit = function () {
-      if (!ctrl.isRunning) {
-        ctrl.isRunning = true;
-        ctrl.startGameInterval();
-      }
-    },
-    // stops the interval
-    ctrl.stopGameInterval = function () {
-      $interval.cancel(ctrl.gameInterval);
-    }, ctrl.startGameInterval = function () {
-      ctrl.stopGameInterval();
-      ctrl.gameInterval = $interval(ctrl.setViewerRelativeTime, fps);
-    };
-  },
-  template: '\n    <div>\n      <div class="gameObject" ng-if="ctrl.showDebug">\n        <pre>\n          <json-tree json="$ctrl.game" collapsed-level="4" edit-level="low" timeout="0" timeoutInit="0"></json-tree>\n        </pre>\n      </div>\n      <h1 class="header-title" ng-click="ctrl.showDebug = !ctrl.showDebug">Shockball Sim v0.1</h1>\n      <div class="playByPlay">\n        <div class="live-indicator" ng-if="$ctrl.isRunning">\n          ON LIVE\n          <div class="fa fa-clock-o"></div>\n        </div>\n        <div class="scoreboard">\n          <div class="leftTeamLogo" back-img="{{$ctrl.leftPlayers[0][\'teamPicUrl\']}}"></div>\n          <div class="rightTeamLogo" back-img="{{$ctrl.rightPlayers[0][\'teamPicUrl\']}}"></div>\n          <div class="venue">\n            <div class="viewerRelativeTime">{{$ctrl.matchViewerRelativeTime}}</div>\n            <div class="matchLocation">{{::$ctrl.world[0][\'pitchOwnedBy\']}}</div>\n          </div>\n          <div class="teamNames">\n            <div class="leftTeamName">{{$ctrl.leftPlayers[0][\'teamName\']}}</div>\n            <div class="nameSpacer"> - </div>\n            <div class="rightTeamName">{{$ctrl.rightPlayers[0][\'teamName\']}}</div>\n          </div>\n          <div class="scoreCount">\n            <div class="leftTeamScore">\n              {{$ctrl.world[1][\'leftScore\']}}\n              <div class="leftTeamColor"></div>\n            </div>\n            <div class="gameTime">\n              <round-progress\n                max="' + maxGameTime + '"\n                current="$ctrl.world[1][\'gameTime\']"\n                color="#60CA82"\n                bgcolor="#4C505B"\n                radius="30"\n                stroke="5"\n                semi="false"\n                rounded="true"\n                clockwise="true"\n                responsive="false"\n                duration="' + fps + '"\n                animation="linearEase"\n                animation-delay="0">\n              </round-progress>\n              <div class="timeSpinner">\n                {{$ctrl.world[1][\'gameTime\']}}\'\n              </div>\n            </div>\n            <div class="rightTeamScore">\n              {{$ctrl.world[1][\'rightScore\']}}\n              <div class="rightTeamColor"></div>\n            </div>\n          </div>\n          <div class="ball-position">\n            <rzslider rz-slider-model="$ctrl.world[2][\'goalProximity\']" rz-slider-options="$ctrl.sliderOptions"></rzslider>          \n          </div>\n        </div>\n        <div class="timeline">\n          <ul scroll-glue>\n            <li ng-repeat="event in $ctrl.gameEvents" ng-class="{\n                right: event.recordPitchSide === \'right\',\n                left: event.recordPitchSide === \'left\',\n                shot: event.recordType === \'shoots\',\n                pass: event.recordType === \'passes ball\',\n                run: event.recordType === \'runs ball\',\n                tackleBall: event.recordType === \'tackles ball\',\n                tacklePlayer: event.recordType === \'tackles\',\n                passBlocked: event.recordType === \'pass blocked\',\n                goalBlocked: event.recordType === \'goal blocked\',\n                goal: event.recordType === \'goal\'\n              }" class="play">\n              <div class="eventTime">{{::event.recordGameTime}}\'</div>\n              <div class="event-info">\n                <div class="name">{{::event.actorFirstName}}</div>\n                <div class="middleDot">&middot;</div>\n                <div class="action">{{::event.recordType}}</div>\n              </div>\n              <div class="eventText">{{::event.recordCommentator}}</div>\n            </li>\n          </ul>\n        </div>\n      </div>\n    </div>\n  '
-};
-
-//background-image directive function
-function backgroundImage() {
-  return function (scope, element, attrs) {
-    var url = attrs.backImg;
-    element.css({
-      'background-image': 'url(' + url + ')',
-      'background-size': 'cover',
-      'background-position': 'center center',
-      'border-radius': '50%',
-      'opacity': '0.09'
-    });
-  };
-}
-
-_angular2.default.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-round-progressbar', 'rzModule']).component('main', mainComponent).directive('backImg', backgroundImage);
+//import less
 
 /***/ }),
 /* 125 */
@@ -41952,6 +41873,629 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+var content = __webpack_require__(132);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(134)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {
+	module.hot.accept("!!../node_modules/css-loader/index.js??ref--1-1!../node_modules/less-loader/dist/cjs.js??ref--1-2!./app.less", function() {
+		var newContent = require("!!../node_modules/css-loader/index.js??ref--1-1!../node_modules/less-loader/dist/cjs.js??ref--1-2!./app.less");
+
+		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+		var locals = (function(a, b) {
+			var key, idx = 0;
+
+			for(key in a) {
+				if(!b || a[key] !== b[key]) return false;
+				idx++;
+			}
+
+			for(key in b) idx--;
+
+			return idx === 0;
+		}(content.locals, newContent.locals));
+
+		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+		update(newContent);
+	});
+
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(133)(true);
+// imports
+
+
+// module
+exports.push([module.i, "body {\n  color: green!important;\n}\n.jamaica {\n  color: blue;\n}\nhtml,\nbody,\nsim {\n  height: 100%;\n}\n.wrapper {\n  height: 100%;\n}\nmain,\nsim,\nsim > div {\n  height: 100%;\n}\nbody {\n  color: black;\n}\nh1 {\n  display: inline-block;\n  vertical-align: top;\n  padding-top: 0;\n  margin-top: 0;\n  padding-left: 10px;\n}\n.header-title {\n  color: #fff;\n  margin: 8px;\n  display: inline-block;\n  width: auto;\n  border-radius: 4px;\n  background-color: rgba(0, 0, 0, 0.7);\n  padding: 6px;\n}\n.header-title:hover {\n  cursor: pointer;\n}\n.gameObject {\n  color: Red;\n  background-color: #ddd;\n  border-radius: 5px;\n  padding: 12px;\n  display: inline-block;\n  max-width: 475px;\n}\nsim {\n  background-color: #F5F5F5;\n}\nsim > div {\n  background-image: url(\"img/shockball2.jpg\");\n  background-size: cover;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-attachment: fixed;\n}\n/* timeline section  */\n.live-indicator {\n  background-color: #60CA82;\n  color: #ffffff;\n  font-weight: bold;\n  padding: 6px;\n  padding-left: 15px;\n}\n.fa-clock-o {\n  position: absolute;\n  right: 15px;\n}\n.playByPlay {\n  position: absolute;\n  width: 600px;\n  top: 55px;\n  left: 28%;\n}\n.scoreboard {\n  width: 100%;\n  display: block;\n  height: 300px;\n  background-color: #212531;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  position: relative;\n}\n.scoreboard img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n}\n.leftTeamLogo {\n  position: absolute;\n  left: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n.rightTeamLogo {\n  position: absolute;\n  right: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n.venue {\n  display: block;\n  width: 100%;\n  color: #ffffff;\n  text-align: center;\n  padding-top: 10px;\n}\n.vewerRelativeTime {\n  padding: 5px;\n  font-weight: 900;\n}\n.teamNames {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-size: 1.8em;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n.leftTeamName {\n  flex: 2;\n}\n.nameSpacer {\n  flex: 1;\n  font-size: 2em;\n}\n.rightTeamName {\n  flex: 2;\n}\n.scoreCount {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n.leftTeamScore {\n  flex: 2;\n  font-size: 5em;\n}\n.gameTime {\n  flex: 1;\n  font-size: 1.8em;\n  font-weight: 100;\n  position: relative;\n}\n.timeSpinner {\n  height: 48px;\n  width: 48px;\n  line-height: 46px;\n  position: absolute;\n  top: 6px;\n  left: 36px;\n}\n.rightTeamScore {\n  flex: 2;\n  font-size: 5em;\n}\n.timeline {\n  overflow: hidden;\n  position: absolute;\n  width: 100%;\n}\n.timeline ul {\n  background: #ffffff;\n  padding: 50px 0;\n  margin-top: 0;\n  padding-top: 0;\n  height: 400px;\n  overflow-x: hidden;\n  overflow-y: scroll;\n  padding-right: 20px;\n  width: 103%;\n}\n.timeline ul li {\n  list-style-type: none;\n  position: relative;\n  width: 3px;\n  margin: 0 auto;\n  padding-top: 50px;\n  background: #60C984;\n}\n.timeline ul li::after {\n  content: '';\n  left: 50%;\n  bottom: 0;\n  transform: translateX(-50%);\n  width: 40px;\n  height: 40px;\n  background: #ffffff;\n}\n.timeline ul li > div {\n  position: relative;\n  bottom: -4px;\n  width: 250px;\n  /* background: #F45B69; */\n}\n.timeline ul li > div::before {\n  content: '';\n  position: absolute;\n  bottom: 7px;\n  width: 0;\n  height: 0;\n  /* border-style: solid; */\n}\n.timeline ul li.right > div {\n  left: 45px;\n  text-align: left;\n}\n.timeline ul li.right > div::before {\n  left: -15px;\n  /* border-width: 8px 16px 8px 0; */\n  /* border-color: transparent #F45B69 transparent transparent; */\n}\n.timeline ul li.left > div {\n  left: -290px;\n  text-align: right;\n}\n.timeline ul li.left > div::before {\n  right: -15px;\n}\nli.right .eventTime {\n  position: absolute!important;\n  left: -55px !important;\n  bottom: 12px!important;\n  color: #60C984;\n  font-size: 1.2em;\n}\nli.left .eventTime {\n  position: absolute!important;\n  left: -190px !important;\n  bottom: 12px!important;\n  color: #60C984;\n  font-size: 1.2em;\n}\n.name {\n  display: inline-block;\n  width: auto;\n  font-weight: bold;\n  color: #222430;\n  font-size: 1.2em;\n}\n.middleDot {\n  display: inline-block;\n  color: #bcbcbc;\n  font-size: 2.5em;\n  vertical-align: middle;\n}\n.action {\n  display: inline-block;\n  width: auto;\n  color: #5b5b5b;\n  font-size: 1.2em;\n}\n.eventText {\n  color: #b9b9b9;\n  margin-top: -10px;\n}\n.shot:before {\n  content: \"\\F111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  color: #212531;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.pass:before {\n  content: \"\\F178\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.run:before {\n  content: \"\\F176\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tackleBall:before {\n  content: \"\\F0E7\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tacklePlayer:before {\n  content: \"\\F255\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.passBlocked:before {\n  content: \"\\F256\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goalBlocked:before {\n  content: \"\\F1CD\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goal:before {\n  content: \"\\F091\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.sub:before {\n  content: \"\\F111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.ball-position {\n  width: 100%;\n  box-sizing: border-box;\n  padding: 20px;\n  position: absolute;\n  bottom: -7px;\n}\n.rz-bubble {\n  display: none!important;\n}\n.rzslider .rz-pointer {\n  transition: left cubic-bezier(0.42, 0, 0.58, 1) 1s;\n}\n.rzslider:hover .rz-pointer {\n  transition: none;\n}\n.rzslider.noanimate .rz-pointer {\n  transition: none;\n}\n.rz-pointer {\n  background-image: url(\"img/shockballLogo.png\");\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  background-color: transparent!important;\n}\n.rz-pointer:after {\n  display: none!important;\n}\n", "", {"version":3,"sources":["C:/Users/papoose/code/shockball2/client/src/C:/Users/papoose/code/shockball2/client/src/app.less","C:/Users/papoose/code/shockball2/client/src/app.less"],"names":[],"mappings":"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","file":"app.less","sourcesContent":["body {\n  color: green!important;\n}\n.jamaica {\n  color: blue;\n}\nhtml, body, sim {\n  height:100%;\n}\n.wrapper {\n  height:100%;\n}\nmain, sim, sim > div  {\n  height: 100%;\n}\nbody {\n  color:black;\n}\nh1 {\n  display: inline-block;\n  vertical-align: top;\n  padding-top: 0;\n  margin-top: 0;\n  padding-left: 10px;\n}\n.header-title {\n  color: #fff;\n  margin: 8px;\n  display: inline-block;\n  width: auto;\n  border-radius: 4px;\n  background-color: rgba(0, 0, 0, 0.7);\n  padding: 6px;\n}\n.header-title:hover {\n  cursor: pointer;\n}\n.gameObject {\n  color:Red;\n  background-color: #ddd;\n  border-radius: 5px;\n  padding: 12px;\n  display: inline-block;\n  max-width: 475px;\n}\nsim {\n  background-color: #F5F5F5;\n}\n\nsim > div {\n  background-image: url(\"./img/shockball2.jpg\");\n  background-size: cover;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-attachment: fixed;\n}\n\n\n/* timeline section  */\n.live-indicator {\n  background-color: #60CA82;\n  color: #ffffff;\n  font-weight: bold;\n  padding: 6px;\n  padding-left: 15px;\n}\n.fa-clock-o {\n  position: absolute;\n  right: 15px;\n}\n.playByPlay {\n  position: absolute;\n  width: 600px;\n  top: 55px;\n  left: 28%;\n}\n\n.scoreboard {\n  width: 100%;\n  display: block;\n  height: 300px;\n  background-color: #212531;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n.scoreboard img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n}\n\n.leftTeamLogo {\n  position: absolute;\n  left: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n\n.rightTeamLogo {\n  position: absolute;\n  right: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n\n.venue {\n  display: block;\n  width: 100%;\n  color: #ffffff;\n  text-align: center;\n  padding-top: 10px;\n}\n.vewerRelativeTime {\n  padding: 5px;\n  font-weight: 900;\n}\n\n.teamNames {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-size: 1.8em;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n\n.leftTeamName {\n  flex:2;\n}\n.nameSpacer {\n  flex:1;\n  font-size: 2em;\n}\n.rightTeamName {\n  flex:2;\n}\n\n.scoreCount {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n\n.leftTeamScore {\n  flex:2;\n  font-size: 5em;\n}\n.gameTime {\n  flex:1;\n  font-size: 1.8em;\n  font-weight: 100;\n  position: relative;\n}\n.timeSpinner {\n  height: 48px;\n  width: 48px;\n  line-height: 46px;\n  position: absolute;\n  top: 6px;\n  left: 36px;\n}\n.rightTeamScore {\n  flex:2;\n  font-size: 5em;\n}\n\n.timeline {\n  overflow: hidden;\n  position: absolute;\n  width:100%;\n}\n\n.timeline ul {\n  background: #ffffff;\n  padding: 50px 0;\n  margin-top: 0;\n  padding-top:0;\n  height: 400px;\n  overflow-x: hidden;\n  overflow-y: scroll;\n  padding-right:20px;\n  width:103%;\n}\n\n.timeline ul li {\n  list-style-type: none;\n  position: relative;\n  width: 3px;\n  margin: 0 auto;\n  padding-top: 50px;\n  background:#60C984;\n}\n\n.timeline ul li::after {\n  content: '';\n  left: 50%;\n  bottom: 0;\n  transform: translateX(-50%);\n  width: 40px;\n  height: 40px;\n  background: #ffffff;\n}\n\n.timeline ul li > div {\n  position: relative;\n  bottom: -4px;\n  width: 250px;\n  /* background: #F45B69; */\n}\n\n.timeline ul li > div::before {\n  content: '';\n  position: absolute;\n  bottom: 7px;\n  width: 0;\n  height: 0;\n  /* border-style: solid; */\n}\n\n.timeline ul li.right > div {\n  left: 45px;\n  text-align: left;\n}\n\n.timeline ul li.right > div::before {\n  left: -15px;\n  /* border-width: 8px 16px 8px 0; */\n  /* border-color: transparent #F45B69 transparent transparent; */\n}\n\n.timeline ul li.left > div {\n  left: -290px;\n  text-align: right;\n}\n\n.timeline ul li.left > div::before {\n  right: -15px;\n}\n\nli.right .eventTime {\n  position: absolute!important;\n  left: -55px!important;\n  bottom: 12px!important; \n  color: #60C984;\n  font-size: 1.2em;   \n}\n\nli.left .eventTime {\n  position: absolute!important;\n  left: -190px!important;\n  bottom: 12px!important;\n  color: #60C984;\n  font-size: 1.2em; \n}\n\n.name {\n  display: inline-block;\n  width: auto;\n  font-weight: bold;\n  color: #222430;\n  font-size: 1.2em;\n}\n\n.middleDot {\n  display: inline-block;\n  color: #bcbcbc;\n  font-size: 2.5em;\n  vertical-align: middle;\n}\n\n.action {\n\n  display: inline-block;\n  width: auto;\n  color: #5b5b5b;\n  font-size: 1.2em;\n}\n\n.eventText {\n  color: #b9b9b9;\n  margin-top: -10px;\n}\n\n.shot:before {\n  content: \"\\f111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  color: #212531;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n\n.pass:before {\n  content: \"\\f178\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.run:before {\n  content: \"\\f176\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tackleBall:before {\n  content: \"\\f0e7\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tacklePlayer:before {\n  content: \"\\f255\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.passBlocked:before {\n  content: \"\\f256\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goalBlocked:before {\n  content: \"\\f1cd\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goal:before {\n  content: \"\\f091\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.sub:before {\n  content: \"\\f111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.ball-position {\n  width: 100%;\n  box-sizing: border-box;\n  padding: 20px;\n  position: absolute;\n  bottom: -7px;\n}\n.rz-bubble {\n  display: none!important;\n}\n.rzslider .rz-pointer {\n  transition: left cubic-bezier(.42, 0, .58, 1) 1.0s;\n}\n.rzslider:hover .rz-pointer {\n  transition: none;\n}\n.rzslider.noanimate .rz-pointer {\n  transition: none;\n}\n.rz-pointer {\n  background-image: url(\"./img/shockballLogo.png\");\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  background-color: transparent!important;\n}\n.rz-pointer:after {\n  display: none!important;\n}","body {\n  color: green!important;\n}\n.jamaica {\n  color: blue;\n}\nhtml,\nbody,\nsim {\n  height: 100%;\n}\n.wrapper {\n  height: 100%;\n}\nmain,\nsim,\nsim > div {\n  height: 100%;\n}\nbody {\n  color: black;\n}\nh1 {\n  display: inline-block;\n  vertical-align: top;\n  padding-top: 0;\n  margin-top: 0;\n  padding-left: 10px;\n}\n.header-title {\n  color: #fff;\n  margin: 8px;\n  display: inline-block;\n  width: auto;\n  border-radius: 4px;\n  background-color: rgba(0, 0, 0, 0.7);\n  padding: 6px;\n}\n.header-title:hover {\n  cursor: pointer;\n}\n.gameObject {\n  color: Red;\n  background-color: #ddd;\n  border-radius: 5px;\n  padding: 12px;\n  display: inline-block;\n  max-width: 475px;\n}\nsim {\n  background-color: #F5F5F5;\n}\nsim > div {\n  background-image: url(\"img/shockball2.jpg\");\n  background-size: cover;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-attachment: fixed;\n}\n/* timeline section  */\n.live-indicator {\n  background-color: #60CA82;\n  color: #ffffff;\n  font-weight: bold;\n  padding: 6px;\n  padding-left: 15px;\n}\n.fa-clock-o {\n  position: absolute;\n  right: 15px;\n}\n.playByPlay {\n  position: absolute;\n  width: 600px;\n  top: 55px;\n  left: 28%;\n}\n.scoreboard {\n  width: 100%;\n  display: block;\n  height: 300px;\n  background-color: #212531;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  position: relative;\n}\n.scoreboard img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n}\n.leftTeamLogo {\n  position: absolute;\n  left: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n.rightTeamLogo {\n  position: absolute;\n  right: 3%;\n  top: 35px;\n  width: 230px;\n  height: 230px;\n}\n.venue {\n  display: block;\n  width: 100%;\n  color: #ffffff;\n  text-align: center;\n  padding-top: 10px;\n}\n.vewerRelativeTime {\n  padding: 5px;\n  font-weight: 900;\n}\n.teamNames {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-size: 1.8em;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n.leftTeamName {\n  flex: 2;\n}\n.nameSpacer {\n  flex: 1;\n  font-size: 2em;\n}\n.rightTeamName {\n  flex: 2;\n}\n.scoreCount {\n  height: 90px;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  color: #fff;\n  font-weight: 900;\n  text-transform: uppercase;\n}\n.leftTeamScore {\n  flex: 2;\n  font-size: 5em;\n}\n.gameTime {\n  flex: 1;\n  font-size: 1.8em;\n  font-weight: 100;\n  position: relative;\n}\n.timeSpinner {\n  height: 48px;\n  width: 48px;\n  line-height: 46px;\n  position: absolute;\n  top: 6px;\n  left: 36px;\n}\n.rightTeamScore {\n  flex: 2;\n  font-size: 5em;\n}\n.timeline {\n  overflow: hidden;\n  position: absolute;\n  width: 100%;\n}\n.timeline ul {\n  background: #ffffff;\n  padding: 50px 0;\n  margin-top: 0;\n  padding-top: 0;\n  height: 400px;\n  overflow-x: hidden;\n  overflow-y: scroll;\n  padding-right: 20px;\n  width: 103%;\n}\n.timeline ul li {\n  list-style-type: none;\n  position: relative;\n  width: 3px;\n  margin: 0 auto;\n  padding-top: 50px;\n  background: #60C984;\n}\n.timeline ul li::after {\n  content: '';\n  left: 50%;\n  bottom: 0;\n  transform: translateX(-50%);\n  width: 40px;\n  height: 40px;\n  background: #ffffff;\n}\n.timeline ul li > div {\n  position: relative;\n  bottom: -4px;\n  width: 250px;\n  /* background: #F45B69; */\n}\n.timeline ul li > div::before {\n  content: '';\n  position: absolute;\n  bottom: 7px;\n  width: 0;\n  height: 0;\n  /* border-style: solid; */\n}\n.timeline ul li.right > div {\n  left: 45px;\n  text-align: left;\n}\n.timeline ul li.right > div::before {\n  left: -15px;\n  /* border-width: 8px 16px 8px 0; */\n  /* border-color: transparent #F45B69 transparent transparent; */\n}\n.timeline ul li.left > div {\n  left: -290px;\n  text-align: right;\n}\n.timeline ul li.left > div::before {\n  right: -15px;\n}\nli.right .eventTime {\n  position: absolute!important;\n  left: -55px !important;\n  bottom: 12px!important;\n  color: #60C984;\n  font-size: 1.2em;\n}\nli.left .eventTime {\n  position: absolute!important;\n  left: -190px !important;\n  bottom: 12px!important;\n  color: #60C984;\n  font-size: 1.2em;\n}\n.name {\n  display: inline-block;\n  width: auto;\n  font-weight: bold;\n  color: #222430;\n  font-size: 1.2em;\n}\n.middleDot {\n  display: inline-block;\n  color: #bcbcbc;\n  font-size: 2.5em;\n  vertical-align: middle;\n}\n.action {\n  display: inline-block;\n  width: auto;\n  color: #5b5b5b;\n  font-size: 1.2em;\n}\n.eventText {\n  color: #b9b9b9;\n  margin-top: -10px;\n}\n.shot:before {\n  content: \"\\f111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  color: #212531;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.pass:before {\n  content: \"\\f178\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.run:before {\n  content: \"\\f176\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tackleBall:before {\n  content: \"\\f0e7\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.tacklePlayer:before {\n  content: \"\\f255\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.passBlocked:before {\n  content: \"\\f256\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goalBlocked:before {\n  content: \"\\f1cd\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.goal:before {\n  content: \"\\f091\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.sub:before {\n  content: \"\\f111\";\n  font-family: \"FontAwesome\";\n  position: absolute;\n  top: 74px;\n  z-index: 2;\n  left: -22px;\n  border: 3px solid #60CA82;\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  background-color: #ffffff;\n}\n.ball-position {\n  width: 100%;\n  box-sizing: border-box;\n  padding: 20px;\n  position: absolute;\n  bottom: -7px;\n}\n.rz-bubble {\n  display: none!important;\n}\n.rzslider .rz-pointer {\n  transition: left cubic-bezier(0.42, 0, 0.58, 1) 1s;\n}\n.rzslider:hover .rz-pointer {\n  transition: none;\n}\n.rzslider.noanimate .rz-pointer {\n  transition: none;\n}\n.rz-pointer {\n  background-image: url(\"img/shockballLogo.png\");\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  background-color: transparent!important;\n}\n.rz-pointer:after {\n  display: none!important;\n}\n"],"sourceRoot":""}]);
+
+// exports
+
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function (useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if (item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function (modules, mediaQuery) {
+		if (typeof modules === "string") modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for (var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if (typeof id === "number") alreadyImportedModules[id] = true;
+		}
+		for (i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if (typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if (mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if (mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getTarget = function (target) {
+  return document.querySelector(target);
+};
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(target) {
+                // If passing function in options, then use it for resolve "head" element.
+                // Useful for Shadow Root style i.e
+                // {
+                //   insertInto: function () { return document.querySelector("#foo").shadowRoot }
+                // }
+                if (typeof target === 'function') {
+                        return target();
+                }
+                if (typeof memo[target] === "undefined") {
+			var styleTarget = getTarget.call(this, target);
+			// Special case to return head of iframe instead of iframe itself
+			if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[target] = styleTarget;
+		}
+		return memo[target]
+	};
+})();
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(135);
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+        if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertInto + " " + options.insertAt.before);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	options.attrs.type = "text/css";
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = options.transform(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+	// get current location
+	var location = typeof window !== "undefined" && window.location;
+
+	if (!location) {
+		throw new Error("fixUrls requires window.location");
+	}
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+		return css;
+	}
+
+	var baseUrl = location.protocol + "//" + location.host;
+	var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+ This regular expression is just a way to recursively match brackets within
+ a string.
+ 	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+    (  = Start a capturing group
+      (?:  = Start a non-capturing group
+          [^)(]  = Match anything that isn't a parentheses
+          |  = OR
+          \(  = Match a start parentheses
+              (?:  = Start another non-capturing groups
+                  [^)(]+  = Match anything that isn't a parentheses
+                  |  = OR
+                  \(  = Match a start parentheses
+                      [^)(]*  = Match anything that isn't a parentheses
+                  \)  = Match a end parentheses
+              )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+  \)  = Match a close parens
+ 	 /gi  = Get all matches, not the first.  Be case insensitive.
+  */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function (fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl.trim().replace(/^"(.*)"$/, function (o, $1) {
+			return $1;
+		}).replace(/^'(.*)'$/, function (o, $1) {
+			return $1;
+		});
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
+			return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+			//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -41961,11 +42505,184 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _challenge = __webpack_require__(132);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var mainComponent = exports.mainComponent = {
+  template: '\n\t\t<sim></sim>\n\t',
+  bindings: {
+    demoAttr1: '=',
+    demoAttr2: '='
+  },
+  controllerAs: 'mainCtrl',
+  controller: function () {
+    function MainController(data) {
+      _classCallCheck(this, MainController);
+
+      this.data = data;
+      this.title = 'test title';
+    }
+
+    _createClass(MainController, [{
+      key: 'init',
+      value: function init() {
+        this.title = this.data.login();
+      }
+
+      // injection here
+
+    }], [{
+      key: '$inject',
+      get: function get() {
+        return ['data'];
+      }
+    }]);
+
+    return MainController;
+  }()
+};
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.simComponent = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //import simulation engine
+
+
+var _main = __webpack_require__(138);
+
+var _main2 = _interopRequireDefault(_main);
+
+var _world = __webpack_require__(146);
+
+var _world2 = _interopRequireDefault(_world);
+
+var _player = __webpack_require__(147);
+
+var _player2 = _interopRequireDefault(_player);
+
+var _pitch = __webpack_require__(148);
+
+var _pitch2 = _interopRequireDefault(_pitch);
+
+var _board = __webpack_require__(149);
+
+var _board2 = _interopRequireDefault(_board);
+
+var _ball = __webpack_require__(150);
+
+var _ball2 = _interopRequireDefault(_ball);
+
+var _record = __webpack_require__(151);
+
+var _record2 = _interopRequireDefault(_record);
+
+var _matchData = __webpack_require__(152);
+
+var _matchData2 = _interopRequireDefault(_matchData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var moment = __webpack_require__(0);
+
+var matchData = new _matchData2.default();
+var record = new _record2.default();
+var fps = 3000;
+var maxGameTime = 70;
+var main = void 0;
+
+var simComponent = exports.simComponent = {
+  template: '\n    <div>\n      <div class="gameObject" ng-if="ctrl.showDebug">\n        <pre>\n          <json-tree json="simCtrl.game" collapsed-level="4" edit-level="low" timeout="0" timeoutInit="0"></json-tree>\n        </pre>\n      </div>\n      <h1 class="header-title" ng-click="ctrl.showDebug = !ctrl.showDebug">Shockball Sim v0.1</h1>\n      <div class="playByPlay">\n        <div class="live-indicator" ng-if="simCtrl.isRunning">\n          ON LIVE\n          <div class="fa fa-clock-o"></div>\n        </div>\n        <div class="scoreboard">\n          <div class="leftTeamLogo" back-img="{{simCtrl.leftPlayers[0][\'teamPicUrl\']}}"></div>\n          <div class="rightTeamLogo" back-img="{{simCtrl.rightPlayers[0][\'teamPicUrl\']}}"></div>\n          <div class="venue">\n            <div class="viewerRelativeTime">{{simCtrl.matchViewerRelativeTime}}</div>\n            <div class="matchLocation">{{::simCtrl.world[0][\'pitchOwnedBy\']}}</div>\n          </div>\n          <div class="teamNames">\n            <div class="leftTeamName">{{simCtrl.leftPlayers[0][\'teamName\']}}</div>\n            <div class="nameSpacer"> - </div>\n            <div class="rightTeamName">{{simCtrl.rightPlayers[0][\'teamName\']}}</div>\n          </div>\n          <div class="scoreCount">\n            <div class="leftTeamScore">\n              {{simCtrl.world[1][\'leftScore\']}}\n              <div class="leftTeamColor"></div>\n            </div>\n            <div class="gameTime">\n              <round-progress\n                max="' + maxGameTime + '"\n                current="simCtrl.world[1][\'gameTime\']"\n                color="#60CA82"\n                bgcolor="#4C505B"\n                radius="30"\n                stroke="5"\n                semi="false"\n                rounded="true"\n                clockwise="true"\n                responsive="false"\n                duration="' + fps + '"\n                animation="linearEase"\n                animation-delay="0">\n              </round-progress>\n              <div class="timeSpinner">\n                {{simCtrl.world[1][\'gameTime\']}}\'\n              </div>\n            </div>\n            <div class="rightTeamScore">\n              {{simCtrl.world[1][\'rightScore\']}}\n              <div class="rightTeamColor"></div>\n            </div>\n          </div>\n          <div class="ball-position">\n            <rzslider rz-slider-model="simCtrl.world[2][\'goalProximity\']" rz-slider-options="simCtrl.sliderOptions"></rzslider>          \n          </div>\n        </div>\n        <div class="timeline">\n          <ul scroll-glue>\n            <li ng-repeat="event in simCtrl.gameEvents" ng-class="{\n                right: event.recordPitchSide === \'right\',\n                left: event.recordPitchSide === \'left\',\n                shot: event.recordType === \'shoots\',\n                pass: event.recordType === \'passes ball\',\n                run: event.recordType === \'runs ball\',\n                tackleBall: event.recordType === \'tackles ball\',\n                tacklePlayer: event.recordType === \'tackles\',\n                passBlocked: event.recordType === \'pass blocked\',\n                goalBlocked: event.recordType === \'goal blocked\',\n                goal: event.recordType === \'goal\'\n              }" class="play">\n              <div class="eventTime">{{::event.recordGameTime}}\'</div>\n              <div class="event-info">\n                <div class="name">{{::event.actorFirstName}}</div>\n                <div class="middleDot">&middot;</div>\n                <div class="action">{{::event.recordType}}</div>\n              </div>\n              <div class="eventText">{{::event.recordCommentator}}</div>\n            </li>\n          </ul>\n        </div>\n      </div>\n    </div>\n  ',
+  bindings: {},
+  controllerAs: 'simCtrl',
+  controller: function () {
+    function SimController($interval) {
+      _classCallCheck(this, SimController);
+
+      main = new _main2.default(matchData, _world2.default, _player2.default, _pitch2.default, _board2.default, _ball2.default, record);
+      main.beginGame(fps, maxGameTime);
+      this.isRunning = false;
+      this.interval = $interval;
+      this.showDebug = false;
+      this.game = main;
+      this.gameInterval = null;
+      this.world = this.game.world.objects;
+      this.sliderOptions = {
+        floor: this.world[0]['goalPit']['left'],
+        ceil: this.world[0]['goalPit']['right'],
+        disabled: true
+      };
+      this.leftPlayers = this.game.world.leftPlayers;
+      this.rightPlayers = this.game.world.rightPlayers;
+      this.gameEvents = record.records;
+      this.matchViewerRelativeTime = 'ON LIVE';
+    }
+
+    _createClass(SimController, [{
+      key: '$onInit',
+      value: function $onInit() {
+        if (!this.isRunning) {
+          this.isRunning = true;
+          this.startGameInterval();
+        }
+      }
+    }, {
+      key: 'stopGameInterval',
+      value: function stopGameInterval() {
+        this.interval.cancel(this.gameInterval);
+      }
+    }, {
+      key: 'startGameInterval',
+      value: function startGameInterval() {
+        var _this = this;
+
+        this.stopGameInterval();
+        this.gameInterval = this.interval(function () {
+          if (_this.game.stopSim) {
+            _this.matchViewerRelativeTime = moment(_this.world[1]['startTime']).format('MMMM Do YYYY, h:mm:ss');
+            _this.isRunning = false;
+            _this.stopGameInterval();
+          }
+        }, fps);
+      }
+    }], [{
+      key: '$inject',
+      get: function get() {
+        return ['$interval'];
+      }
+    }]);
+
+    return SimController;
+  }()
+};
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _challenge = __webpack_require__(139);
 
 var _challenge2 = _interopRequireDefault(_challenge);
 
-var _botGenerator = __webpack_require__(138);
+var _botGenerator = __webpack_require__(145);
 
 var _botGenerator2 = _interopRequireDefault(_botGenerator);
 
@@ -42104,7 +42821,7 @@ var Main = function () {
 exports.default = Main;
 
 /***/ }),
-/* 132 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42448,7 +43165,7 @@ var Challenge = function () {
 exports.default = Challenge;
 
 /***/ }),
-/* 133 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42462,9 +43179,9 @@ exports.default = Challenge;
 
 
 
-var base64 = __webpack_require__(135);
-var ieee754 = __webpack_require__(136);
-var isArray = __webpack_require__(137);
+var base64 = __webpack_require__(142);
+var ieee754 = __webpack_require__(143);
+var isArray = __webpack_require__(144);
 
 exports.Buffer = Buffer;
 exports.SlowBuffer = SlowBuffer;
@@ -44189,10 +44906,10 @@ function blitBuffer(src, dst, offset, length) {
 function isnan(val) {
   return val !== val; // eslint-disable-line no-self-compare
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(134)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(141)))
 
 /***/ }),
-/* 134 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44222,7 +44939,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 135 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44342,7 +45059,7 @@ function fromByteArray(uint8) {
 }
 
 /***/ }),
-/* 136 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44434,7 +45151,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 };
 
 /***/ }),
-/* 137 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44447,7 +45164,7 @@ module.exports = Array.isArray || function (arr) {
 };
 
 /***/ }),
-/* 138 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44512,7 +45229,7 @@ var BotGenerator = function () {
 exports.default = BotGenerator;
 
 /***/ }),
-/* 139 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44596,7 +45313,7 @@ var World = function () {
 exports.default = World;
 
 /***/ }),
-/* 140 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44866,7 +45583,7 @@ var Player = function () {
 exports.default = Player;
 
 /***/ }),
-/* 141 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44932,7 +45649,7 @@ var Pitch = function () {
 exports.default = Pitch;
 
 /***/ }),
-/* 142 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44989,7 +45706,7 @@ var Board = function () {
 exports.default = Board;
 
 /***/ }),
-/* 143 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45040,7 +45757,7 @@ var Ball = function () {
 exports.default = Ball;
 
 /***/ }),
-/* 144 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45187,7 +45904,7 @@ var Record = function () {
 exports.default = Record;
 
 /***/ }),
-/* 145 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45241,7 +45958,7 @@ var MatchData = function MatchData() {
 exports.default = MatchData;
 
 /***/ }),
-/* 146 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -45498,7 +46215,76 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 146;
+webpackContext.id = 153;
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DataService = function () {
+  function DataService($http) {
+    _classCallCheck(this, DataService);
+
+    this.$http = $http;
+  }
+
+  // Example service function
+
+
+  _createClass(DataService, [{
+    key: 'login',
+    value: function login(authCode) {
+      return this.$http({
+        method: 'GET',
+        url: './api/login'
+      });
+    }
+  }], [{
+    key: '$inject',
+    get: function get() {
+      return ['$http'];
+    }
+  }]);
+
+  return DataService;
+}();
+
+exports.default = DataService;
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = backgroundImage;
+function backgroundImage() {
+  return function (scope, element, attrs) {
+    var url = attrs.backImg;
+    element.css({
+      'background-image': 'url(' + url + ')',
+      'background-size': 'cover',
+      'background-position': 'center center',
+      'border-radius': '50%',
+      'opacity': '0.09'
+    });
+  };
+}
 
 /***/ })
 /******/ ]);
