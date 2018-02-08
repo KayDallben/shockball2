@@ -1,8 +1,17 @@
 @import "./components/main/main.less";
+@import "./components/navigation/navigation.less";
 @import "./components/topHeader/topHeader.less";
+
+
+//variables
+@menuBackground: rgba(0,0,0,0.2);
+@menuBorder: 1px solid rgba(0,0,0,0.2);
+@fontFamily: Rubik, Arial, serif;
+@transition: all .2s ease-in-out;
 
 html, body, sim {
   height:100%;
+  font-family: @fontFamily;
 }
 .wrapper {
   height:100%;
@@ -52,6 +61,25 @@ sim > div {
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+
+//globals
+
+.button {
+  width: auto;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 5px;
+  background-color: #397297;
+  color: #fff;
+  transition: @transition;
+  border-radius: 4px;
+  &:hover {
+    cursor: pointer;
+    background-color: #1C76B0;
+    transition: @transition;
+  }
+}
+
 
 
 /* timeline section  */

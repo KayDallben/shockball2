@@ -4,9 +4,11 @@ export const mainComponent = {
   // `,
   template: `
     <div class="main-wrapper" back-radius="0" back-opacity="1" back-img="{{mainCtrl.background}}">
-      <div class="overlay"></div>  
-      <top-header></top-header>
-      <navigation></navigation>
+      <div class="content-wrapper">
+        <div class="overlay"></div>
+        <top-header></top-header>
+        <navigation></navigation>
+      </div>
     </div>
   `,
   bindings: {

@@ -1,13 +1,15 @@
+const moment = require('moment')
+
 export const topHeaderComponent = {
   template: `
     <div class="header-wrapper">
       <div class="team-info">
         <div class="team-logo" back-opacity="1" back-img="{{topHeaderCtrl.team.teamLogo}}"></div>
         <div class="team-longname">
-          <div class="team-locale">{{::topHeaderCtrl.team.teamLocale}}</div>
           <div class="team-name">{{::topHeaderCtrl.team.teamName}}</div>
+          <div class="team-locale">{{::topHeaderCtrl.team.teamLocale}}</div>
+          <div class="team-edit button" ng-if="topHeaderCtrl.isManager">Edit</div>
         </div>
-        <div class="team-edit" ng-if="topHeaderCtrl.isManager">Edit</div>
       </div>
       <div class="shockball-logo-holder">
         <div class="shockball-logo" back-opacity="1" back-img="{{topHeaderCtrl.shockballLogo}}"></div>
@@ -19,8 +21,8 @@ export const topHeaderComponent = {
         </div>
         <div class="upcoming-content">
           <div class="upcoming-team">
-            <div class="upcoming-team-logo" back-opacity="1" back-img="{{topHeaderCtrl.teamName}}"></div>
-            <div class="upcoming-team-name">{{::topHeaderCtrl.teamLocale}} {{::topHeaderCtrl.teamName}}</div>
+            <div class="upcoming-team-logo" back-opacity="1" back-img="{{topHeaderCtrl.upcomingMatch.teamLogo}}"></div>
+            <div class="upcoming-team-name">{{::topHeaderCtrl.upcomingMatch.teamLocale}} {{::topHeaderCtrl.upcomingMatch.teamName}}</div>
           </div>
           <div class="countdown">{{::topHeaderCtrl.countdown}}</div>
         </div>
@@ -43,7 +45,7 @@ export const topHeaderComponent = {
         teamLocale: 'Kashyyyk',
         teamName: 'Rangers'
       }
-      this.countdown = new Date().toString()
+      this.countdown = moment().format("MMMM Do YYYY, h:mm a ZZ");
       this.shockballLogo = './img/shockballLogo.png'
       this.isManager = true
     }
