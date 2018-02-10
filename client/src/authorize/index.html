@@ -64,14 +64,19 @@
           "url": url + "api/login?authorization_code=" + authCode,
           "method": "GET"
         }
+        console.log('settings from client are:'); //eslint-disable-line no-console
+        console.log(settings); //eslint-disable-line no-console
   
         $.ajax(settings).done(function (response) {
+          console.log('response from client swc get Token is'); //eslint-disable-line no-console
+          console.log(response); //eslint-disable-line no-console
           sessionStorage.setItem('swcAccessToken', response.access_token)
           sessionStorage.setItem('swcAccessTokenExpiresIn', response.expires_in)
           sessionStorage.setItem('swcRefreshToken', response.refresh_token)
           returnToHome()
         }).fail(function(error) {
-          console.log(error);
+          console.log('error from client swc getToken is'); //eslint-disable-line no-console
+          console.log(error); eslint-disable-line
         });
       }
 

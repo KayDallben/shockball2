@@ -27,7 +27,7 @@ function getPlayerUid(token) {
 }
 
 function getAccessToken(authCode) {
-  return axios({
+  const request = {
     url: 'http://www.swcombine.com/ws/oauth2/token/',
     method: 'POST',
     data: qs.stringify({
@@ -41,9 +41,15 @@ function getAccessToken(authCode) {
     headers: {
       'Accept': 'application/json'
     }
-  }).then(response => {
+  }
+  console.log(request) //eslint-disable-line no-console
+  return axios(request).then(response => {
+    console.log('response from swc getToken is') //eslint-disable-line no-console
+    console.log(response) //eslint-disable-line no-console
     return response
   }).catch(error => {
+    console.log('response from swc getToken error is') //eslint-disable-line no-console
+    console.log(error) //eslint-disable-line no-console
     const swcError = new Error(error.message)
     return swcError
   })
