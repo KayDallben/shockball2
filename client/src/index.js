@@ -14,11 +14,30 @@ import { topHeaderComponent } from './components/topHeader/topHeader.component'
 import { navigationComponent } from './components/navigation/navigation.component'
 import DataService from './services/data'
 import BackgroundImage from './directives/backgroundImage'
+import AuthService from './services/auth'
+
 
 angular.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-round-progressbar', 'rzModule'])
-.service('data', DataService)
-.component('sim', simComponent)
-.component('main', mainComponent)
-.component('topHeader', topHeaderComponent)
-.component('navigation', navigationComponent)
-.directive('backImg', BackgroundImage)
+  .service('auth', AuthService)
+  .run(['auth', function(auth) {
+    const hasAccessToken = auth.hasToken()
+    const hasAuthCode = auth.hasAuthCode()
+    if (hasAccessToken) {
+      //all done logging in
+      auth.getUserInfo().then(function(results) {
+        console.log('player logged in is: ')
+        console.log(results)
+      })
+    } else if (!hasAccessToken && hasAccessToken) {
+      //has auth code but needs access token
+    } else if (!hasAccessToken && !hasAuthCode) {
+      //needs to login for first time
+      auth.sendToLogin();
+    }
+  }])
+  .service('data', DataService)
+  .component('sim', simComponent)
+  .component('main', mainComponent)
+  .component('topHeader', topHeaderComponent)
+  .component('navigation', navigationComponent)
+  .directive('backImg', BackgroundImage)

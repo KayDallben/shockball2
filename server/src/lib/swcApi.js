@@ -1,14 +1,16 @@
 //third party
 import axios from 'axios'
 import qs from 'qs'
+
 if (!process.env.FIREBASE_DATABASE_URL) {
   const serviceAccount = require('../../../firebase-security.json') //eslint-disable-line no-unused-vars
 }
+
 if (!process.env.SWC_CLIENT_SECRET) {
   const swcSecurity = require('../../../swc-security.json')
-  process.env.SWC_CLIENT_SECRET = swcSecurity.swc_client_secret
-  process.env.SWC_CLIENT_ID = swcSecurity.swc_client_id
-  process.env.SWC_REDIRECT_URI = swcSecurity.swc_redirect_uri
+  process.env.SWC_CLIENT_SECRET = swcSecurity.SWC_CLIENT_SECRET
+  process.env.SWC_CLIENT_ID = swcSecurity.SWC_CLIENT_ID
+  process.env.SWC_REDIRECT_URI = swcSecurity.SWC_REDIRECT_URI
 }
 
 function getPlayerUid(token) {
