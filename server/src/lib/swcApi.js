@@ -42,14 +42,9 @@ function getAccessToken(authCode) {
       'Accept': 'application/json'
     }
   }
-  console.log(request) //eslint-disable-line no-console
   return axios(request).then(response => {
-    console.log('response from swc getToken is') //eslint-disable-line no-console
-    console.log(response) //eslint-disable-line no-console
     return response
   }).catch(error => {
-    console.log('response from swc getToken error is') //eslint-disable-line no-console
-    console.log(error) //eslint-disable-line no-console
     const swcError = new Error(error.message)
     return swcError
   })
