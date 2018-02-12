@@ -13,13 +13,14 @@ export default class Auth {
 
   getUserInfo() {
     if (this.currentUser !== null) {
-      return this.currentUser
+      return this.$q.when(this.currentUser)
     } else {
       return this.fetchUserInfo()
     }
   }
 
   fetchUserInfo() {
+    const that = this;
     return this.$http({
         method: 'GET',
         url: './api/profile',
@@ -27,6 +28,7 @@ export default class Auth {
           access_token: sessionStorage.getItem('swcAccessToken')
         }
       }).then(function(results) {
+        that.currentUser = results;
         return results
       }).catch(function(error) {
         return error

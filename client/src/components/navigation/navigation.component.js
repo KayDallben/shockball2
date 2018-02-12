@@ -1,11 +1,11 @@
 export const navigationComponent = {
   template: `
     <div class="nav-wrapper">
-      <div>
+      <div ui-sref="main">
         <div class="title-icon fa fa-user"></div>
         <div class="title">Me</div>
       </div>
-      <div>
+      <div ui-sref="squad">
         <div class="title-icon fa fa-users"></div>
         <div class="title">Squad</div>
       </div>
