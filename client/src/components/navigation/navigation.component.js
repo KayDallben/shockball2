@@ -1,7 +1,7 @@
 export const navigationComponent = {
   template: `
     <div class="nav-wrapper">
-      <div ui-sref="main">
+      <div ui-sref="me">
         <div class="title-icon fa fa-user"></div>
         <div class="title">Me</div>
       </div>
