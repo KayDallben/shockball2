@@ -9,6 +9,7 @@ import angularSlider from 'angularjs-slider'
 import css from './app.less'
 
 //import angular app
+import { rootComponent } from './components/root/root.component'
 import { mainComponent } from './components/main/main.component'
 import { simComponent } from './components/sim/sim.component'
 import { topHeaderComponent } from './components/topHeader/topHeader.component'
@@ -22,38 +23,29 @@ import AuthService from './services/auth'
 
 angular.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-round-progressbar', 'rzModule', 'ui.router'])
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-    $stateProvider.state('main', {
+    $stateProvider.state('app', {
+      abstract: true,
+      resolve: { testVar: () => 'This is the test variable' }
+    }).state('main', {
+      parent: 'app',
+      views: {
+        'root@': 'main'
+      }
+    }).state('me', {
+      parent: 'main',
       url: '/',
       views: {
-        '': {
-          component: 'main'
-        },
-        'topNav@main': {
-          component: 'topHeader'
-        },
-        'navigation@main': {
-          component: 'navigation'
-        },
-        'container@main': {
-          component: 'player'
-        }
+        topNav: 'topHeader',
+        navigation: 'navigation',
+        container: 'player'
       }
-    })
-    .state('squad', {
+    }).state('squad', {
       url: '/squad',
+      parent: 'main',
       views: {
-        '': {
-          component: 'main'
-        },
-        'topNav@squad': {
-          component: 'topHeader'
-        },
-        'navigation@squad': {
-          component: 'navigation'
-        },
-        'container@squad': {
-          component: 'squad'
-        }
+        topNav: 'topHeader',
+        navigation: 'navigation',
+        container: 'squad'
       }
     })
 
@@ -75,6 +67,7 @@ angular.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-r
   }])
   .service('auth', AuthService)
   .service('data', DataService)
+  .component('root', rootComponent)
   .component('sim', simComponent)
   .component('main', mainComponent)
   .component('topHeader', topHeaderComponent)

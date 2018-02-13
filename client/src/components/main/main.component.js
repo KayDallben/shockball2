@@ -1,14 +1,11 @@
 export const mainComponent = {
-  // template: `
-	// 	<sim></sim>
-  // `,
   template: `
     <div class="main-wrapper" back-radius="0" back-opacity="1" back-img="{{mainCtrl.background}}">
       <div class="content-wrapper">
         <div class="overlay"></div>
-        <div ui-view="topNav"></div>
-        <div ui-view="navigation"></div>
-        <div ui-view="container"></div>
+        <ui-view name="topNav"></ui-view>
+        <ui-view name="navigation"></ui-view>
+        <ui-view name="container"></ui-view>
       </div>
     </div>
   `,
