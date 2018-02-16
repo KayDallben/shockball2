@@ -1,0 +1,124 @@
+#!/usr/bin/env node
+
+const admin = require('firebase-admin')
+let serviceAccount
+if (!process.env.FIREBASE_DATABASE_URL) {
+  serviceAccount = require('../firebase-security.json')
+}
+
+admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: 'https://swc-shockball3.firebaseio.com/'
+})
+
+let db = admin.firestore()
+
+async function init() {
+    const players = await getPlayers()
+    const playerCaps = await getPlayerCaps()
+    const playersWithCaps = mapDataAndCaps(players, playerCaps)
+    for(const player of playersWithCaps) {
+        const playerToSave = trainPlayer(player)
+        await updatePlayer(playerToSave)
+    }
+}
+
+async function getPlayers() {
+    return db.collection('players').get().then((snapshot) => {
+        let players = []
+        snapshot.forEach((doc) => {
+            players.push(doc.data())
+        })
+        return players
+    })
+}
+
+async function getPlayerCaps() {
+    return db.collection('playerCaps').get().then((snapshot) => {
+        let playerCaps = []
+        snapshot.forEach((doc) => {
+            playerCaps.push(doc.data())
+        })
+        return playerCaps
+    })
+}
+
+function mapDataAndCaps(players, playerCaps) {
+    let playersPlusCaps = []
+    for (var player of players) {
+        let playerWithCaps = {}
+        Object.assign(playerWithCaps, player)
+        for (var playerCap of playerCaps) {
+            if (player.createdAsUid === playerCap.createdAsUid) {
+                playerWithCaps.blockingCap = playerCap.blocking
+                playerWithCaps.throwingCap = playerCap.throwing
+                playerWithCaps.passingCap = playerCap.passing
+                playerWithCaps.enduranceCap = playerCap.endurance
+                playerWithCaps.toughnessCap = playerCap.toughness
+                playerWithCaps.visionCap = playerCap.vision
+            }
+        }
+        playersPlusCaps.push(playerWithCaps)
+    }
+    return playersPlusCaps
+}
+
+
+function trainPlayer(player) {
+    //check for training regimen
+    if (player.regimen === 'wing') {
+        // primary skill passing, secondary endurance
+        player.blocking -= .25
+        player.throwing -= .25
+        player.passing += 1
+        player.endurance += .5
+        player.toughness -= .25
+        player.vision -= .25
+        player.morale += 1
+        player.fatigue -= 1
+        player.leadership += .25
+    } else if (player.regimen === 'guard') {
+        // primary skill blocking, secondary toughness
+        player.blocking += 1
+        player.throwing -= .25
+        player.passing -= .25
+        player.endurance -= .25
+        player.toughness += .5
+        player.vision -= .25
+        player.morale += 1
+        player.fatigue -= 1
+        player.leadership += .25
+    } else if (player.regimen === 'center') {
+        // primary skill throwing, secondary vision
+        player.blocking -= .25 
+        player.throwing += 1
+        player.passing -= .25
+        player.endurance -= .25
+        player.toughness -= .25
+        player.vision += .5
+        player.morale += 1
+        player.fatigue -= 1
+        player.leadership += .25
+    } else {
+        // no training selected
+        // all skills suffer .25 decay
+        player.blocking -= .25 
+        player.throwing -= .25
+        player.passing -= .25
+        player.endurance -= .25
+        player.toughness -= .25
+        player.vision -= .25
+        player.morale -= .25
+        player.fatigue += 1
+        player.leadership -= 1
+    }
+    //we reset the regimen to require daily picking of training
+    player.regimen = null
+    return player
+}
+
+async function updatePlayer(player) {
+    return db.collection('players').doc(player.createdAsUid).set(player)
+}
+
+init()
