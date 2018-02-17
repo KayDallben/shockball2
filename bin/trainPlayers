@@ -94,54 +94,71 @@ function mapDataAndCaps(players, playerCaps) {
     return playersPlusCaps
 }
 
+function decrement(valueToChange, amount) {
+    const testValue = valueToChange - amount
+    if (testValue <= 0) {
+        return 0
+    } else {
+        return testValue
+    }
+}
+
+function increment(valueToChange, amount) {
+    const testValue = valueToChange + amount
+    if (testValue >= 100) {
+        return 100
+    } else {
+        return testValue
+    }
+}
 
 function trainPlayer(player) {
     //check for training regimen
     if (player.regimen === 'wing') {
         // primary skill passing, secondary endurance
-        player.blocking -= .25
-        player.throwing -= .25
-        player.passing += 1
-        player.endurance += .5
-        player.toughness -= .25
-        player.vision -= .25
-        player.morale += 1
-        player.fatigue += 1
-        player.leadership += .25
+        player.blocking = decrement(player.blocking, .25)
+        player.throwing = decrement(player.throwing, .25)
+        player.passing = increment(player.passing, 1)
+        player.endurance = increment(player.endurance, .5)
+        player.toughness = decrement(player.toughness, .25)
+        player.vision = decrement(player.vision, .25)
+        player.morale = increment(player.morale, 1)
+        player.fatigue = increment(player.fatigue, 1)
+        player.leadership = increment(player.leadership, .25)
     } else if (player.regimen === 'guard') {
         // primary skill blocking, secondary toughness
-        player.blocking += 1
-        player.throwing -= .25
-        player.passing -= .25
-        player.endurance -= .25
-        player.toughness += .5
-        player.vision -= .25
-        player.morale += 1
-        player.fatigue += 1
-        player.leadership += .25
+        player.blocking = increment(player.blocking, 1)
+        player.throwing = decrement(player.throwing, .25)
+        player.passing = decrement(player.passing, .25)
+        player.endurance = decrement(player.endurance, .25)
+        player.toughness = increment(player.toughness, .5)
+        player.vision = decrement(player.vision, .25)
+        player.morale = increment(player.morale, 1)
+        player.fatigue = increment(plaery.fatigue, 1)
+        player.leadership = increment(player.leadership, .25)
     } else if (player.regimen === 'center') {
         // primary skill throwing, secondary vision
-        player.blocking -= .25 
-        player.throwing += 1
-        player.passing -= .25
-        player.endurance -= .25
-        player.toughness -= .25
-        player.vision += .5
-        player.morale += 1
-        player.fatigue += 1
-        player.leadership += .25
+        player.blocking = decrement(player.blocking, .25) 
+        player.throwing = increment(player.throwing, 1)
+        player.passing = decrement(player.passing, .25)
+        player.endurance = decrement(player.endurance, .25)
+        player.toughness = decrement(player.toughness, .25)
+        player.vision = increment(player.vision, .5)
+        player.morale = increment(player.morale, 1)
+        player.fatigue = increment(player.fatigue, 1)
+        player.leadership = increment(player.leadership, .25)
     } else {
         // no training selected
         // all skills suffer .25 decay
-        player.blocking -= .25 
-        player.throwing -= .25
-        player.passing -= .25
-        player.endurance -= .25
-        player.toughness -= .25
-        player.vision -= .25
-        player.morale -= .25
-        player.fatigue -= 1
-        player.leadership -= 1
+        player.blocking = decrement(player.blocking, .25) 
+        player.throwing = decrement(player.throwing, .25)
+        player.passing = decrement(player.passing, .25)
+        player.endurance = decrement(player.endurance, .25)
+        player.toughness = decrement(player.toughness, .25)
+        player.vision = decrement(player.vision, .25)
+        player.morale = decrement(player.morale, .25)
+        player.fatigue = decrement(player.fatigue, 1)
+        player.leadership = decrement(player.leadership, 1)
     }
     //we reset the regimen to require daily picking of training
     player.regimen = null
