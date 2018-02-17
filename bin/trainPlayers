@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const admin = require('firebase-admin')
-const { performance } = require('perf_hooks')
 const FieldValue = admin.firestore.FieldValue
 
 let serviceAccount
