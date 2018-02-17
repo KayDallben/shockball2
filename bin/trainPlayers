@@ -3,13 +3,23 @@
 const admin = require('firebase-admin')
 let serviceAccount
 if (!process.env.FIREBASE_DATABASE_URL) {
-  serviceAccount = require('../firebase-security.json')
+    serviceAccount = require('../firebase-security.json')
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: 'https://swc-shockball3.firebaseio.com/'
+    })
+} else {
+    admin.initializeApp({
+        credential: admin.credential.cert({
+            'projectId': process.env.FIREBASE_PROJECT_ID,
+            'clientEmail': process.env.FIREBASE_CLIENT_EMAIL,
+            'privateKey': process.env.FIREBASE_PRIVATE_KEY,
+        }),
+        databaseURL: process.env.FIREBASE_DATABASE_URL
+    })
 }
 
-admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: 'https://swc-shockball3.firebaseio.com/'
-})
+
 
 let db = admin.firestore()
 
@@ -75,7 +85,7 @@ function trainPlayer(player) {
         player.toughness -= .25
         player.vision -= .25
         player.morale += 1
-        player.fatigue -= 1
+        player.fatigue += 1
         player.leadership += .25
     } else if (player.regimen === 'guard') {
         // primary skill blocking, secondary toughness
@@ -86,7 +96,7 @@ function trainPlayer(player) {
         player.toughness += .5
         player.vision -= .25
         player.morale += 1
-        player.fatigue -= 1
+        player.fatigue += 1
         player.leadership += .25
     } else if (player.regimen === 'center') {
         // primary skill throwing, secondary vision
@@ -97,7 +107,7 @@ function trainPlayer(player) {
         player.toughness -= .25
         player.vision += .5
         player.morale += 1
-        player.fatigue -= 1
+        player.fatigue += 1
         player.leadership += .25
     } else {
         // no training selected
@@ -109,11 +119,19 @@ function trainPlayer(player) {
         player.toughness -= .25
         player.vision -= .25
         player.morale -= .25
-        player.fatigue += 1
+        player.fatigue -= 1
         player.leadership -= 1
     }
     //we reset the regimen to require daily picking of training
     player.regimen = null
+    //clean up our cap props
+    delete player.blockingCap
+    delete player.throwingCap
+    delete player.passingCap
+    delete player.toughnessCap
+    delete player.visionCap
+    delete player.enduranceCap
+    
     return player
 }
 
