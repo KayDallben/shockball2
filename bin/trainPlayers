@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const admin = require('firebase-admin')
+const { performance } = require('perf_hooks')
 const FieldValue = admin.firestore.FieldValue
 
 let serviceAccount
@@ -26,7 +27,7 @@ if (!process.env.FIREBASE_DATABASE_URL) {
 let db = admin.firestore()
 
 async function init() {
-    const startTime = performance.now()
+    const startTime = new Date().getTime()
     try {
         const players = await getPlayers()
         const playerCaps = await getPlayerCaps()
@@ -35,20 +36,20 @@ async function init() {
             const playerToSave = trainPlayer(player)
             await updatePlayer(playerToSave)
         }
-        const endTime = performance.now()
+        const endTime = new Date().getTime()
         await recordCron('trained players', startTime, endTime)
     } catch (error) {
-        const endTime = performance.now()
+        const endTime = new Date().getTime()
         await recordCron('failed trained players', startTime, endTime, error)
     }
 
 }
 
 function recordCron(type, startTime, endTime, error) {
-    return db.collection('cronHistory').set({
+    return db.collection('cronHistory').add({
         completed: FieldValue.serverTimestamp(),
-        taskStartTime: startTime,
-        taskEndTime: endTime,
+        taskStartTime: new Date(startTime),
+        taskEndTime: new Date(endTime),
         type: type,
         error: error ? JSON.stringify(error) : null
     })
