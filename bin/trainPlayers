@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const admin = require('firebase-admin')
+const FieldValue = admin.firestore.FieldValue
+
 let serviceAccount
 if (!process.env.FIREBASE_DATABASE_URL) {
     serviceAccount = require('../firebase-security.json')
@@ -24,13 +26,32 @@ if (!process.env.FIREBASE_DATABASE_URL) {
 let db = admin.firestore()
 
 async function init() {
-    const players = await getPlayers()
-    const playerCaps = await getPlayerCaps()
-    const playersWithCaps = mapDataAndCaps(players, playerCaps)
-    for(const player of playersWithCaps) {
-        const playerToSave = trainPlayer(player)
-        await updatePlayer(playerToSave)
+    const startTime = performance.now()
+    try {
+        const players = await getPlayers()
+        const playerCaps = await getPlayerCaps()
+        const playersWithCaps = mapDataAndCaps(players, playerCaps)
+        for(const player of playersWithCaps) {
+            const playerToSave = trainPlayer(player)
+            await updatePlayer(playerToSave)
+        }
+        const endTime = performance.now()
+        await recordCron('trained players', startTime, endTime)
+    } catch (error) {
+        const endTime = performance.now()
+        await recordCron('failed trained players', startTime, endTime, error)
     }
+
+}
+
+function recordCron(type, startTime, endTime, error) {
+    return db.collection('cronHistory').set({
+        completed: FieldValue.serverTimestamp(),
+        taskStartTime: startTime,
+        taskEndTime: endTime,
+        type: type,
+        error: error ? JSON.stringify(error) : null
+    })
 }
 
 async function getPlayers() {
@@ -124,6 +145,7 @@ function trainPlayer(player) {
     }
     //we reset the regimen to require daily picking of training
     player.regimen = null
+    player.lastUpdated = FieldValue.serverTimestamp()
     //clean up our cap props
     delete player.blockingCap
     delete player.throwingCap
