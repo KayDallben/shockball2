@@ -43,7 +43,7 @@
       }
     ],
     "no-console": [
-      "error"
+      "warn"
     ],
     "handle-callback-err": [
       "error"
