@@ -15,7 +15,7 @@ export default class Record {
 
     player.opposingActorUid = player.opposingActorUid ? player.opposingActorUid : 'somebody'
     player.opposingActorName = player.opposingActorName ? player.opposingActorName : 'somebody'
-    
+
     this.records.push({
       actorUid: player.createdAsUid,
       actorName: player.name,
@@ -34,7 +34,7 @@ export default class Record {
   }
 
   getCommentatorText(player, gameEvent) {
-    switch(gameEvent) {
+    switch (gameEvent) {
       case 'tackles ball':
         return this.pickRandomTackleBall()
         break;
@@ -73,7 +73,7 @@ export default class Record {
       'roughs up the opponent for the ball',
       'deftly snipes the ball from the opposition!'
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomTacklePlayer(player) {
@@ -84,7 +84,7 @@ export default class Record {
       `topples ${player.opposingActorName} cleanly to ground`,
       `wipes the floor with ${player.opposingActorName}`
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerRun() {
@@ -95,7 +95,7 @@ export default class Record {
       'is moving the ball nicely along',
       'carries the ball and ploughs through the opposition!'
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerTryScore() {
@@ -106,7 +106,7 @@ export default class Record {
       'blasts one towards the opposition goal!',
       'goes for the point, will it happen?'
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerGoal(player) {
@@ -118,7 +118,7 @@ export default class Record {
       `${player.opposingActorName} couldn't stop the goal, mark one for ${player.teamName}!`,
       `slams the shockball past ${player.opposingActorName} for the score!`
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerGoalBlocked(player) {
@@ -128,7 +128,7 @@ export default class Record {
       `blocks ${player.opposingActorName}'s shot with ease`,
       `manages to get in front of a heater from ${player.opposingActorName}`
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerTryPass() {
@@ -138,7 +138,7 @@ export default class Record {
       'sends a firm throw to a teammate',
       'tosses the ball'
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   pickRandomPlayerPassBlocked(player) {
@@ -148,7 +148,7 @@ export default class Record {
       `blocks ${player.opposingActorName}'s pass with ease`,
       `${player.opposingActorName}'s pass is easily batted away`
     ]
-    return phrases[Math.floor(Math.random()*phrases.length)];
+    return phrases[Math.floor(Math.random() * phrases.length)];
   }
 
   reset() {

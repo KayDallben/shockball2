@@ -74,7 +74,7 @@ export default class Challenge {
       player.tackleScore = player.toughness + chance.rpg('2d6', {sum:true})
     })
     const highestTackleScore = Math.max.apply(Math, this.tackleBall.map(function(player) {
-      return player.tackleScore;
+      return player.tackleScore
     }))
     const winningPlayer = this.tackleBall.find(function(player) {
       return player.tackleScore === highestTackleScore
@@ -125,13 +125,11 @@ export default class Challenge {
       return
     }
     const attackingSide = shootingPlayer.homeGoalSide === 'left' ? 'right' : 'left'
-    
     //this is the shot attempt, make a record
     this.record.add(shootingPlayer, 'shoots', this.board.gameTime)
-    
     //we now need to calculate if he scored or missed/was blocked
     // we do a blanket probability of 60/30/10 for blocking by Guard then Wing and then Center.
-    var probability = Math.random()
+    let probability = Math.random()
     let opposingPlayer = undefined
     if (probability < 0.4) {
       // Guard tries block action and if he fails, shooter is able to shoot
@@ -139,12 +137,12 @@ export default class Challenge {
         return player.homeGoalSide === attackingSide && player.role === 'Guard'
       })
     } else if (probability < 0.6) {
-      // Wing tries block action and if he fails, shooter is able to shoot 
+      // Wing tries block action and if he fails, shooter is able to shoot
       opposingPlayer = this.playerTryScore.find(function(player) {
         return player.homeGoalSide === attackingSide && player.role === 'Wing'
       })
     } else {
-      // Center tries block action and if he fails, shooter is able to shoot 
+      // Center tries block action and if he fails, shooter is able to shoot
       opposingPlayer = this.playerTryScore.find(function(player) {
         return player.homeGoalSide === attackingSide && player.role === 'Center'
       })
@@ -157,7 +155,7 @@ export default class Challenge {
     }
 
     const shootingScore = shootingPlayer.throwing + shootingPlayer.vision + chance.rpg('2d6', {sum:true})
-    const blockingScore = opposingPlayer.blocking + opposingPlayer.vision + chance.rpg('2d6', {sum:true}) 
+    const blockingScore = opposingPlayer.blocking + opposingPlayer.vision + chance.rpg('2d6', {sum:true})
 
     if (shootingScore > blockingScore || shootingPlayer === opposingPlayer) {
       this.score(shootingPlayer, opposingPlayer, theBall)
@@ -185,7 +183,7 @@ export default class Challenge {
 
     //TODO make much better determination here!
     const attackingSide = passingPlayer.homeGoalSide === 'left' ? 'right' : 'left'
-    var probability = Math.random()
+    let probability = Math.random()
     let opposingPlayer = undefined
     if (probability < 0.4) {
       // Guard tries block action and if he fails, shooter is able to shoot
@@ -193,12 +191,12 @@ export default class Challenge {
         return player.homeGoalSide === attackingSide && player.role === 'Guard'
       })
     } else if (probability < 0.6) {
-      // Wing tries block action and if he fails, shooter is able to shoot 
+      // Wing tries block action and if he fails, shooter is able to shoot
       opposingPlayer = this.playerTryPass.find(function(player) {
         return player.homeGoalSide === attackingSide && player.role === 'Wing'
       })
     } else {
-      // Center tries block action and if he fails, shooter is able to shoot 
+      // Center tries block action and if he fails, shooter is able to shoot
       opposingPlayer = this.playerTryPass.find(function(player) {
         return player.homeGoalSide === attackingSide && player.role === 'Center'
       })
@@ -255,7 +253,7 @@ export default class Challenge {
         }
       }
     } else {
-      console.log('in this player run else')
+      // console.error('in this player run else')
     }
   }
 

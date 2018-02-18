@@ -91,7 +91,7 @@ export const simComponent = {
               }" class="play">
               <div class="eventTime">{{::event.recordGameTime}}'</div>
               <div class="event-info">
-                <div class="name">{{::event.actorFirstName}}</div>
+                <div class="name">{{::event.actorName}}</div>
                 <div class="middleDot">&middot;</div>
                 <div class="action">{{::event.recordType}}</div>
               </div>

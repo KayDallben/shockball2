@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+
+const admin = require('firebase-admin')
+const sim = require('../server/dist/sim')
+console.log(sim)
+const FieldValue = admin.firestore.FieldValue
+
+let serviceAccount
+if (!process.env.FIREBASE_DATABASE_URL) {
+    serviceAccount = require('../firebase-security.json')
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: 'https://swc-shockball3.firebaseio.com/'
+    })
+} else {
+    admin.initializeApp({
+        credential: admin.credential.cert({
+            'projectId': process.env.FIREBASE_PROJECT_ID,
+            'clientEmail': process.env.FIREBASE_CLIENT_EMAIL,
+            'privateKey': process.env.FIREBASE_PRIVATE_KEY,
+        }),
+        databaseURL: process.env.FIREBASE_DATABASE_URL
+    })
+}
+
+
+
+let db = admin.firestore()
+
+async function init() {
+    const startTime = new Date().getTime()
+    try {
+        // get all fixtures
+        const fixtures = await getFixtures()
+        // find which fixtures are dated to happen today
+        const todaysFixtures = getTodaysMatches(fixtures)
+        // for each fixture, simulate the match
+        for(const match of todaysFixtures) {
+            // get home and away team data and player data
+            const matchData = await getMatchData(match)
+            sim.runMatch(matchData)
+        }
+        const endTime = new Date().getTime()
+        // await recordCron('played matches', startTime, endTime)
+    } catch (error) {
+        console.log(error)
+        const endTime = new Date().getTime()
+        // await recordCron('failed played matches', startTime, endTime, error)
+    }
+
+}
+
+function recordCron(type, startTime, endTime, error) {
+    return db.collection('cronHistory').add({
+        completed: FieldValue.serverTimestamp(),
+        taskStartTime: new Date(startTime),
+        taskEndTime: new Date(endTime),
+        type: type,
+        error: error ? JSON.stringify(error) : null
+    })
+}
+
+function getTodaysMatches(fixtures) {
+    let matchesToRun = []
+    const todayDate = new Date().toDateString()
+    for(const fixture of fixtures) {
+        const fixtureDate = new Date(fixture.gameDate).toDateString()
+        if (fixtureDate === todayDate) {
+            matchesToRun.push(fixture)
+        }
+    }
+    return matchesToRun
+}
+
+async function getFixtures() {
+    return db.collection('fixtures').get().then((snapshot) => {
+        let fixtures = []
+        snapshot.forEach((doc) => {
+            fixtures.push(doc.data())
+        })
+        return fixtures
+    })
+}
+
+async function getMatchData(fixture) {
+    let matchData = {
+        homeTeam: {},
+        awayTeam: {}
+    }
+    matchData.homeTeam = await getTeamData(fixture.homeTeam)
+    matchData.awayTeam = await getTeamData(fixture.awayTeam)
+    matchData.homeTeam.players = await getTeamPlayers(fixture.homeTeam, matchData.homeTeam)
+    matchData.awayTeam.players = await getTeamPlayers(fixture.awayTeam, matchData.awayTeam)
+    return matchData
+}
+
+function getTeamData(teamUid) {
+    return db.collection('teams').doc(teamUid).get().then((doc) => {
+        return doc.data()
+    })
+}
+
+function getTeamPlayers(teamUid, teamData) {
+    return db.collection('players').where('teamUid', '==', teamUid).get().then((snapshot) => {
+        let players = []
+        snapshot.forEach((doc) => {
+            let player = doc.data()
+            player = decorateWithSimArtifacts(player, teamData)
+            players.push(player)
+        })
+        return players
+    })
+}
+
+function decorateWithSimArtifacts(player, team) {
+    player.teamName = team.teamName
+    player.teamPicUrl = team.teamPicUrl
+    return player
+}
+
+init()

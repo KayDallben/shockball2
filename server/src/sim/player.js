@@ -1,4 +1,6 @@
+import Chance from 'chance'
 import Util from './util'
+const chance = new Chance()
 const util = new Util()
 
 export default class Player {
@@ -27,14 +29,14 @@ export default class Player {
         rightPlayers: []
       }
     } else {
-      throw new Error('Cannot create Player: incorrect param data types');
+      throw new Error('Cannot create Player: incorrect param data types')
     }
   }
 
   update() {
     this.applyEffects()
     this.think() //should set player's perception of world model via player's skills
-    this.takeAction() 
+    this.takeAction()
   }
 
   applyEffects() {
@@ -90,7 +92,7 @@ export default class Player {
       // for now the goalPosition (default 5) minus the goalProximity must be less than the goal resistence (default 2)
       const thinksHasScoreChance = this.analyzeCanScore(ball, pitch)
       if (thinksHasScoreChance) {
-        this.tryScore(pitch, ball, board)
+        this.tryScore(pitch, board, ball)
         return
       } else {
         // so he doesn't think he can score, so now move to priority 2 action - getting ball closer to scoring via pass or run
@@ -99,7 +101,7 @@ export default class Player {
         if (thinksCanPass) {
           this.tryPass()
           return
-        } else { 
+        } else {
           this.tryRun(pitch, ball)
           return
         }
@@ -109,8 +111,8 @@ export default class Player {
     } else if (pitch.state === 'play_on' && ball.possessedBy !== null && ball.lastSideTouched !== this.homeGoalSide) {
       // Ball is being carried by a player of other team
 
-      let thinksMoreLikelyToShoot = null;
-      let actionGuess = null;
+      let thinksMoreLikelyToShoot = null
+      let actionGuess = null
       if (this.homeGoalSide === 'right') {
         //Player first decides: will ball handler throw or run?
         actionGuess = this.analyzeNextAction(this.playerWorldModel.leftPlayers, ball)
@@ -195,7 +197,7 @@ export default class Player {
     }
   }
 
-  tryScore(pitch, ball, board) {
+  tryScore(pitch, board, ball) {
     this.challenge.addTryScore(this)
   }
 

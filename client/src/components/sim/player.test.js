@@ -117,9 +117,8 @@ test('should be defined', () => {
 
 // it('should take an id, first name, and last name to create a new Player', function () {
 //   var newPlayer = new Player(4, 'Bob', 'Smith');
-//   expect(newPlayer.uid).toBe(4);
-//   expect(newPlayer.firstName).toBe('Bob');
-//   expect(newPlayer.lastName).toBe('Smith');
+//   expect(newPlayer.createdAsUid).toBe(4);
+//   expect(newPlayer.name).toBe('Bob Smith');
 // });
 
 // it('should have a moveUp function', function () {
