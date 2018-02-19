@@ -22,10 +22,12 @@ export default class Main {
     this.Ball = Ball
     this.record = record
     this.counter = 0
+    this.db = null
   }
 
-  beginGame(framesPerSecond, maxGameTime) {
+  beginGame(framesPerSecond, maxGameTime, db) {
     if (util.getType(framesPerSecond) === '[object Number]') {
+      this.db = db
       challenge = new Challenge(this.record)
       this.fps = framesPerSecond
       this.maxGameTime = maxGameTime ? maxGameTime : this.maxGameTime
@@ -105,13 +107,36 @@ export default class Main {
     // console.log('counter is: ' + this.counter )
     if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
       this.stopSim = true
-      this.writeMatchRecords()
+      this.writeMatchRecords(this.world)
     }
   }
 
-  writeMatchRecords() {
-    console.log('match is over, lets write our records to the database here.  All match data should be: ')
-    console.log(this.record)
+  writeMatchRecords(world) {
+    // console.log(this.world)
+    this.savePlayerRecords(this.record.records)
+    this.saveTeamRecords(world)
+  }
+
+  saveTeamRecords(world) {
+    const gameResults = {
+      homeTeamScore: world.objects[1]['leftScore'],
+      homeTeamName: world.objects[1]['leftTeamName'],
+      awayTeamScore: world.objects[1]['rightScore'],
+      awayTeamName: world.objects[1]['rightTeamName'],
+      startTime: world.objects[1]['startTime']
+    }
+    this.db.collection('playedMatches').doc(this.matchData.fixtureId).set(gameResults)
+  }
+
+  savePlayerRecords(events) {
+    let batch = this.db.batch()
+    events.forEach(record => {
+      record.fixtureId = this.matchData.fixtureId
+      const ref = this.db.collection('events').doc()
+      batch.set(ref, record)
+    })
+
+    batch.commit()
   }
 
 }
