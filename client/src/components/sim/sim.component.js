@@ -139,7 +139,6 @@ export const simComponent = {
     startGameInterval() {
       this.stopGameInterval()
       this.gameInterval = this.interval(() => {
-        console.log(this.world[2]['goalProximity']);
         if (this.game.stopSim) {
           this.matchViewerRelativeTime = moment(this.world[1]['startTime']).format('MMMM Do YYYY, h:mm:ss')
           this.isRunning = false
