@@ -11,6 +11,7 @@ import css from './app.less'
 //import angular app
 import { rootComponent } from './components/root/root.component'
 import { mainComponent } from './components/main/main.component'
+import { simComponent } from './components/sim/sim.component'
 import { topHeaderComponent } from './components/topHeader/topHeader.component'
 import { playerComponent } from './components/player/player.component'
 import { squadComponent } from './components/squad/squad.component'
@@ -46,6 +47,12 @@ angular.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-r
         navigation: 'navigation',
         container: 'squad'
       }
+    }).state('sim', {
+      parent: 'app',
+      url: '/test',
+      views: {
+        'root@': 'sim'
+      }
     })
 
     $urlRouterProvider.otherwise('/');
@@ -67,6 +74,7 @@ angular.module('shockballGame', ['json-tree', 'luegg.directives', 'angular-svg-r
   .service('auth', AuthService)
   .service('data', DataService)
   .component('root', rootComponent)
+  .component('sim', simComponent)
   .component('main', mainComponent)
   .component('topHeader', topHeaderComponent)
   .component('navigation', navigationComponent)

@@ -3,7 +3,7 @@ const chance = new Chance()
 chance.mixin({
   'player': function(teamUid, teamName, teamPicUrl) {
     return {
-      uid: chance.guid(),
+      createdAsUid: chance.guid(),
       name: chance.first({ nationality: 'nl'}) + ' ' + chance.last({ nationality: 'nl'}),
       image: chance.avatar(),
       teamUid: teamUid,
