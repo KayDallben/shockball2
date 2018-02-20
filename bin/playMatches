@@ -40,11 +40,11 @@ async function init() {
             sim.runMatch(matchData, db)
         }
         const endTime = new Date().getTime()
-        // await recordCron('played matches', startTime, endTime)
+        await recordCron('played matches', startTime, endTime)
     } catch (error) {
         console.log(error)
         const endTime = new Date().getTime()
-        // await recordCron('failed played matches', startTime, endTime, error)
+        await recordCron('failed played matches', startTime, endTime, error)
     }
 
 }
