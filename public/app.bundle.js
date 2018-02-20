@@ -54090,8 +54090,8 @@ var simComponent = exports.simComponent = {
       this.gameInterval = null;
       this.world = this.game.world.objects;
       this.sliderOptions = {
-        floor: this.world[0]['goalPit']['left'],
-        ceil: this.world[0]['goalPit']['right'],
+        floor: -5,
+        ceil: 5,
         disabled: true
       };
       this.leftPlayers = this.game.world.leftPlayers;
@@ -54120,6 +54120,7 @@ var simComponent = exports.simComponent = {
 
         this.stopGameInterval();
         this.gameInterval = this.interval(function () {
+          console.log(_this.world[2]['goalProximity']);
           if (_this.game.stopSim) {
             _this.matchViewerRelativeTime = moment(_this.world[1]['startTime']).format('MMMM Do YYYY, h:mm:ss');
             _this.isRunning = false;
