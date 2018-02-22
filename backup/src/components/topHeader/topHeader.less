@@ -1,0 +1,119 @@
+top-header {
+  width:100%;
+  height: 135px;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 5px;
+  .header-wrapper {
+    height: 100%;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: @menuBackground;
+    border-radius: 4px;
+    border: @menuBorder;
+    > div {
+      height: 100%;  
+    }
+    .team-info {
+      flex:1;
+      .team-logo {
+        width: 110px;
+        height: 110px;
+        display: inline-block;
+        margin-left:5px;
+      }
+      .team-longname {
+        display: inline-block;
+        vertical-align: top;
+        width: calc(~'100% - 130px');
+        padding-left: 10px;
+        box-sizing: border-box;
+        padding-top: 15px;
+        .team-name {
+          font-size: 1.5em;
+          font-weight: 400;
+          color: #fff;
+          font-style: italic;
+        }
+        .team-locale {
+          font-size: 1.2em;
+          font-weight: 400;
+          color: #999;
+        }
+      }
+    }
+    .shockball-logo-holder {
+      flex:2;
+      text-align: center;
+      position: relative;
+      .shockball-logo {
+        width: 140px;
+        height: 140px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 10px;
+      }
+      .shockball-title {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 33px;
+        color: #fff;
+        font-size: 3em;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+    }
+    .upcoming-match-holder {
+      flex:1;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      max-width: 320px;
+      .header {
+        background-color: #0C93EB;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        padding: 3px;
+        color: #fff;
+      }
+      .upcoming-content {
+        height: 88px;
+        background-color: rgba(0,0,0,0.2);
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .upcoming-team {
+          flex:1;
+          .upcoming-team-logo {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
+            margin-left: 40px;
+          }
+          .upcoming-team-name {
+            color: #fff;
+            box-sizing: border-box;
+            padding-top: 4px;
+            padding-left: 7px;        
+          }
+        }
+        .countdown {
+          flex:1;
+          color: #999;
+        }
+      }
+    }
+  }
+}
+
