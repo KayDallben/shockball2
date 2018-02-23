@@ -1,0 +1,47 @@
+sim {
+  background-color: #F5F5F5;
+}
+
+sim > div {
+  background-image: url("./shockball2.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.main-wrapper {
+  height:100%;
+  .content-wrapper {
+    width: 80%;
+    margin: 0 auto;
+    max-width: 1200px;
+    min-width: 400px;
+    height: 100%;
+    .overlay {
+      position: absolute;
+      top: 0;
+      width:100%;
+      height: 100%;
+      left: 0;
+      z-index: 0;
+      &:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0) 0%,#356BA1 100%,rgba(255,255,255,1) 100%);
+        position: absolute;
+        top: 0; left: 0;
+      }
+    }
+    top-header {
+      position: relative;
+      z-index: 1;
+    }
+    navigation {
+      position: relative;
+      z-index: 1;
+    }
+  } 
+}
