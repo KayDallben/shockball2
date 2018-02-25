@@ -75,7 +75,7 @@ class TopBar extends React.Component {
 }
 
 TopBar.propTypes = {
-  'navItems': PropTypes.arrayOf(PropTypes.object),
+  'store': PropTypes.object,
 }
 
 export default TopBar

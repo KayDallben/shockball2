@@ -6,10 +6,12 @@ const routes = Router()
 import authCheck from '../lib/authCheck'
 import ProfileController from '../controllers/profileController'
 import LoginController from '../controllers/loginController'
+import TeamController from '../controllers/teamController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
   const loginController = new LoginController(logger)
+  const teamController = new TeamController(db, logger)
 
   /**
    * @swagger
@@ -21,6 +23,14 @@ export default (db, logger) => {
    *   Login:
    *     properties:
    *       authorization_code:
+   *         type: "string"
+   *   Team:
+   *     properties:
+   *       teamName:
+   *         type: "string"
+   *       teamPicUrl:
+   *         type: "string"
+   *       teamVenue:
    *         type: "string"
    */
 
@@ -80,6 +90,35 @@ export default (db, logger) => {
    */
   routes.get('/login', (req, res) => {
     loginController.listOne(req, res)
+  })
+
+    /**
+   * @swagger
+   * /api/teams/{id}:
+   *   x-swagger-router-controller: ../controllers/teamController
+   *   get:
+   *     tags:
+   *       - Team
+   *     description: Get team by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: team's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Team'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Team"
+   */
+  routes.get('/teams/:id', authCheck, (req, res) => {
+    teamController.listOne(req, res)
   })
 
   return routes

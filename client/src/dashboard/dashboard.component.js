@@ -1,29 +1,37 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
-import Card from '../card/card.component'
+
+import Player from '../player/player.component'
+import Squad from '../squad/squad.component'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
   }
 
   render() {
     return (
-      <div className="dashboard-wrapper">
-        <div>This is the dashboard component</div>
-        <ErrorBoundary title={'Card'}>
-          <Route path="/"
-            render={
-              () => <Card name={'testName'} id={4} {...{properties: [{'test': 'what'}]}} />
+      <ErrorBoundary title={'Dashboard'}>
+        <Switch>
+          <Route exact path='/' render={
+              () => <Player store={this.props.store} /> 
             }
           />
-        </ErrorBoundary>
-      </div>
+          <Route exact path='/squad' render={
+              () => <Squad store={this.props.store} /> 
+            }
+          />
+        </Switch>
+      </ErrorBoundary>
     )
   }
+}
+
+Dashboard.propTypes = {
+  'store': PropTypes.object
 }
 
 export default Dashboard

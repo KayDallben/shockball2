@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
+
 
 import ExtendableError from '../errors/ExtendableError'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
@@ -20,10 +21,13 @@ class Navigation extends React.Component {
       if (items) {
         domArray = items.map((item, index) => {
           const className = 'title-icon ' + item.icon
-          return <div key={index}>
-            <div className={className}></div>
-            <div className="title">{item.title}</div>
-          </div>
+          const linkPath = item.title === 'Me' ? '' : item.title.toLowerCase()
+          return <Link to={'/' + linkPath}>
+            <div key={index}>
+              <div className={className}></div>
+              <div className="title">{item.title}</div>
+            </div>
+          </Link>
         })
       }
       return domArray
