@@ -112,9 +112,8 @@ export default class Main {
   }
 
   writeMatchRecords(world) {
-    // console.log(this.world)
-    this.savePlayerRecords(this.record.records)
-    this.saveTeamRecords(world)
+    // this.savePlayerRecords(this.record.records)
+    // this.saveTeamRecords(world)
   }
 
   saveTeamRecords(world) {
