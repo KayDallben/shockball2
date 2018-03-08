@@ -72,11 +72,12 @@ function getTodaysMatches(fixtures) {
 }
 
 async function getFixtures() {
-    return db.collection('fixtures').get().then((snapshot) => {
+    return db.collection('fixtures').where('status', '==', 'pending').get().then((snapshot) => {
         let fixtures = []
         snapshot.forEach((doc) => {
             fixtures.push(doc.data())
         })
+        console.log(fixtures)
         return fixtures
     })
 }
