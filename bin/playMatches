@@ -77,7 +77,6 @@ async function getFixtures() {
         snapshot.forEach((doc) => {
             fixtures.push(doc.data())
         })
-        console.log(fixtures)
         return fixtures
     })
 }
