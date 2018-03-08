@@ -96,7 +96,9 @@ async function getMatchData(fixture) {
 
 function getTeamData(teamUid) {
     return db.collection('teams').doc(teamUid).get().then((doc) => {
-        return doc.data()
+        let team = doc.data()
+        team.id = teamUid
+        return team
     })
 }
 
