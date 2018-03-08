@@ -1,10 +1,10 @@
 import * as admin from 'firebase-admin'
 
 import Challenge from './challenge'
-// import BotGenerator from './botGenerator'
+import BotGenerator from './botGenerator'
 import Util from './util'
 
-// let botGenerator = new BotGenerator()
+let botGenerator = new BotGenerator()
 let challenge = null // will set once this.record is available
 const util = new Util()
 const FieldValue = admin.firestore.FieldValue
@@ -63,19 +63,23 @@ export default class Main {
         this.world.rightPlayers.push(playerToAdd)
       }
 
-      // for (var i = 0; i < 4; i++) {
-      //   const bot = botGenerator.create('-KnGp3lbMpZVvl1bGGvy', 'Kashyyyk Rangers', 'https://vignette1.wikia.nocookie.net/limmierpg/images/4/42/Rangers.jpg/revision/latest?cb=20140503184850')
-      //   const playerToAdd = new this.Player(bot, this.world, challenge, 'left')
-      //   this.world.register(playerToAdd)
-      //   this.world.leftPlayers.push(playerToAdd)
-      // }
+      if (this.matchData.homeTeam.players.length < 4) {
+        for (var i = this.matchData.homeTeam.players.length; i < 4; i++) {
+          const bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl)
+          const playerToAdd = new this.Player(bot, this.world, challenge, 'left')
+          this.world.register(playerToAdd)
+          this.world.leftPlayers.push(playerToAdd)
+        }
+      }
 
-      // for (var i = 0; i < 4; i++) {
-      //   const bot = botGenerator.create('-KnCepjY8BLF_0bcANzF', 'Abregado Gentlemen','http://www.brandcrowd.com/gallery/brands/thumbs/thumb14751184306802.jpg')
-      //   const playerToAdd = new this.Player(bot, this.world, challenge, 'right')
-      //   this.world.register(playerToAdd)
-      //   this.world.rightPlayers.push(playerToAdd)
-      // }
+      if (this.matchData.awayTeam.players.length < 4) {
+        for (var i = this.matchData.awayTeam.players.length; i < 4; i++) {
+          const bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl)
+          const playerToAdd = new this.Player(bot, this.world, challenge, 'right')
+          this.world.register(playerToAdd)
+          this.world.rightPlayers.push(playerToAdd)
+        }
+      }
 
       //start main game loop
       this.mainLoop()
