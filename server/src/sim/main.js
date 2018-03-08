@@ -1,3 +1,5 @@
+import * as admin from 'firebase-admin'
+
 import Challenge from './challenge'
 // import BotGenerator from './botGenerator'
 import Util from './util'
@@ -5,6 +7,7 @@ import Util from './util'
 // let botGenerator = new BotGenerator()
 let challenge = null // will set once this.record is available
 const util = new Util()
+const FieldValue = admin.firestore.FieldValue
 
 export default class Main {
   constructor(matchData, World, Player, Pitch, Board, Ball, record) {
@@ -39,7 +42,7 @@ export default class Main {
       this.world.register(pitch)
 
       //register scoreboard
-      const board = new this.Board(pitch, this.maxGameTime)
+      const board = new this.Board(this.matchData, pitch, this.maxGameTime)
       this.world.register(board)
 
       //register ball
@@ -112,8 +115,8 @@ export default class Main {
   }
 
   writeMatchRecords(world) {
-    // this.savePlayerRecords(this.record.records)
-    // this.saveTeamRecords(world)
+    this.savePlayerRecords(this.record.records)
+    this.saveTeamRecords(world)
   }
 
   saveTeamRecords(world) {
@@ -122,9 +125,11 @@ export default class Main {
       homeTeamName: world.objects[1]['leftTeamName'],
       awayTeamScore: world.objects[1]['rightScore'],
       awayTeamName: world.objects[1]['rightTeamName'],
-      startTime: world.objects[1]['startTime']
+      startTime: world.objects[1]['startTime'],
+      lastUpdated: FieldValue.serverTimestamp(),
+      status: 'complete'
     }
-    this.db.collection('playedMatches').doc(this.matchData.fixtureId).set(gameResults)
+    this.db.collection('fixtures').doc(this.matchData.fixtureId).update(gameResults)
   }
 
   savePlayerRecords(events) {
