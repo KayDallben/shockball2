@@ -1,7 +1,7 @@
 export default class Board {
-  constructor(pitch, maxGameTime) {
-    this.leftTeamName = '???'
-    this.rightTeamName = '???'
+  constructor(matchData, pitch, maxGameTime) {
+    this.leftTeamName = matchData.homeTeam.teamName || '???'
+    this.rightTeamName = matchData.awayTeam.teamName || '???'
     this.leftScore = 0
     this.rightScore = 0
     this.gameTime = 0

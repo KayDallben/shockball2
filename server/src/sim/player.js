@@ -125,7 +125,6 @@ export default class Player {
             this.tryBlockPass()
           }
         } else {
-          console.log('tackle tried from player prediction')
           this.tryTacklePlayer()
         }
       } else {
@@ -140,7 +139,6 @@ export default class Player {
             this.tryBlockPass()
           }
         } else {
-          console.log('tackle tried from player prediction')
           this.tryTacklePlayer()
         }
       }
