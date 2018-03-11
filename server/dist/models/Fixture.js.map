@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/models/Fixture.js"],"names":["listParams","object","keys"],"mappings":";;;;;;AAAA;;;;;;kBAEe;AACbA,cAAY,cAAIC,MAAJ,GAAaC,IAAb,CAAkB,EAAlB;AADC,C","file":"Fixture.js","sourcesContent":["import Joi from 'joi'\r\n\r\nexport default {\r\n  listParams: Joi.object().keys({})\r\n}"]}
