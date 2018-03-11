@@ -1,0 +1,55 @@
+.league-wrapper {
+    z-index: 1;
+    position: relative;
+    margin: 5px;
+    background: rgba(0,0,0, 0.5);
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0, 0.2);
+    color: #ffffff;
+    padding: 20px;
+    .fixture-set {
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+        border: 1px solid rgba(0,0,0, 0.9);
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        .header {
+            display: flex;
+            background-color: #0C93EB;
+            border-top-right-radius: 4px;
+            border-top-left-radius: 4px;
+            div {
+                flex: 1;
+                padding: 5px;
+                border-left: 1px solid #0f0f0f;
+                :first-child {
+                    border-left: 0px;
+                }
+            }
+        }
+        .row {
+            display: flex;
+            div {
+                flex: 1;
+                padding: 10px;
+                border-left: 1px solid #0f0f0f;
+                padding-left: 45px;
+                position: relative;
+                &:first-child {
+                    border-left: 0px;
+                }
+            }
+            &:nth-child(even) {
+                background: rgba(0,0,0, 0.5);
+            }
+        }
+        img {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            left: 8px;
+            top: 5px;
+        }
+    }
+}

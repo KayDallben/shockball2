@@ -5,6 +5,8 @@ import {
   useStrict
 } from 'mobx'
 import axios from 'axios'
+import moment from 'moment'
+
 const hostUrl = window.location.protocol + "//" + window.location.host + "/"
 
 useStrict(true)
@@ -40,6 +42,7 @@ class Store {
     image: ''
   }
   @observable currentUserTeam = {}
+  @observable fixtures = []
   @observable accessToken = sessionStorage.getItem('swcAccessToken')
   @observable authCode = sessionStorage.getItem("swcAuthorizationCode")
 
@@ -80,6 +83,29 @@ class Store {
   @action setUserTeam = (data) => {
     this.currentUserTeam = data
   }
+  @action setFixtures = (data) => {
+    this.fixtures = data
+  }
+  @action handleFixtureData = () => {
+    axios({
+      method: 'GET',
+      url: './api/fixtures',
+      params: {
+        access_token: this.accessToken
+      }
+    }).then(response => {
+      if (response.data) {
+        let fixtures = response.data
+        for (let fixture of fixtures) {
+          fixture.gameDate = moment(fixture.gameDate).format('L')
+        }
+        fixtures.sort(function(a,b){
+          return new Date(a.gameDate) - new Date(b.gameDate);
+        });
+        this.setFixtures(fixtures)
+      }
+    })
+  }
   @action setUserProfile = () => {
     //Managing Async tasks like ajax calls with Mobx actions
     axios({
@@ -90,7 +116,6 @@ class Store {
         access_token: this.accessToken
       }
     }).then(response => {
-      console.log(response.data)
       this.setUser(response.data)
       if (response.data.teamUid) {
         this.getUserTeam(response.data.teamUid)
