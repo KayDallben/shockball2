@@ -7,11 +7,13 @@ import authCheck from '../lib/authCheck'
 import ProfileController from '../controllers/profileController'
 import LoginController from '../controllers/loginController'
 import TeamController from '../controllers/teamController'
+import FixtureController from '../controllers/fixtureController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
   const loginController = new LoginController(logger)
   const teamController = new TeamController(db, logger)
+  const fixtureController = new FixtureController(db, logger)
 
   /**
    * @swagger
@@ -119,6 +121,27 @@ export default (db, logger) => {
    */
   routes.get('/teams/:id', authCheck, (req, res) => {
     teamController.listOne(req, res)
+  })
+
+    /**
+   * @swagger
+   * /api/fixtures:
+   *   x-swagger-router-controller: ../controllers/fixtureController
+   *   get:
+   *     tags:
+   *       - Fixture
+   *     description: Get all fixtures
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Fixture"
+   */
+  routes.get('/fixtures', authCheck, (req, res) => {
+    fixtureController.list(req, res)
   })
 
   return routes
