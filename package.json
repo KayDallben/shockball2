@@ -13,7 +13,7 @@
     "test": "jest",
     "lintMac": "DEBUG=eslint:cli-engine && eslint server/src --ignore-pattern client/src/docs/",
     "lintWindows": "set DEBUG=eslint:cli-engine && eslint server/src --ignore-pattern client/src/docs/",
-    "precommit": "npm run build && npm run lintWindows",
+    "precommit": "npm run lintWindows",
     "buildClient": "cd client && npm run build",
     "copyClientBuild": "ncp client/build public",
     "startClient": "cd client && npm run start",
