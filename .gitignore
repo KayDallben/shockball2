@@ -62,7 +62,6 @@ typings/
 .next
 
 # shockball specific
-/server/dist
 /logs
 /npm-debug.log
 /node_modules
