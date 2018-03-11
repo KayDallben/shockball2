@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-
+console.log('*****PATH IS*******')
+console.log(__dirname.split("/").pop());
 const admin = require('firebase-admin')
-const sim = require('../server/dist/sim')
+const sim1 = require('./server/dist/sim')
+console.log(sim1)
+// const sim = require('../server/dist/sim')
+// console.log(sim)
 const FieldValue = admin.firestore.FieldValue
 
 let serviceAccount
