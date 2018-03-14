@@ -15,16 +15,12 @@ class Fixture extends React.Component {
     super(props)
   }
 
-  componentWillMount() {
-    this.props.store.getSingleFixture(this.getIdFromRoute())
-  }
-
   getIdFromRoute() {
       return window.location.href.split('/').pop()
   }
 
   allEvents() {
-    let events = this.props.store.currentFixture.events.map((event) => {
+    let events = this.props.view.fixture.value.events.map((event) => {
         return (
           <div className="event">
               <div>{event.recordGameTime} - {event.actorName} - {event.recordType}</div>
@@ -35,16 +31,24 @@ class Fixture extends React.Component {
   }
 
   render() {
-    return (
-      <div className="fixture-wrapper">
-        {this.allEvents()}
-      </div>
-    )
+    switch (this.props.view.fixture.state) {
+      case "pending":
+          return <h1>Loading fixture.. { this.props.view.fixtureId }</h1>
+      case "rejected":
+          throw this.props.view.fixture.reason
+      case "fulfilled":
+          return (
+            <div className="fixture-wrapper">
+              {this.allEvents()}
+            </div>
+          )
+    }
   }
 }
 
 Fixture.propTypes = {
-  store: PropTypes.object
+  store: PropTypes.object,
+  view: PropTypes.object
 }
 
 export default Fixture

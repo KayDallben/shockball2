@@ -22,7 +22,8 @@ class Squad extends React.Component {
 }
 
 Squad.propTypes = {
-  store: PropTypes.object
+  store: PropTypes.object,
+  view: PropTypes.object
 }
 
 export default Squad

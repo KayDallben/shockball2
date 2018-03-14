@@ -31,19 +31,19 @@ class App extends Component {
   }
   render() {
     return (
-      <BrowserRouter>
+      // <BrowserRouter>
         <div className="main-wrapper" style={this.setBackgroundImage(shockballBackground, '1')}>
           <div className="content-wrapper">
             <ErrorBoundary title={'Topbar'}>
               <TopBar store={this.props.store}/>
-              <Navigation {...this.props.store.navData} />
+              <Navigation store={this.props.store} />
             </ErrorBoundary>
             <ErrorBoundary title={'Dashboard'}>
               <Dashboard store={this.props.store}/>
             </ErrorBoundary>
           </div>
         </div>
-      </BrowserRouter>
+      // </BrowserRouter>
     );
   }
 }

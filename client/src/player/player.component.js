@@ -46,7 +46,8 @@ class Player extends React.Component {
 }
 
 Player.propTypes = {
-  store: PropTypes.object
+  store: PropTypes.object,
+  view: PropTypes.object
 }
 
 export default Player

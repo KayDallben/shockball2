@@ -1,5 +1,4 @@
 import React from 'react'
-import { Route, Link } from 'react-router-dom'
 
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
@@ -14,15 +13,11 @@ class League extends React.Component {
     super(props)
   }
 
-  componentWillMount() {
-    this.props.store.handleFixtureData()
-  }
-
   calculateScore(fixture) {
       if (fixture.status === 'complete') {
           return (<div>
             <div>{fixture.homeTeamScore} - {fixture.awayTeamScore}</div>
-            <Link to={`/fixture/${fixture.fixtureId}`}><div className="fa fa-arrow-right"></div></Link>
+            <div onClick={() => this.props.store.showFixturePage(fixture.fixtureId)} className="fa fa-arrow-right"></div>
           </div>)
       } else {
           return (<div></div>)
@@ -30,7 +25,7 @@ class League extends React.Component {
   }
 
   allFixtures() {
-      const fixtures = this.props.store.fixtures.map((fixture) => {
+      const fixtures = this.props.view.fixtures.value.map((fixture) => {
           return (
             <div className="row">
                 <div>{fixture.gameDate}</div>
@@ -44,24 +39,32 @@ class League extends React.Component {
   }
 
   render() {
-    return (
-      <div className="league-wrapper">
-        <div className="fixture-set">
-          <div className="header">
-            <div>Date</div>
-            <div>Home</div>
-            <div>Away</div>
-            <div>Result</div>
-          </div>
-          {this.allFixtures()}
-        </div>
-      </div>
-    )
+    switch (this.props.view.fixtures.state) {
+      case "pending":
+          return <h1>Loading fixtures..</h1>
+      case "rejected":
+          throw this.props.view.fixtures.reason
+      case "fulfilled":
+          return (
+            <div className="league-wrapper">
+              <div className="fixture-set">
+                <div className="header">
+                  <div>Date</div>
+                  <div>Home</div>
+                  <div>Away</div>
+                  <div>Result</div>
+                </div>
+                {this.allFixtures()}
+              </div>
+            </div>
+          )
+    }
   }
 }
 
 League.propTypes = {
-  store: PropTypes.object
+  store: PropTypes.object,
+  view: PropTypes.object
 }
 
 export default League

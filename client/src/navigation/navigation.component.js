@@ -1,35 +1,35 @@
 import React from 'react'
-import { Link, Route } from 'react-router-dom'
-
+import PropTypes from 'prop-types'
+import { observer } from 'mobx-react'
 
 import ExtendableError from '../errors/ExtendableError'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import './navigation.scss'
 export class NavigationError extends ExtendableError {}
 
+@observer
 class Navigation extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      navItems: this.mapItems(props.navLinks)
-    }
   }
 
-  mapItems(items) {
+  mapItems() {
     try {
       let domArray = []
-      if (items) {
-        domArray = items.map((item, index) => {
-          const className = 'title-icon ' + item.icon
-          const linkPath = item.title === 'Me' ? '' : item.title.toLowerCase()
-          return <Link to={'/' + linkPath}>
+      domArray = this.props.store.navData.navLinks.map((item, index) => {
+        const className = 'title-icon ' + item.icon
+        const linkPath = item.title === 'Me' ? '' : item.title.toLowerCase()
+        // return <Link to={'/' + linkPath}>
+        return (
+          <a onClick={() => { this.props.store.showLeaguePage()}}>
             <div key={index}>
               <div className={className}></div>
               <div className="title">{item.title}</div>
             </div>
-          </Link>
-        })
-      }
+          </a>
+        )
+        // </Link>
+      })
       return domArray
     } catch (e) {
       throw new NavigationError("Map items", e);
@@ -40,11 +40,14 @@ class Navigation extends React.Component {
     return (
       <div className="navigation">
         <div className="nav-wrapper">
-          {this.state.navItems}
+          {this.mapItems()}
         </div>
       </div>
     )
   }
 }
 
+Navigation.propTypes = {
+  store: PropTypes.object
+}
 export default Navigation
