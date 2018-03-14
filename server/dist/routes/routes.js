@@ -148,24 +148,52 @@ exports.default = function (db, logger) {
   });
 
   /**
-  * @swagger
-  * /api/fixtures:
-  *   x-swagger-router-controller: ../controllers/fixtureController
-  *   get:
-  *     tags:
-  *       - Fixture
-  *     description: Get all fixtures
-  *     operationId: list
-  *     produces:
-  *       - application/json
-  *     responses:
-  *       200:
-  *         description: Success
-  *         schema:
-  *           $ref: "#/definitions/Fixture"
-  */
+   * @swagger
+   * /api/fixtures:
+   *   x-swagger-router-controller: ../controllers/fixtureController
+   *   get:
+   *     tags:
+   *       - Fixture
+   *     description: Get all fixtures
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Fixture"
+   */
   routes.get('/fixtures', _authCheck2.default, function (req, res) {
     fixtureController.list(req, res);
+  });
+  /**
+   * @swagger
+   * /api/fixtures/{id}:
+   *   x-swagger-router-controller: ../controllers/fixtureController
+   *   get:
+   *     tags:
+   *       - Fixture
+   *     description: Get fixture by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: fixture's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Fixture"
+   */
+  routes.get('/fixtures/:id', _authCheck2.default, function (req, res) {
+    fixtureController.listOne(req, res);
   });
 
   return routes;

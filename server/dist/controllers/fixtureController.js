@@ -29,6 +29,7 @@ var FixtureController = function () {
     _classCallCheck(this, FixtureController);
 
     this.fixtures = db.collection('fixtures');
+    this.events = db.collection('events');
     this.logger = logger;
   }
 
@@ -60,7 +61,7 @@ var FixtureController = function () {
                   } else {
                     throw {
                       name: 'NoFixturesExist',
-                      message: "There were no fixtures found in the database for this query!"
+                      message: 'There were no fixtures found in the database for this query!'
                     };
                   }
                 });
@@ -97,6 +98,80 @@ var FixtureController = function () {
       }
 
       return list;
+    }()
+  }, {
+    key: 'listOne',
+    value: function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
+        var validation, fixtureData;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                validation = _joi2.default.validate(req.params, _Fixture2.default.listOneParams);
+
+                if (!(validation.error === null)) {
+                  _context2.next = 17;
+                  break;
+                }
+
+                _context2.prev = 2;
+                fixtureData = {};
+                _context2.next = 6;
+                return this.fixtures.doc(req.params.id).get().then(function (doc) {
+                  fixtureData.fixtureInfo = doc.data();
+                });
+
+              case 6:
+                _context2.next = 8;
+                return this.events.where('fixtureId', '==', req.params.id).get().then(function (snapshot) {
+                  var events = [];
+                  snapshot.forEach(function (doc) {
+                    events.push(doc.data());
+                  });
+                  if (events.length > -1) {
+                    fixtureData.events = events;
+                  } else {
+                    throw {
+                      name: 'NoEventsExist',
+                      message: 'There were no events found in the database for this fixture!'
+                    };
+                  }
+                });
+
+              case 8:
+                res.status(200).send(fixtureData);
+                _context2.next = 15;
+                break;
+
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2['catch'](2);
+
+                this.logger.error(_context2.t0);
+                res.status(400).send(_context2.t0);
+
+              case 15:
+                _context2.next = 19;
+                break;
+
+              case 17:
+                this.logger.error('Joi validation error: ' + validation.error);
+                res.status(400).send(validation.error);
+
+              case 19:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[2, 11]]);
+      }));
+
+      function listOne(_x3, _x4) {
+        return _ref2.apply(this, arguments);
+      }
+
+      return listOne;
     }()
   }]);
 

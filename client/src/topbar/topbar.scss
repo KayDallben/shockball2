@@ -33,11 +33,13 @@
       }
       .team-info {
         flex:1;
+        display: flex;
         .team-logo {
           width: 110px;
           height: 110px;
           display: inline-block;
           margin-left:5px;
+          flex:1;
         }
         .team-longname {
           display: inline-block;
@@ -46,6 +48,7 @@
           padding-left: 10px;
           box-sizing: border-box;
           padding-top: 15px;
+          flex:1;
           .team-name {
             font-size: 1.5em;
             font-weight: 400;

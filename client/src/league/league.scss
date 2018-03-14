@@ -32,12 +32,27 @@
             display: flex;
             div {
                 flex: 1;
-                padding: 10px;
+                padding: 7px;
                 border-left: 1px solid #0f0f0f;
                 padding-left: 45px;
                 position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: left;
                 &:first-child {
                     border-left: 0px;
+                    flex:1;
+                }
+                a {
+                    flex: 1;
+                    text-decoration: none;
+                    color: #ffffff;
+                    &:visited {
+                        color: #ffffff;
+                    }
+                    div {
+                        padding:4px;
+                    }
                 }
             }
             &:nth-child(even) {
@@ -48,8 +63,8 @@
             width: 28px;
             height: 28px;
             position: absolute;
-            left: 8px;
-            top: 5px;
+            left: 12px;
+            top: 10px;
         }
     }
 }
