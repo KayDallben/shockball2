@@ -123,7 +123,7 @@ export default (db, logger) => {
     teamController.listOne(req, res)
   })
 
-    /**
+  /**
    * @swagger
    * /api/fixtures:
    *   x-swagger-router-controller: ../controllers/fixtureController
@@ -142,6 +142,34 @@ export default (db, logger) => {
    */
   routes.get('/fixtures', authCheck, (req, res) => {
     fixtureController.list(req, res)
+  })
+  /**
+   * @swagger
+   * /api/fixtures/{id}:
+   *   x-swagger-router-controller: ../controllers/fixtureController
+   *   get:
+   *     tags:
+   *       - Fixture
+   *     description: Get fixture by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: fixture's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Fixture"
+   */
+  routes.get('/fixtures/:id', authCheck, (req, res) => {
+    fixtureController.listOne(req, res)
   })
 
   return routes

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
+
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 
@@ -19,7 +20,10 @@ class League extends React.Component {
 
   calculateScore(fixture) {
       if (fixture.status === 'complete') {
-          return (<div>{fixture.homeTeamScore} - {fixture.awayTeamScore}</div>)
+          return (<div>
+            <div>{fixture.homeTeamScore} - {fixture.awayTeamScore}</div>
+            <Link to={`/fixture/${fixture.fixtureId}`}><div className="fa fa-arrow-right"></div></Link>
+          </div>)
       } else {
           return (<div></div>)
       }

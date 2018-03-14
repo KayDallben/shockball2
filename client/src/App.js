@@ -21,7 +21,8 @@ class App extends Component {
         backgroundPosition: 'no-repeat center center fixed',
         borderRadius: '0px',
         backgroundImage: "url(" + url + ")",
-        backgroundOpacity: opacity
+        backgroundOpacity: opacity,
+        backgroundAttachment: 'fixed'
     }
     return divStyle
   }
@@ -33,7 +34,6 @@ class App extends Component {
       <BrowserRouter>
         <div className="main-wrapper" style={this.setBackgroundImage(shockballBackground, '1')}>
           <div className="content-wrapper">
-            <div className="overlay"></div>
             <ErrorBoundary title={'Topbar'}>
               <TopBar store={this.props.store}/>
               <Navigation {...this.props.store.navData} />

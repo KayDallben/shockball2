@@ -1,11 +1,11 @@
 //variables
-$menuBackground: rgba(0,0,0,0.2);
-$menuBorder: 1px solid rgba(0,0,0,0.2);
+$menuBackground: rgba(0,0,0,0.5);
+$menuBorder: 1px solid rgba(0,0,0,0.5);
 $fontFamily: Rubik, Arial, serif;
 $transition: all .2s ease-in-out;
 
 html, body, sim {
-  height:100%;
+  height:100vh;
   font-family: $fontFamily;
 }
 #root {

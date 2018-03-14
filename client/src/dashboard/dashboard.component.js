@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import Player from '../player/player.component'
 import Squad from '../squad/squad.component'
 import League from '../league/league.component'
+import Fixture from '../fixture/fixture.component'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 
 class Dashboard extends React.Component {
@@ -27,6 +28,10 @@ class Dashboard extends React.Component {
           />
           <Route exact path='/league' render={
               () => <League store={this.props.store} /> 
+            }
+          />
+          <Route path="/fixture/:fixtureId" render={
+              () => <Fixture store={this.props.store} />
             }
           />
         </Switch>
