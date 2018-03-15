@@ -19,16 +19,14 @@ class Navigation extends React.Component {
       domArray = this.props.store.navData.navLinks.map((item, index) => {
         const className = 'title-icon ' + item.icon
         const linkPath = item.title === 'Me' ? '' : item.title.toLowerCase()
-        // return <Link to={'/' + linkPath}>
         return (
-          <a onClick={() => { this.props.store.showLeaguePage()}}>
+          <a onClick={() => { item.routeMethod()}}>
             <div key={index}>
               <div className={className}></div>
               <div className="title">{item.title}</div>
             </div>
           </a>
         )
-        // </Link>
       })
       return domArray
     } catch (e) {

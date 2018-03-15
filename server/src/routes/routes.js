@@ -8,12 +8,14 @@ import ProfileController from '../controllers/profileController'
 import LoginController from '../controllers/loginController'
 import TeamController from '../controllers/teamController'
 import FixtureController from '../controllers/fixtureController'
+import PlayerController from '../controllers/playerController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
   const loginController = new LoginController(logger)
   const teamController = new TeamController(db, logger)
   const fixtureController = new FixtureController(db, logger)
+  const playerController = new PlayerController(db, logger)
 
   /**
    * @swagger
@@ -93,7 +95,26 @@ export default (db, logger) => {
   routes.get('/login', (req, res) => {
     loginController.listOne(req, res)
   })
-
+/**
+   * @swagger
+   * /api/teams:
+   *   x-swagger-router-controller: ../controllers/teamController
+   *   get:
+   *     tags:
+   *       - Team
+   *     description: Get all teams
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Team"
+   */
+  routes.get('/teams', authCheck, (req, res) => {
+    teamController.list(req, res)
+  })
     /**
    * @swagger
    * /api/teams/{id}:
@@ -170,6 +191,54 @@ export default (db, logger) => {
    */
   routes.get('/fixtures/:id', authCheck, (req, res) => {
     fixtureController.listOne(req, res)
+  })
+  /**
+   * @swagger
+   * /api/players:
+   *   x-swagger-router-controller: ../controllers/playerController
+   *   get:
+   *     tags:
+   *       - Player
+   *     description: Get all players
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Player"
+   */
+  routes.get('/players', authCheck, (req, res) => {
+    playerController.list(req, res)
+  })
+  /**
+   * @swagger
+   * /api/players/{id}:
+   *   x-swagger-router-controller: ../controllers/playerController
+   *   get:
+   *     tags:
+   *       - Player
+   *     description: Get player by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: player's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Player'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Player"
+   */
+  routes.get('/players/:id', authCheck, (req, res) => {
+    playerController.listOne(req, res)
   })
 
   return routes
