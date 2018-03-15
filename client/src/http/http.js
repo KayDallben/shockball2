@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 
-function getAllItems(url, token) {
+function genericFetch(url, token) {
     return new Promise((resolve,reject) => {
         axios({
             method: 'GET',
@@ -112,7 +112,7 @@ function createStats(events) {
   }
 
 export default {
-    getAllItems,
+    genericFetch,
     getSingleFixture,
     getAllFixtures,
     getUserTeam

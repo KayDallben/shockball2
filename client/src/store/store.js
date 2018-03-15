@@ -28,23 +28,28 @@ class Store {
     navLinks: [
       {
         title: 'Me',
-        icon: 'fa fa-user'
+        icon: 'fa fa-user',
+        routeMethod: this.showPlayerPage.bind(this)
       },
       {
         title: 'Squad',
-        icon: 'fa fa-users'
+        icon: 'fa fa-users',
+        routeMethod: this.showSquadPage.bind(this)
       },
       {
         title: 'Office',
-        icon: 'fa fa-briefcase'
+        icon: 'fa fa-briefcase',
+        routeMethod: this.showOfficePage.bind(this)
       },
       {
         title: 'League',
-        icon: 'fa fa-flag'
+        icon: 'fa fa-flag',
+        routeMethod: this.showLeaguePage.bind(this)
       },
       {
         title: 'Transfers',
-        icon: 'fa fa-building'
+        icon: 'fa fa-building',
+        routeMethod: this.showTransfersPage.bind(this)
       }
     ]
   }
@@ -58,16 +63,40 @@ class Store {
     }  
   }
 
-  @action showPlayerPage() {
+  @action showOfficePage() {
     this.currentView = {
-      name: 'player'
+      name: 'office'
+    }  
+  }
+
+  @action showTransfersPage() {
+    this.currentView = {
+      name: 'transfers'
+    }
+  }
+
+  @action showPlayerPage(playerId) {
+    const defaultId = playerId ? playerId : this.currentUser.createdAsUid
+    this.currentView = {
+      name: 'player',
+      playerId,
+      player: fromPromise(this.http.genericFetch('../api/players/' + defaultId, this.accessToken))
+    }
+  }
+
+  @action showSquadPage(squadId) {
+    const defaultSquad = squadId ? squadId : this.currentUser.teamUid 
+    this.currentView = {
+      name: 'squad',
+      squadId,
+      squad: fromPromise(this.http.genericFetch('../api/teams/' + defaultSquad, this.accessToken))
     }
   }
 
   @action showLeaguePage() {
     this.currentView = {
       name: 'league',
-      fixtures: fromPromise(this.http.getAllFixtures('./api/fixtures', this.accessToken))
+      fixtures: fromPromise(this.http.getAllFixtures('../api/fixtures', this.accessToken))
     }
   }
 
@@ -79,11 +108,22 @@ class Store {
     }
   }
 
+  @action showTransfersPage() {
+    this.currentView = {
+      name: 'transfers',
+      players: fromPromise(this.http.genericFetch('../api/players', this.accessToken))
+    }
+  }
+
   @computed get currentPath() {
     switch(this.currentView.name) {
         case "home": return "/"
+        case "player": return `/player/${this.currentView.playerId}`
         case "fixture": return `/fixture/${this.currentView.fixtureId}`
         case "league": return `/league`
+        case "squad": return `/squad/${this.currentView.squadId}`
+        case "office": return `/office`
+        case "transfers": return `/transfers`
     }
   }
 
@@ -130,6 +170,7 @@ class Store {
         access_token: this.accessToken
       }
     }).then(response => {
+      console.log(response.data)
       this.setUser(response.data)
       if (response.data.teamUid) {
         this.getUserTeam(response.data.teamUid)
