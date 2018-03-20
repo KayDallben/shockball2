@@ -9,7 +9,6 @@ import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import 'bootstrap/dist/css/bootstrap.css';
 import './transfers.scss'
 
-
 @observer
 class Transfers extends React.Component {
   constructor(props) {
@@ -18,7 +17,9 @@ class Transfers extends React.Component {
         {
             key: 'name',
             name: 'Name',
-            locked: true
+            locked: true,
+            formatter: this.createPlayerLink,
+            getRowMetaData: (data)=>(data)
         },
         {
           key: 'createdAsUid',
@@ -47,14 +48,32 @@ class Transfers extends React.Component {
       ];
   }
 
+  createPlayerLink = (row) => {
+    return (
+      <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.createdAsUid)}>{row.dependentValues.name}</a>
+    )
+  }
+
   rowGetter = (i) => {
     return this.props.view.players.value[i];
-  };
+  }
+
+  handleGridSort = (sortColumn, sortDirection) => {
+    const comparer = (a, b) => {
+      if (sortDirection === 'ASC') {
+        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+      } else if (sortDirection === 'DESC') {
+        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+      }
+    }
+
+    const rows = sortDirection === 'NONE' ? this.props.view.players.value.slice(0) : this.props.view.players.value.sort(comparer);
+  }
 
   allPlayers() {
     return (
         <ReactDataGrid
-        // onGridSort={this.handleGridSort}
+        onGridSort={this.handleGridSort}
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.props.view.players.value.length}

@@ -5,7 +5,9 @@ import { autorun } from 'mobx'
 export function startRouter(store) {
     // update state on url change
     const router = new Router({
+        "/player": () => store.showPlayerPage(),
         "/player/:playerId": (id) => store.showPlayerPage(id),
+        "/squad": () => store.showSquadPage(),
         "/squad/:squadId": (id) => store.showSquadPage(id),
         "/fixture/:fixtureId": (id) => store.showFixturePage(id),
         "/league": () => store.showLeaguePage(),

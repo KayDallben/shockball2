@@ -59,7 +59,8 @@ class Store {
 
   @action showHomePage() {
     this.currentView = {
-      name: 'home'
+      name: 'home',
+      player: fromPromise(this.http.genericFetch('../api/players/' + this.currentUser.createdAsUid, this.accessToken))
     }  
   }
 
