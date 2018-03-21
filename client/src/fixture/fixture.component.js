@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import { Line, Circle } from 'rc-progress'
+import Spinner from 'react-spinkit'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import './fixture.scss'
@@ -33,7 +34,7 @@ class Fixture extends React.Component {
   render() {
     switch (this.props.view.fixture.state) {
       case "pending":
-          return <h1>Loading fixture.. { this.props.view.fixtureId }</h1>
+          return <Spinner name='ball-scale-ripple-multiple' />
       case "rejected":
           throw this.props.view.fixture.reason
       case "fulfilled":

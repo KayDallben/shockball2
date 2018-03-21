@@ -2,6 +2,7 @@ import React from 'react'
 
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
+import Spinner from 'react-spinkit'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import './league.scss'
@@ -41,7 +42,7 @@ class League extends React.Component {
   render() {
     switch (this.props.view.fixtures.state) {
       case "pending":
-          return <h1>Loading fixtures..</h1>
+          return <Spinner name='ball-scale-ripple-multiple' />
       case "rejected":
           throw this.props.view.fixtures.reason
       case "fulfilled":

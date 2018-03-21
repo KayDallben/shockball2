@@ -60,7 +60,7 @@ class Store {
   @action showHomePage() {
     this.currentView = {
       name: 'home',
-      player: fromPromise(this.http.genericFetch('../api/players/' + this.currentUser.createdAsUid, this.accessToken))
+      player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.createdAsUid, this.accessToken))
     }  
   }
 
@@ -70,18 +70,25 @@ class Store {
     }  
   }
 
-  @action showTransfersPage() {
-    this.currentView = {
-      name: 'transfers'
-    }
-  }
-
   @action showPlayerPage(playerId) {
-    const defaultId = playerId ? playerId : this.currentUser.createdAsUid
-    this.currentView = {
-      name: 'player',
-      playerId,
-      player: fromPromise(this.http.genericFetch('../api/players/' + defaultId, this.accessToken))
+    if (playerId) {
+      this.currentView = {
+        name: 'player',
+        playerId,
+        player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + playerId, this.accessToken))
+      }  
+    } else if (!playerId && this.currentUser.createdAsUid) {
+      this.currentView = {
+        name: 'player',
+        playerId,
+        player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.createdAsUid, this.accessToken))
+      }  
+    } else if (!playerId && !this.currentUser.createdAsUid) {
+      this.currentView = {
+        name: 'player',
+        playerId,
+        player: fromPromise(this.setUserProfile())
+      }
     }
   }
 
@@ -90,14 +97,14 @@ class Store {
     this.currentView = {
       name: 'squad',
       squadId,
-      squad: fromPromise(this.http.genericFetch('../api/teams/' + defaultSquad, this.accessToken))
+      squad: fromPromise(this.http.genericFetch(hostUrl + 'api/teams/' + defaultSquad, this.accessToken))
     }
   }
 
   @action showLeaguePage() {
     this.currentView = {
       name: 'league',
-      fixtures: fromPromise(this.http.getAllFixtures('../api/fixtures', this.accessToken))
+      fixtures: fromPromise(this.http.getAllFixtures(hostUrl + 'api/fixtures', this.accessToken))
     }
   }
 
@@ -105,14 +112,14 @@ class Store {
     this.currentView = {
       name: 'fixture',
       fixtureId,
-      fixture: fromPromise(this.http.getSingleFixture('../api/fixtures/' + fixtureId, this.accessToken))
+      fixture: fromPromise(this.http.getSingleFixture(hostUrl + 'api/fixtures/' + fixtureId, this.accessToken))
     }
   }
 
   @action showTransfersPage() {
     this.currentView = {
       name: 'transfers',
-      players: fromPromise(this.http.genericFetch('../api/players', this.accessToken))
+      players: fromPromise(this.http.genericFetch(hostUrl + 'api/players', this.accessToken))
     }
   }
 
@@ -142,7 +149,7 @@ class Store {
   @action getUserTeam = (teamUid) => {
     axios({
       method: 'GET',
-      url: './api/teams/' + teamUid,
+      url: hostUrl + 'api/teams/' + teamUid,
       params: {
         access_token: this.accessToken
       }
@@ -164,19 +171,21 @@ class Store {
   }
 
   @action setUserProfile = () => {
-    axios({
-      method: 'GET',
-      url: './api/profile',
-      params: {
-        access_token: this.accessToken
-      }
-    }).then(response => {
-      console.log(response.data)
-      this.setUser(response.data)
-      if (response.data.teamUid) {
-        this.getUserTeam(response.data.teamUid)
-      }
-    });
+    return new Promise((resolve, reject) => {
+      axios({
+        method: 'GET',
+        url: hostUrl + 'api/profile',
+        params: {
+          access_token: this.accessToken
+        }
+      }).then(response => {
+        this.setUser(response.data)
+        if (response.data.teamUid) {
+          this.getUserTeam(response.data.teamUid)
+        }
+        resolve(response.data)
+      }).catch(reject)
+    })
   }
   @action handleUserSetup = () => {
     if (this.hasAccessToken) {

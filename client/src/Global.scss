@@ -27,6 +27,13 @@ html, body, sim {
 .main-container {
   height:100%;
 }
+.sk-fade-in.sk-spinner.ball-scale-ripple-multiple {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  right: 50%;
+  color: #fff;
+}
 main, sim, sim > div  {
   height: 100%;
 }

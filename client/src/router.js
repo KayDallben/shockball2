@@ -13,7 +13,7 @@ export function startRouter(store) {
         "/league": () => store.showLeaguePage(),
         "/transfers": () => store.showTransfersPage(),
         "/office": () => store.showOfficePage(),
-        "/": () => store.showHomePage()
+        "/": () => store.showPlayerPage()
     }).configure({
         notfound: () => store.showHomePage(),
         html5history: true

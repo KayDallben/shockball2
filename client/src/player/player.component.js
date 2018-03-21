@@ -2,6 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
+import Spinner from 'react-spinkit'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import './player.scss'
@@ -15,7 +16,7 @@ class Player extends React.Component {
   render() {
     switch (this.props.view.player.state) {
       case "pending":
-          return <h1>Loading free player...</h1>
+          return <Spinner name='ball-scale-ripple-multiple' />
       case "rejected":
           throw this.props.view.player.reason
       case "fulfilled":
