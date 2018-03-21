@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { BrowserRouter } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 
@@ -8,7 +7,6 @@ import './App.scss'
 import './Global.scss'
 import shockballBackground from './shockballProto.jpg'
 import TopBar from './topbar/topbar.component'
-// import Player from './player/player.component'
 import Navigation from './navigation/navigation.component'
 import Dashboard from './dashboard/dashboard.component'
 import ErrorBoundary from './errorBoundary/errorBoundary.component'
@@ -31,19 +29,17 @@ class App extends Component {
   }
   render() {
     return (
-      // <BrowserRouter>
-        <div className="main-wrapper" style={this.setBackgroundImage(shockballBackground, '1')}>
-          <div className="content-wrapper">
-            <ErrorBoundary title={'Topbar'}>
-              <TopBar store={this.props.store}/>
-              <Navigation store={this.props.store} />
-            </ErrorBoundary>
-            <ErrorBoundary title={'Dashboard'}>
-              <Dashboard store={this.props.store}/>
-            </ErrorBoundary>
-          </div>
+      <div className="main-wrapper" style={this.setBackgroundImage(shockballBackground, '1')}>
+        <div className="content-wrapper">
+          <ErrorBoundary title={'Topbar'}>
+            <TopBar store={this.props.store}/>
+            <Navigation store={this.props.store} />
+          </ErrorBoundary>
+          <ErrorBoundary title={'Dashboard'}>
+            <Dashboard store={this.props.store}/>
+          </ErrorBoundary>
         </div>
-      // </BrowserRouter>
+      </div>
     );
   }
 }

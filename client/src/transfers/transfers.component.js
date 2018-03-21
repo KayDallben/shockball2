@@ -2,13 +2,12 @@ import React from 'react'
 
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
-import ReactDataGrid from 'react-data-grid';
-
+import ReactDataGrid from 'react-data-grid'
+import Spinner from 'react-spinkit'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import 'bootstrap/dist/css/bootstrap.css';
 import './transfers.scss'
-
 
 @observer
 class Transfers extends React.Component {
@@ -18,43 +17,93 @@ class Transfers extends React.Component {
         {
             key: 'name',
             name: 'Name',
-            locked: true
-        },
-        {
-          key: 'createdAsUid',
-          name: 'ID',
-          width: 200,
-          sortable: true
+            locked: true,
+            formatter: this.createPlayerLink,
+            getRowMetaData: (data)=>(data)
         },
         {
           key: 'throwing',
           name: 'Throwing',
-          width: 200,
+          width: 100,
           sortable: true
         },
         {
           key: 'passing',
           name: 'Passing',
-          width: 200,
+          width: 100,
           sortable: true
         },
         {
           key: 'blocking',
           name: 'Blocking',
-          width: 200,
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'endurance',
+          name: 'Endurance',
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'vision',
+          name: 'Vision',
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'toughness',
+          name: 'Toughness',
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'leadership',
+          name: 'Leadership',
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'fatigue',
+          name: 'Fatigue',
+          width: 100,
+          sortable: true
+        },
+        {
+          key: 'morale',
+          name: 'Morale',
+          width: 100,
           sortable: true
         }
       ];
   }
 
+  createPlayerLink = (row) => {
+    return (
+      <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.createdAsUid)}>{row.dependentValues.name}</a>
+    )
+  }
+
   rowGetter = (i) => {
     return this.props.view.players.value[i];
-  };
+  }
+
+  handleGridSort = (sortColumn, sortDirection) => {
+    const comparer = (a, b) => {
+      if (sortDirection === 'ASC') {
+        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+      } else if (sortDirection === 'DESC') {
+        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+      }
+    }
+
+    const rows = sortDirection === 'NONE' ? this.props.view.players.value.slice(0) : this.props.view.players.value.sort(comparer);
+  }
 
   allPlayers() {
     return (
         <ReactDataGrid
-        // onGridSort={this.handleGridSort}
+        onGridSort={this.handleGridSort}
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.props.view.players.value.length}
@@ -65,7 +114,7 @@ class Transfers extends React.Component {
   render() {
     switch (this.props.view.players.state) {
       case "pending":
-          return <h1>Loading free agents..</h1>
+          return <Spinner name='ball-scale-ripple-multiple' />
       case "rejected":
           throw this.props.view.players.reason
       case "fulfilled":

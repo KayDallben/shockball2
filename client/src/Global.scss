@@ -4,6 +4,16 @@ $menuBorder: 1px solid rgba(0,0,0,0.5);
 $fontFamily: Rubik, Arial, serif;
 $transition: all .2s ease-in-out;
 
+.root {
+  a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):focus, a:not([href]):not([tabindex]):hover {
+    color: #007bff;
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+
 html, body, sim {
   height:100vh;
   font-family: $fontFamily;
@@ -16,6 +26,13 @@ html, body, sim {
 }
 .main-container {
   height:100%;
+}
+.sk-fade-in.sk-spinner.ball-scale-ripple-multiple {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  right: 50%;
+  color: #fff;
 }
 main, sim, sim > div  {
   height: 100%;

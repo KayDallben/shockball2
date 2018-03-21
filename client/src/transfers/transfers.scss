@@ -1,3 +1,60 @@
 .transfers-wrapper {
     color: inherit;
+    width: 100%;
+    position: relative;
+    padding: 12px;
+    box-sizing: border-box;
+    a {
+        color: #007bff!important;
+        text-decoration: none!important;
+        cursor: pointer;
+    }
+    .react-grid-Container {
+        width:100%!important;
+        .react-grid-Main {
+            background:transparent;
+            outline:none;
+            .react-grid-Grid {
+                background:transparent;
+                border: 1px solid #0f0f0f;
+                border-top-right-radius: 4px;
+                border-top-left-radius: 4px;
+                .react-grid-Header {
+                    background-color: #0C93EB;
+                    color: #ffffff;
+                    border-top-right-radius: 4px;
+                    border-top-left-radius: 4px;
+                    .react-grid-HeaderCell {
+                        background-color: #0C93EB;
+                        color: #ffffff;
+                    }
+                }
+                .react-grid-Canvas {
+                    background-color: transparent;
+                }
+                .react-grid-Row--even {
+                    color: #ffffff;
+                    background: rgba(0,0,0, 0.5);
+                    .react-grid-Cell {
+                        color: #ffffff;
+                        background: rgba(0,0,0, 0.5);
+                        &:hover {
+                            background:inherit;
+                        }
+                    }
+                }
+                .react-grid-Row--odd {
+                    color: #ffffff;
+                    background: none;
+                    .react-grid-Cell {
+                        color: #ffffff;
+                        background: none;
+                        &:hover {
+                            background:inherit;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
