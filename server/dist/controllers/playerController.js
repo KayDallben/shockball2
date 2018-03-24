@@ -18,6 +18,16 @@ var _Player = require('../models/Player.js');
 
 var _Player2 = _interopRequireDefault(_Player);
 
+var _player = require('../../dist/sim/player.js');
+
+var _player2 = _interopRequireDefault(_player);
+
+var _util = require('../lib/util.js');
+
+var util = _interopRequireWildcard(_util);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -30,6 +40,7 @@ var PlayerController = function () {
 
     this.players = db.collection('players');
     this.teams = db.collection('teams');
+    this.events = db.collection('events');
     this.contracts = db.collection('contracts');
     this.logger = logger;
   }
@@ -131,32 +142,45 @@ var PlayerController = function () {
 
                             playerData.teamData = {};
                             playerData.contractData = {};
+                            playerData.records = [];
 
                             if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
-                              _context2.next = 6;
+                              _context2.next = 7;
                               break;
                             }
 
-                            _context2.next = 6;
+                            _context2.next = 7;
                             return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
                               playerData.teamData = doc2.data();
                             });
 
-                          case 6:
+                          case 7:
                             if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
-                              _context2.next = 9;
+                              _context2.next = 10;
                               break;
                             }
 
-                            _context2.next = 9;
+                            _context2.next = 10;
                             return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
                               playerData.contractData = doc3.data();
                             });
 
-                          case 9:
+                          case 10:
+                            _context2.next = 12;
+                            return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+                              var events = [];
+                              snapshot.forEach(function (doc) {
+                                events.push(doc.data());
+                              });
+                              if (events.length > 0) {
+                                playerData.records = util.generateSummaryRecords(events);
+                              }
+                            });
+
+                          case 12:
                             res.status(200).send(playerData);
 
-                          case 10:
+                          case 13:
                           case 'end':
                             return _context2.stop();
                         }

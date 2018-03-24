@@ -6,6 +6,7 @@ import Chance from 'chance'
 
 //internal
 import ProfileSchema from '../models/Profile.js'
+import * as util from '../lib/util.js'
 
 const FieldValue = admin.firestore.FieldValue
 const chance = new Chance()
@@ -16,6 +17,7 @@ class ProfileController {
     this.players = db.collection('players')
     this.teams = db.collection('teams')
     this.contracts = db.collection('contracts')
+    this.events = db.collection('events')
     this.playerCaps = db.collection('playerCaps')
     this.logger = logger
   }
@@ -124,6 +126,15 @@ class ProfileController {
             playerData.contractData = doc3.data()
           })
         }
+        await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
+          let events = []
+          snapshot.forEach((doc4) => {
+            events.push(doc4.data())
+          })
+          if (events.length > 0) {
+            playerData.records = util.generateSummaryRecords(events)
+          }
+        })
         return playerData
       } else {
         return false

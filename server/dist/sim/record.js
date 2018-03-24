@@ -9,11 +9,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Record = function () {
-  function Record(fixtureId) {
+  function Record(fixtureId, season) {
     _classCallCheck(this, Record);
 
     this.records = [];
     this.fixtureId = fixtureId;
+    this.season = season;
   }
 
   _createClass(Record, [{
@@ -45,7 +46,8 @@ var Record = function () {
         recordPitchSide: player.homeGoalSide,
         recordType: gameEvent,
         recordCommentator: this.getCommentatorText(player, gameEvent),
-        fixtureId: this.fixtureId
+        fixtureId: this.fixtureId,
+        season: this.season
       });
     }
   }, {

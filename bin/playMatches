@@ -86,7 +86,8 @@ async function getMatchData(fixture) {
     let matchData = {
         homeTeam: {},
         awayTeam: {},
-        fixtureId: fixture.fixtureId
+        fixtureId: fixture.fixtureId,
+        season: fixture.season
     }
     matchData.homeTeam = await getTeamData(fixture.homeTeam)
     matchData.awayTeam = await getTeamData(fixture.awayTeam)
