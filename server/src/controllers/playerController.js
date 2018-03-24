@@ -43,6 +43,31 @@ class PlayerController {
     }
   }
 
+  async update(req, res) {
+    const {id} = req.params
+    const validation = Joi.validate(req.query, PlayerSchema.updateParams)
+    if (validation.error === null) {
+      try {
+        const updateSet = {
+          regimen: JSON.parse(req.query.regimen)
+        }
+        await this.players.doc(id).update(updateSet).then(async (doc) => {
+          if (doc.exists) {
+            await this.players.doc(id).get().then((doc2) => {
+              res.status(200).send(doc2.data())
+            })
+          }
+        })
+      } catch (error) {
+        this.logger.error(error)
+        res.status(400).send(error)
+      }
+    } else {
+      this.logger.error('Joi validation error: ' + validation.error)
+      res.status(400).send(validation.error)
+    }
+  }
+
   async listOne(req, res) {
     const validation = Joi.validate(req.params, PlayerSchema.listOneParams)
     if (validation.error === null) {
