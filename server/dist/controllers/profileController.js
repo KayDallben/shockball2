@@ -308,8 +308,8 @@ var ProfileController = function () {
                   _context4.next = 12;
                   return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
                     var events = [];
-                    snapshot.forEach(function (doc) {
-                      events.push(doc.data());
+                    snapshot.forEach(function (doc4) {
+                      events.push(doc4.data());
                     });
                     if (events.length > 0) {
                       playerData.records = util.generateSummaryRecords(events);

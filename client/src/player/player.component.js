@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
 import ReactDataGrid from 'react-data-grid'
 import { Radar } from 'react-chartjs'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css'
 
 import NumberFormat from 'react-number-format'
 
@@ -138,6 +140,46 @@ class Player extends React.Component {
     return this.props.view.player.value.records[i];
   }
 
+  renderTrainingInput() {
+    if (this.props.view.player.value.createdAsUid === this.props.store.currentUser.createdAsUid) {
+      return (
+        <div className="train">
+          <h2>Training Regimen</h2>
+          <Select name="train-field"
+            value={this.props.store.currentUser.regimen}
+            onChange={this.handleTrainChange.bind(this)}
+            options={[
+              {
+                value: 'Wing',
+                label: 'Wing'
+              },
+              {
+                value: 'Center',
+                label: 'Center'
+              },
+              {
+                value: 'Guard',
+                label: 'Guard'
+              },
+              {
+                value: 'Rest',
+                label: 'Rest'
+              }
+            ]}
+          />
+        </div>
+      )
+    } else {
+      return (
+        <div className="train"></div>
+      )
+    }
+  }
+
+  handleTrainChange(selectedOption) {
+    this.props.store.setTrainingRegimen(selectedOption)
+  }
+
   render() {
     switch (this.props.view.player.state) {
       case "pending":
@@ -170,6 +212,7 @@ class Player extends React.Component {
                     <div className="skill">Toughness: {this.props.view.player.value.toughness}</div>
                     <div className="skill">Endurance: {this.props.view.player.value.endurance}</div>
                   </div>
+                  {this.renderTrainingInput()}
                   <div className="modifiers">
                     <h2>Modifiers</h2>
                     <div className="modifier">Leadership: {this.props.view.player.value.leadership}</div>

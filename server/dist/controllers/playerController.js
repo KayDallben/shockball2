@@ -18,10 +18,6 @@ var _Player = require('../models/Player.js');
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var _player = require('../../dist/sim/player.js');
-
-var _player2 = _interopRequireDefault(_player);
-
 var _util = require('../lib/util.js');
 
 var util = _interopRequireWildcard(_util);
@@ -112,75 +108,45 @@ var PlayerController = function () {
       return list;
     }()
   }, {
-    key: 'listOne',
+    key: 'update',
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
         var _this = this;
 
-        var validation;
+        var id, validation, updateSet;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                validation = _joi2.default.validate(req.params, _Player2.default.listOneParams);
+                id = req.params.id;
+                validation = _joi2.default.validate(req.query, _Player2.default.updateParams);
 
                 if (!(validation.error === null)) {
-                  _context3.next = 13;
+                  _context3.next = 15;
                   break;
                 }
 
-                _context3.prev = 2;
-                _context3.next = 5;
-                return this.players.doc(req.params.id).get().then(function () {
+                _context3.prev = 3;
+                updateSet = {
+                  regimen: JSON.parse(req.query.regimen)
+                };
+                _context3.next = 7;
+                return this.players.doc(id).update(updateSet).then(function () {
                   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(doc) {
-                    var playerData;
+                    var updatedLine;
                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            playerData = doc.data();
-
-                            playerData.teamData = {};
-                            playerData.contractData = {};
-                            playerData.records = [];
-
-                            if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
-                              _context2.next = 7;
-                              break;
-                            }
-
-                            _context2.next = 7;
-                            return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
-                              playerData.teamData = doc2.data();
+                            _context2.next = 2;
+                            return _this.players.doc(id).get().then(function (doc2) {
+                              res.status(200).send(doc2.data());
                             });
 
-                          case 7:
-                            if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
-                              _context2.next = 10;
-                              break;
-                            }
+                          case 2:
+                            updatedLine = _context2.sent;
 
-                            _context2.next = 10;
-                            return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
-                              playerData.contractData = doc3.data();
-                            });
-
-                          case 10:
-                            _context2.next = 12;
-                            return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
-                              var events = [];
-                              snapshot.forEach(function (doc) {
-                                events.push(doc.data());
-                              });
-                              if (events.length > 0) {
-                                playerData.records = util.generateSummaryRecords(events);
-                              }
-                            });
-
-                          case 12:
-                            res.status(200).send(playerData);
-
-                          case 13:
+                          case 3:
                           case 'end':
                             return _context2.stop();
                         }
@@ -193,19 +159,134 @@ var PlayerController = function () {
                   };
                 }());
 
-              case 5:
-                _context3.next = 11;
+              case 7:
+                _context3.next = 13;
                 break;
 
-              case 7:
-                _context3.prev = 7;
-                _context3.t0 = _context3['catch'](2);
+              case 9:
+                _context3.prev = 9;
+                _context3.t0 = _context3['catch'](3);
 
                 this.logger.error(_context3.t0);
                 res.status(400).send(_context3.t0);
 
+              case 13:
+                _context3.next = 17;
+                break;
+
+              case 15:
+                this.logger.error('Joi validation error: ' + validation.error);
+                res.status(400).send(validation.error);
+
+              case 17:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this, [[3, 9]]);
+      }));
+
+      function update(_x3, _x4) {
+        return _ref2.apply(this, arguments);
+      }
+
+      return update;
+    }()
+  }, {
+    key: 'listOne',
+    value: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
+        var _this2 = this;
+
+        var validation;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                validation = _joi2.default.validate(req.params, _Player2.default.listOneParams);
+
+                if (!(validation.error === null)) {
+                  _context5.next = 13;
+                  break;
+                }
+
+                _context5.prev = 2;
+                _context5.next = 5;
+                return this.players.doc(req.params.id).get().then(function () {
+                  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(doc) {
+                    var playerData;
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            playerData = doc.data();
+
+                            playerData.teamData = {};
+                            playerData.contractData = {};
+                            playerData.records = [];
+
+                            if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
+                              _context4.next = 7;
+                              break;
+                            }
+
+                            _context4.next = 7;
+                            return _this2.teams.doc(playerData.teamUid).get().then(function (doc2) {
+                              playerData.teamData = doc2.data();
+                            });
+
+                          case 7:
+                            if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
+                              _context4.next = 10;
+                              break;
+                            }
+
+                            _context4.next = 10;
+                            return _this2.contracts.doc(playerData.contractUid).get().then(function (doc3) {
+                              playerData.contractData = doc3.data();
+                            });
+
+                          case 10:
+                            _context4.next = 12;
+                            return _this2.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+                              var events = [];
+                              snapshot.forEach(function (doc4) {
+                                events.push(doc4.data());
+                              });
+                              if (events.length > 0) {
+                                playerData.records = util.generateSummaryRecords(events);
+                              }
+                            });
+
+                          case 12:
+                            res.status(200).send(playerData);
+
+                          case 13:
+                          case 'end':
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, _this2);
+                  }));
+
+                  return function (_x8) {
+                    return _ref5.apply(this, arguments);
+                  };
+                }());
+
+              case 5:
+                _context5.next = 11;
+                break;
+
+              case 7:
+                _context5.prev = 7;
+                _context5.t0 = _context5['catch'](2);
+
+                this.logger.error(_context5.t0);
+                res.status(400).send(_context5.t0);
+
               case 11:
-                _context3.next = 15;
+                _context5.next = 15;
                 break;
 
               case 13:
@@ -214,14 +295,14 @@ var PlayerController = function () {
 
               case 15:
               case 'end':
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3, this, [[2, 7]]);
+        }, _callee5, this, [[2, 7]]);
       }));
 
-      function listOne(_x3, _x4) {
-        return _ref2.apply(this, arguments);
+      function listOne(_x6, _x7) {
+        return _ref4.apply(this, arguments);
       }
 
       return listOne;

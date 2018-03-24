@@ -145,6 +145,18 @@ class Store {
     return this.authCode !== null
   }
 
+  @action setTrainingRegimen = (selectedOption) => {
+    axios({
+      method: 'PUT',
+      url: hostUrl + 'api/players/' + this.currentUser.createdAsUid,
+      params: {
+        access_token: this.accessToken,
+        regimen: selectedOption
+      }
+    }).then(response => {
+      this.setUser(response.data)
+    })
+  }
 
   @action getUserTeam = (teamUid) => {
     axios({

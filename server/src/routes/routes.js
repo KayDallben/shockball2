@@ -241,5 +241,40 @@ export default (db, logger) => {
     playerController.listOne(req, res)
   })
 
+  /**
+   * @swagger
+   * /api/players/{id}:
+   *   x-swagger-router-controller: ../controllers/playerController
+   *   put:
+   *     tags:
+   *       - Player
+   *     description: Updates a Player
+   *     operationId: update
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: player's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Player'
+   *       - name: regimen
+   *         description: Object with value and label string properties indicating what skill to train
+   *         in: query
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Player'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Player"
+   */
+  routes.put('/players/:id', authCheck, (req, res) => {
+    playerController.update(req, res)
+  })
+
   return routes
 }

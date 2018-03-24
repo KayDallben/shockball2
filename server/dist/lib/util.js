@@ -40,7 +40,9 @@ function reverseString(stringValue) {
 
 function testPromise() {
   var promise = new Promise(function (resolve, reject) {
-    var data = { data: 'somestuff' };
+    var data = {
+      data: 'somestuff'
+    };
     try {
       resolve(data);
     } catch (error) {
@@ -53,8 +55,6 @@ function testPromise() {
 function generateSummaryRecords(events) {
   //season, matches, goals, passes, blocks, tackles, goalAverage
   var currentSeasonEvents = getSeasonRecords('1', events);
-  console.log('current season events is');
-  console.log(events);
   var playerRecords = [{
     season: '1',
     // events: getSeasonRecords('1', currentSeasonEvents),

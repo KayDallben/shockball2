@@ -14,6 +14,13 @@ exports.default = {
   listParams: _joi2.default.object().keys({}),
   listOneParams: _joi2.default.object().keys({
     id: _joi2.default.string().required()
+  }),
+  updateParams: _joi2.default.object().keys({
+    regimen: {
+      value: _joi2.default.string().required(),
+      label: _joi2.default.string().required()
+    },
+    access_token: _joi2.default.string().required()
   })
 };
 //# sourceMappingURL=Player.js.map

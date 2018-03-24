@@ -122,7 +122,7 @@ function increment(valueToChange, amount, cap) {
 
 function trainPlayer(player) {
     //check for training regimen
-    if (player.regimen === 'wing') {
+    if (player.regimen === 'Wing') {
         // primary skill passing, secondary endurance
         player.blocking = decrement(player.blocking, .25, player.blockingCap)
         player.throwing = decrement(player.throwing, .25, player.throwingCap)
@@ -133,7 +133,7 @@ function trainPlayer(player) {
         player.morale = increment(player.morale, 1)
         player.fatigue = increment(player.fatigue, 1)
         player.leadership = increment(player.leadership, .25)
-    } else if (player.regimen === 'guard') {
+    } else if (player.regimen === 'Guard') {
         // primary skill blocking, secondary toughness
         player.blocking = increment(player.blocking, 1, player.blockingCap)
         player.throwing = decrement(player.throwing, .25, player.throwingCap)
@@ -144,7 +144,7 @@ function trainPlayer(player) {
         player.morale = increment(player.morale, 1)
         player.fatigue = increment(plaery.fatigue, 1)
         player.leadership = increment(player.leadership, .25)
-    } else if (player.regimen === 'center') {
+    } else if (player.regimen === 'Center') {
         // primary skill throwing, secondary vision
         player.blocking = decrement(player.blocking, .25, player.blockingCap) 
         player.throwing = increment(player.throwing, 1, player.throwingCap)
@@ -169,7 +169,10 @@ function trainPlayer(player) {
         player.leadership = decrement(player.leadership, 1)
     }
     //we reset the regimen to require daily picking of training
-    player.regimen = null
+    player.regimen = {
+        value: 'none',
+        label: 'Please select'
+    }
     player.lastUpdated = FieldValue.serverTimestamp()
     //clean up our cap props
     delete player.blockingCap
@@ -183,7 +186,7 @@ function trainPlayer(player) {
 }
 
 async function updatePlayer(player) {
-    return db.collection('players').doc(player.createdAsUid).set(player)
+    return db.collection('players').doc(player.createdAsUid).update(player)
 }
 
 init()
