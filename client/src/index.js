@@ -6,7 +6,6 @@ import App from './App';
 import Store from './store/store'
 import http from './http/http'
 import { startRouter } from './router';
-console.log(http)
 const store = new Store(http)
 startRouter(store)
 // import registerServiceWorker from './registerServiceWorker';
