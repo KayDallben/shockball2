@@ -46,6 +46,8 @@ var ProfileController = function () {
     _classCallCheck(this, ProfileController);
 
     this.players = db.collection('players');
+    this.teams = db.collection('teams');
+    this.contracts = db.collection('contracts');
     this.playerCaps = db.collection('playerCaps');
     this.logger = logger;
   }
@@ -259,13 +261,62 @@ var ProfileController = function () {
     value: function checkIfPlayerExists(uid) {
       var _this = this;
 
-      return this.players.doc(uid).get().then(function (doc) {
-        if (doc.exists) {
-          return doc.data();
-        } else {
-          return false;
-        }
-      }).catch(function (error) {
+      return this.players.doc(uid).get().then(function () {
+        var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(doc) {
+          var playerData;
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  if (!doc.exists) {
+                    _context4.next = 13;
+                    break;
+                  }
+
+                  playerData = doc.data();
+
+                  playerData.teamData = {};
+                  playerData.contractData = {};
+
+                  if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
+                    _context4.next = 7;
+                    break;
+                  }
+
+                  _context4.next = 7;
+                  return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
+                    playerData.teamData = doc2.data();
+                  });
+
+                case 7:
+                  if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
+                    _context4.next = 10;
+                    break;
+                  }
+
+                  _context4.next = 10;
+                  return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
+                    playerData.contractData = doc3.data();
+                  });
+
+                case 10:
+                  return _context4.abrupt('return', playerData);
+
+                case 13:
+                  return _context4.abrupt('return', false);
+
+                case 14:
+                case 'end':
+                  return _context4.stop();
+              }
+            }
+          }, _callee4, _this);
+        }));
+
+        return function (_x6) {
+          return _ref4.apply(this, arguments);
+        };
+      }()).catch(function (error) {
         _this.logger.error(error);
       });
     }
