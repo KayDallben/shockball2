@@ -14,6 +14,8 @@ class ProfileController {
 
   constructor(db, logger) {
     this.players = db.collection('players')
+    this.teams = db.collection('teams')
+    this.contracts = db.collection('contracts')
     this.playerCaps = db.collection('playerCaps')
     this.logger = logger
   }
@@ -107,9 +109,22 @@ class ProfileController {
   }
 
   checkIfPlayerExists(uid) {
-    return this.players.doc(uid).get().then(doc => {
+    return this.players.doc(uid).get().then(async(doc) => {
       if (doc.exists) {
-        return doc.data()
+        let playerData = doc.data()
+        playerData.teamData = {}
+        playerData.contractData = {}
+        if (playerData.teamUid && playerData.teamUid.length > 0) {
+          await this.teams.doc(playerData.teamUid).get().then((doc2) => {
+            playerData.teamData = doc2.data()
+          })
+        }
+        if (playerData.contractUid && playerData.contractUid.length > 0) {
+          await this.contracts.doc(playerData.contractUid).get().then((doc3) => {
+            playerData.contractData = doc3.data()
+          })
+        }
+        return playerData
       } else {
         return false
       }

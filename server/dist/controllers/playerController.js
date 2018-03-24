@@ -29,6 +29,8 @@ var PlayerController = function () {
     _classCallCheck(this, PlayerController);
 
     this.players = db.collection('players');
+    this.teams = db.collection('teams');
+    this.contracts = db.collection('contracts');
     this.logger = logger;
   }
 
@@ -101,38 +103,85 @@ var PlayerController = function () {
   }, {
     key: 'listOne',
     value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
+        var _this = this;
+
         var validation;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 validation = _joi2.default.validate(req.params, _Player2.default.listOneParams);
 
                 if (!(validation.error === null)) {
-                  _context2.next = 13;
+                  _context3.next = 13;
                   break;
                 }
 
-                _context2.prev = 2;
-                _context2.next = 5;
-                return this.players.doc(req.params.id).get().then(function (doc) {
-                  res.status(200).send(doc.data());
-                });
+                _context3.prev = 2;
+                _context3.next = 5;
+                return this.players.doc(req.params.id).get().then(function () {
+                  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(doc) {
+                    var playerData;
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            playerData = doc.data();
+
+                            playerData.teamData = {};
+                            playerData.contractData = {};
+
+                            if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
+                              _context2.next = 6;
+                              break;
+                            }
+
+                            _context2.next = 6;
+                            return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
+                              playerData.teamData = doc2.data();
+                            });
+
+                          case 6:
+                            if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
+                              _context2.next = 9;
+                              break;
+                            }
+
+                            _context2.next = 9;
+                            return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
+                              playerData.contractData = doc3.data();
+                            });
+
+                          case 9:
+                            res.status(200).send(playerData);
+
+                          case 10:
+                          case 'end':
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, _this);
+                  }));
+
+                  return function (_x5) {
+                    return _ref3.apply(this, arguments);
+                  };
+                }());
 
               case 5:
-                _context2.next = 11;
+                _context3.next = 11;
                 break;
 
               case 7:
-                _context2.prev = 7;
-                _context2.t0 = _context2['catch'](2);
+                _context3.prev = 7;
+                _context3.t0 = _context3['catch'](2);
 
-                this.logger.error(_context2.t0);
-                res.status(400).send(_context2.t0);
+                this.logger.error(_context3.t0);
+                res.status(400).send(_context3.t0);
 
               case 11:
-                _context2.next = 15;
+                _context3.next = 15;
                 break;
 
               case 13:
@@ -141,10 +190,10 @@ var PlayerController = function () {
 
               case 15:
               case 'end':
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this, [[2, 7]]);
+        }, _callee3, this, [[2, 7]]);
       }));
 
       function listOne(_x3, _x4) {
