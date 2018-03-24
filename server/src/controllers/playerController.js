@@ -3,12 +3,14 @@ import Joi from 'joi'
 
 //internal
 import PlayerSchema from '../models/Player.js'
+import * as util from '../lib/util.js'
 
 class PlayerController {
 
   constructor(db, logger) {
     this.players = db.collection('players')
     this.teams = db.collection('teams')
+    this.events = db.collection('events')
     this.contracts = db.collection('contracts')
     this.logger = logger
   }
@@ -49,6 +51,7 @@ class PlayerController {
           let playerData = doc.data()
           playerData.teamData = {}
           playerData.contractData = {}
+          playerData.records = []
           if (playerData.teamUid && playerData.teamUid.length > 0) {
             await this.teams.doc(playerData.teamUid).get().then((doc2) => {
               playerData.teamData = doc2.data()
@@ -59,6 +62,15 @@ class PlayerController {
               playerData.contractData = doc3.data()
             })
           }
+          await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
+            let events = []
+            snapshot.forEach((doc4) => {
+              events.push(doc4.data())
+            })
+            if (events.length > 0) {
+              playerData.records = util.generateSummaryRecords(events)
+            }
+          })
           res.status(200).send(playerData)
         })
       } catch (error) {
@@ -70,7 +82,6 @@ class PlayerController {
       res.status(400).send(validation.error)
     }
   }
-
 }
 
 export default PlayerController

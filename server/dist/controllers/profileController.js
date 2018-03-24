@@ -30,6 +30,10 @@ var _Profile = require('../models/Profile.js');
 
 var _Profile2 = _interopRequireDefault(_Profile);
 
+var _util = require('../lib/util.js');
+
+var util = _interopRequireWildcard(_util);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -48,6 +52,7 @@ var ProfileController = function () {
     this.players = db.collection('players');
     this.teams = db.collection('teams');
     this.contracts = db.collection('contracts');
+    this.events = db.collection('events');
     this.playerCaps = db.collection('playerCaps');
     this.logger = logger;
   }
@@ -269,7 +274,7 @@ var ProfileController = function () {
               switch (_context4.prev = _context4.next) {
                 case 0:
                   if (!doc.exists) {
-                    _context4.next = 13;
+                    _context4.next = 15;
                     break;
                   }
 
@@ -300,12 +305,24 @@ var ProfileController = function () {
                   });
 
                 case 10:
+                  _context4.next = 12;
+                  return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+                    var events = [];
+                    snapshot.forEach(function (doc) {
+                      events.push(doc.data());
+                    });
+                    if (events.length > 0) {
+                      playerData.records = util.generateSummaryRecords(events);
+                    }
+                  });
+
+                case 12:
                   return _context4.abrupt('return', playerData);
 
-                case 13:
+                case 15:
                   return _context4.abrupt('return', false);
 
-                case 14:
+                case 16:
                 case 'end':
                   return _context4.stop();
               }

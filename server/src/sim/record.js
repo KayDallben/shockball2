@@ -1,7 +1,8 @@
 export default class Record {
-  constructor(fixtureId) {
+  constructor(fixtureId, season) {
     this.records = []
     this.fixtureId = fixtureId
+    this.season = season
   }
 
   update() {
@@ -31,7 +32,8 @@ export default class Record {
       recordPitchSide: player.homeGoalSide,
       recordType: gameEvent,
       recordCommentator: this.getCommentatorText(player, gameEvent),
-      fixtureId: this.fixtureId
+      fixtureId: this.fixtureId,
+      season: this.season
     })
   }
 

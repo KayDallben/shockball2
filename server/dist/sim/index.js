@@ -39,7 +39,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function runMatch(serverMatchData, db) {
   // const matchData = new MatchData()
-  var record = new _record2.default(serverMatchData.fixtureId);
+  var record = new _record2.default(serverMatchData.fixtureId, serverMatchData.season);
   var fps = 5;
   var maxGameTime = 70;
   var main = new _main2.default(serverMatchData, _world2.default, _player2.default, _pitch2.default, _board2.default, _ball2.default, record);

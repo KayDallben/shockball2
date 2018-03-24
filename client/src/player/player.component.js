@@ -4,7 +4,9 @@ import moment from 'moment'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
+import ReactDataGrid from 'react-data-grid'
 import { Radar } from 'react-chartjs'
+
 import NumberFormat from 'react-number-format'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
@@ -14,6 +16,58 @@ import './player.scss'
 class Player extends React.Component {
   constructor(props) {
     super(props)
+    this._recordColumns = [
+      {
+        key: 'season',
+        name: 'Season',
+        width: 100
+      },
+      {
+        key: 'matches',
+        name: 'Matches Played',
+        width: 150
+      },
+      {
+        key: 'goals',
+        name: 'Goals',
+        width: 100
+      },
+      {
+        key: 'shots',
+        name: 'Shots',
+        width: 100        
+      },
+      {
+        key: 'blocksShot',
+        name: 'Goals Blocked',
+        width: 150
+      },
+      {
+        key: 'passes',
+        name: 'Passes',
+        width: 100
+      },
+      {
+        key: 'blocksPass',
+        name: 'Passes Blocked',
+        width: 150
+      },
+      {
+        key: 'runsBall',
+        name: 'Runs',
+        width: 100
+      },
+      {
+        key: 'tackles',
+        name: 'Tackles',
+        width: 100
+      },
+      {
+        key: 'goalAverage',
+        name: 'Goal Average',
+        width: 150
+      }
+    ]
   }
 
   renderPlayerTeamInfo() {
@@ -80,6 +134,10 @@ class Player extends React.Component {
     )
   }
 
+  rowGetter = (i) => {
+    return this.props.view.player.value.records[i];
+  }
+
   render() {
     switch (this.props.view.player.state) {
       case "pending":
@@ -103,19 +161,30 @@ class Player extends React.Component {
               </div>
               <div className="player-body">
                 <div className="stats">
-                  <h2>Skills</h2>
-                  <div className="skill">Passing: {this.props.view.player.value.passing}</div>
-                  <div className="skill">Throwing: {this.props.view.player.value.throwing}</div>
-                  <div className="skill">Blocking: {this.props.view.player.value.blocking}</div>
-                  <div className="skill">Vision: {this.props.view.player.value.vision}</div>
-                  <div className="skill">Toughness: {this.props.view.player.value.toughness}</div>
-                  <div className="skill">Endurance: {this.props.view.player.value.endurance}</div>
-                  <h2>Modifiers</h2>
-                  <div className="modifier">Leadership: {this.props.view.player.value.leadership}</div>
-                  <div className="modifier">Morale: {this.props.view.player.value.morale}</div>
-                  <div className="modifier">Fatigue: {this.props.view.player.value.fatigue}</div>
-                  <div className="modifier">Aggression: {this.props.view.player.value.aggression}</div> 
+                  <div className="skills">
+                    <h2>Skills</h2>
+                    <div className="skill">Passing: {this.props.view.player.value.passing}</div>
+                    <div className="skill">Throwing: {this.props.view.player.value.throwing}</div>
+                    <div className="skill">Blocking: {this.props.view.player.value.blocking}</div>
+                    <div className="skill">Vision: {this.props.view.player.value.vision}</div>
+                    <div className="skill">Toughness: {this.props.view.player.value.toughness}</div>
+                    <div className="skill">Endurance: {this.props.view.player.value.endurance}</div>
+                  </div>
+                  <div className="modifiers">
+                    <h2>Modifiers</h2>
+                    <div className="modifier">Leadership: {this.props.view.player.value.leadership}</div>
+                    <div className="modifier">Morale: {this.props.view.player.value.morale}</div>
+                    <div className="modifier">Fatigue: {this.props.view.player.value.fatigue}</div>
+                    <div className="modifier">Aggression: {this.props.view.player.value.aggression}</div> 
+                  </div>
                 </div>
+              </div>
+              <div className="player-records">
+                <ReactDataGrid
+                columns={this._recordColumns}
+                rowGetter={this.rowGetter}
+                rowsCount={this.props.view.player.value.records.length}
+                minHeight={500} />
               </div>
             </div>
           </div>

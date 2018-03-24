@@ -9,7 +9,7 @@ import Record from './record'
 
 export function runMatch(serverMatchData, db) {
   // const matchData = new MatchData()
-  const record = new Record(serverMatchData.fixtureId)
+  const record = new Record(serverMatchData.fixtureId, serverMatchData.season)
   const fps = 5
   const maxGameTime = 70
   let main = new Main(serverMatchData, World, Player, Pitch, Board, Ball, record)
