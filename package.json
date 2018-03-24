@@ -6,7 +6,6 @@
   },
   "description": "second iteration of shockball for star wars combine",
   "scripts": {
-    "postinstall": "cd client && npm install",
     "build": "npm run buildClient && npm run copyClientBuild",
     "start": "cross-env NODE_ENV=production npm run build && nodemon server/dist",
     "coverage": "jest --coverage",
