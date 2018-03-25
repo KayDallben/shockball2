@@ -133,20 +133,32 @@ var PlayerController = function () {
                 _context3.next = 7;
                 return this.players.doc(id).update(updateSet).then(function () {
                   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(doc) {
-                    var updatedLine;
+                    var errorMessage;
                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            _context2.next = 2;
+                            if (!doc._writeTime) {
+                              _context2.next = 5;
+                              break;
+                            }
+
+                            _context2.next = 3;
                             return _this.players.doc(id).get().then(function (doc2) {
                               res.status(200).send(doc2.data());
                             });
 
-                          case 2:
-                            updatedLine = _context2.sent;
-
                           case 3:
+                            _context2.next = 8;
+                            break;
+
+                          case 5:
+                            errorMessage = 'Failed to write update to player for training regimen.';
+
+                            _this.logger.error(errorMessage);
+                            res.status(400).send(errorMessage);
+
+                          case 8:
                           case 'end':
                             return _context2.stop();
                         }

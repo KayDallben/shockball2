@@ -6,8 +6,9 @@
   },
   "description": "second iteration of shockball for star wars combine",
   "scripts": {
-    "build": "npm run buildClient && npm run copyClientBuild",
+    "build": "npm run buildClient && npm run copyClientBuild && npm run buildServer",
     "start": "cross-env NODE_ENV=production nodemon server/dist",
+    "dev": "npm run build && cross-env NODE_ENV=development nodemon server/dist",
     "coverage": "jest --coverage",
     "test": "jest",
     "lintMac": "DEBUG=eslint:cli-engine && eslint server/src --ignore-pattern client/src/docs/",

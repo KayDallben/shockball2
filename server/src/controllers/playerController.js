@@ -52,10 +52,14 @@ class PlayerController {
           regimen: JSON.parse(req.query.regimen)
         }
         await this.players.doc(id).update(updateSet).then(async (doc) => {
-          if (doc.exists) {
+          if (doc._writeTime) {
             await this.players.doc(id).get().then((doc2) => {
               res.status(200).send(doc2.data())
             })
+          } else {
+            const errorMessage = 'Failed to write update to player for training regimen.'
+            this.logger.error(errorMessage)
+            res.status(400).send(errorMessage)
           }
         })
       } catch (error) {
