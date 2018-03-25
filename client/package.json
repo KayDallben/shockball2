@@ -52,6 +52,7 @@
     "react-data-grid-addons": "^3.0.11",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.2.0",
+    "react-ga": "^2.4.1",
     "react-number-format": "^3.3.0",
     "react-router-dom": "^4.2.2",
     "react-select": "^1.2.1",

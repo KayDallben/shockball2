@@ -7,6 +7,7 @@ import {
 import { fromPromise } from 'mobx-utils'
 import axios from 'axios'
 import moment from 'moment'
+import * as ga from '../ga/ga'
 
 const hostUrl = window.location.protocol + "//" + window.location.host + "/"
 
@@ -58,6 +59,7 @@ class Store {
   @observable authCode = sessionStorage.getItem("swcAuthorizationCode")
 
   @action showHomePage() {
+    ga.pageview()
     this.currentView = {
       name: 'home',
       player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.createdAsUid, this.accessToken))
@@ -65,12 +67,14 @@ class Store {
   }
 
   @action showOfficePage() {
+    ga.pageview()
     this.currentView = {
       name: 'office'
     }  
   }
 
   @action showPlayerPage(playerId) {
+    ga.pageview()
     if (playerId) {
       this.currentView = {
         name: 'player',
@@ -93,6 +97,7 @@ class Store {
   }
 
   @action showSquadPage(squadId) {
+    ga.pageview()
     const defaultSquad = squadId ? squadId : this.currentUser.teamUid 
     this.currentView = {
       name: 'squad',
@@ -102,6 +107,7 @@ class Store {
   }
 
   @action showLeaguePage() {
+    ga.pageview()
     this.currentView = {
       name: 'league',
       fixtures: fromPromise(this.http.getAllFixtures(hostUrl + 'api/fixtures', this.accessToken))
@@ -109,6 +115,7 @@ class Store {
   }
 
   @action showFixturePage(fixtureId) {
+    ga.pageview()
     this.currentView = {
       name: 'fixture',
       fixtureId,
@@ -117,6 +124,7 @@ class Store {
   }
 
   @action showTransfersPage() {
+    ga.pageview()
     this.currentView = {
       name: 'transfers',
       players: fromPromise(this.http.genericFetch(hostUrl + 'api/players', this.accessToken))
@@ -146,6 +154,7 @@ class Store {
   }
 
   @action setTrainingRegimen = (selectedOption) => {
+    ga.event('Training Regimen', 'clicked')
     axios({
       method: 'PUT',
       url: hostUrl + 'api/players/' + this.currentUser.createdAsUid,
@@ -192,6 +201,7 @@ class Store {
         }
       }).then(response => {
         this.setUser(response.data)
+        ga.init(this.currentUser.createdAsUid)
         if (response.data.teamUid) {
           this.getUserTeam(response.data.teamUid)
         }
