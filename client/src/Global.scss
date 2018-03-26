@@ -4,6 +4,12 @@ $menuBorder: 1px solid rgba(0,0,0,0.5);
 $fontFamily: Rubik, Arial, serif;
 $transition: all .2s ease-in-out;
 
+@mixin mobile {
+  @media (max-width: 415px) {
+    @content;
+  }
+}
+
 .root {
   a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):focus, a:not([href]):not([tabindex]):hover {
     color: #007bff;

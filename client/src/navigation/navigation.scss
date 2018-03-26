@@ -26,19 +26,27 @@
           background-color: rgba(0, 0, 0, 0.8);
           transition: $transition;
         }
-        .title-icon {
-          font-size: 3.0em;
-          margin-top: 17px;
-          color: #ccc;
-        }
-        .title {
-          position: absolute;
-          bottom: 12px;
-          left: 0;
-          right: 0;
-          color: #e1e1e1;
-          font-size: 1.4em;
-          font-weight: bold;
+        .title-and-icon {
+          .title-icon {
+            font-size: 3.0em;
+            margin-top: 17px;
+            color: #ccc;
+            @include mobile {
+              margin-top: 26px;
+            }
+          }
+          .title {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            color: #e1e1e1;
+            font-size: 1.4em;
+            font-weight: bold;
+            @include mobile {
+              display: none;
+            }
+          }
         }
       }
     }

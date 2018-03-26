@@ -27,6 +27,7 @@ class App extends Component {
   componentWillMount() {
     this.props.store.handleUserSetup()
   }
+
   render() {
     return (
       <div className="main-wrapper" style={this.setBackgroundImage(shockballBackground, '1')}>
