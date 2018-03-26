@@ -98,6 +98,19 @@ class PlayerController {
             })
             if (events.length > 0) {
               playerData.records = util.generateSummaryRecords(events)
+            } else {
+              playerData.records = [{
+                season: '1',
+                matches: 0,
+                goals: 0,
+                shots: 0,
+                passes: 0,
+                blocksPass: 0,
+                blocksShot: 0,
+                tackles: 0,
+                runsBall: 0,
+                goalAverage: 0
+              }]
             }
           })
           res.status(200).send(playerData)
