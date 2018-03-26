@@ -14,6 +14,7 @@ class ErrorBoundary extends React.Component {
       //Display fallback UI
       this.setState({ hasError: true })
       // we should log these errors to splunk here, but no need to put into console because they will be there anyway
+      Raven.captureException(error, { extra: info });
   }
 
   render() {
