@@ -21,7 +21,7 @@ class Navigation extends React.Component {
         const linkPath = item.title === 'Me' ? '' : item.title.toLowerCase()
         return (
           <a onClick={() => { item.routeMethod()}}>
-            <div key={index}>
+            <div className="title-and-icon" key={index}>
               <div className={className}></div>
               <div className="title">{item.title}</div>
             </div>

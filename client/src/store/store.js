@@ -21,10 +21,15 @@ class Store {
   }
 
   @observable currentView = null
+  @observable topBarView = {
+    currentUserTeam: {
+      teamPicUrl: '',
+      state: 'pending'
+    }
+  }
   @observable currentUser = {
     image: ''
   }
-  @observable currentUserTeam = {}
   @observable navData = {
     navLinks: [
       {
@@ -93,6 +98,14 @@ class Store {
         playerId,
         player: fromPromise(this.setUserProfile())
       }
+    }
+  }
+
+  @action showUserTeam = (teamId) => {
+    this.topBarView = {
+      name: 'topBar',
+      teamId,
+      currentUserTeam: fromPromise(this.http.genericFetch(hostUrl + 'api/teams/' + teamId, this.accessToken))
     }
   }
 
@@ -167,17 +180,6 @@ class Store {
     })
   }
 
-  @action getUserTeam = (teamUid) => {
-    axios({
-      method: 'GET',
-      url: hostUrl + 'api/teams/' + teamUid,
-      params: {
-        access_token: this.accessToken
-      }
-    }).then(response => {
-      this.setUserTeam(response.data)
-    });
-  }
   @action performSwcLogin = () => {
     window.location.href = "http://www.swcombine.com/ws/oauth2/auth/?response_type=code&client_id=ac3e2848095aa5cb82f91f7fc7ac7ad53b5a51a1&scope=CHARACTER_READ&redirect_uri=" + hostUrl + "authorize/index.html&state=auth&access_type=offline"
   }
@@ -186,9 +188,6 @@ class Store {
   }
   @action setUser = (data) => {
     this.currentUser = data
-  }
-  @action setUserTeam = (data) => {
-    this.currentUserTeam = data
   }
 
   @action setUserProfile = () => {
@@ -203,7 +202,7 @@ class Store {
         this.setUser(response.data)
         ga.init(this.currentUser.createdAsUid)
         if (response.data.teamUid) {
-          this.getUserTeam(response.data.teamUid)
+          this.showUserTeam(response.data.teamUid)
         }
         resolve(response.data)
       }).catch(reject)
