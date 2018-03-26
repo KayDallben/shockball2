@@ -40,7 +40,6 @@ class League extends React.Component {
   }
 
   render() {
-    throw new Error('some test')
     switch (this.props.view.fixtures.state) {
       case "pending":
           return <Spinner name='ball-scale-ripple-multiple' />
