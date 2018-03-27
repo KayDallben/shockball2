@@ -6,8 +6,9 @@ import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
 import ReactDataGrid from 'react-data-grid'
 import { Radar } from 'react-chartjs'
-import Select from 'react-select'
+import Select2 from 'react-select'
 import 'react-select/dist/react-select.css'
+import { Form, Text, TextArea, Radio, RadioGroup, Select, Checkbox } from 'react-form'
 
 import NumberFormat from 'react-number-format'
 
@@ -69,6 +70,20 @@ class Player extends React.Component {
         name: 'Goal Average',
         width: 150
       }
+    ],
+    this.statusOptions = [
+      {
+        label: 'Single',
+        value: 'single',
+      },
+      {
+        label: 'In a Relationship',
+        value: 'relationship',
+      },
+      {
+        label: "It's Complicated",
+        value: 'complicated',
+      },
     ]
   }
 
@@ -90,6 +105,51 @@ class Player extends React.Component {
     }
   }
 
+  offerContract() {
+    this.props.store.showModal(
+      <div className="contract-wrapper">
+        <div className="modal-title">Offer Contract</div>
+        <div className="player-value">
+            <h3>Player:</h3>
+            <div className="player-photo">
+              <img src={this.props.view.player.value.image}/>
+            </div>
+            <div className="total-value">
+              <div>Market Value:</div>
+              <NumberFormat value={this.props.view.player.value.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+        </div>
+        <div className="contract-offer">
+          <h3>Contract Bid:</h3>
+          <Form onSubmit={submittedValues => console.log(submittedValues)}>
+            {formApi => (
+              <form onSubmit={formApi.submitForm} id="contract">
+                <label htmlFor="firstName">First name</label>
+                <Text field="firstName" id="firstName" />
+                <label htmlFor="lastName">Last name</label>
+                <Text field="lastName" id="lastName" />
+                <RadioGroup field="gender">
+                  <label htmlFor="male" className="mr-2">Male</label>
+                  <Radio value="male" id="male" className="mr-3 d-inline-block" />
+                  <label htmlFor="female" className="mr-2">Female</label>
+                  <Radio value="female" id="female" className="d-inline-block" />
+                </RadioGroup>
+                <label htmlFor="bio">Bio</label>
+                <TextArea field="bio" id="bio" />
+                <label htmlFor="authorize" className="mr-2">Authorize</label>
+                <Checkbox field="authorize" id="authorize" className="d-inline-block" />
+                <label htmlFor="status" className="d-block">Relationship status</label>
+                <Select field="status" id="status" options={this.statusOptions} className="mb-4" />
+                <button type="submit" className="mb-4 btn btn-primary">
+                  Submit
+                </button>
+              </form>
+            )}
+          </Form>
+        </div>
+      </div>
+    )
+  }
+
   renderPlayerValueInfo() {
     if (this.props.view.player.value.marketValue) {
       return (
@@ -103,9 +163,17 @@ class Player extends React.Component {
         </div>
       )
     } else {
-      return (
-        <div className="player-value"></div>
-      )
+      if (!this.props.view.player.value.teamUid && this.props.store.currentUser.teamManager) {
+        return (
+          <div className="player-value">
+            <div className="contract-offer" onClick={this.offerContract.bind(this)}>Offer Contract</div>
+          </div>
+        )
+      } else {
+        return (
+          <div className="player-value"></div>
+        )
+      }
     }
   }
 
@@ -148,7 +216,7 @@ class Player extends React.Component {
       return (
         <div className="train">
           <h2>Training Regimen</h2>
-          <Select name="train-field"
+          <Select2 name="train-field"
             value={this.props.store.currentUser.regimen}
             onChange={this.handleTrainChange.bind(this)}
             options={[
