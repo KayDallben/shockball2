@@ -9,6 +9,8 @@ import LoginController from '../controllers/loginController'
 import TeamController from '../controllers/teamController'
 import FixtureController from '../controllers/fixtureController'
 import PlayerController from '../controllers/playerController'
+import AccountController from '../controllers/accountController'
+import ContractController from '../controllers/contractController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
@@ -16,6 +18,8 @@ export default (db, logger) => {
   const teamController = new TeamController(db, logger)
   const fixtureController = new FixtureController(db, logger)
   const playerController = new PlayerController(db, logger)
+  const accountController = new AccountController(db, logger)
+  const contractController = new ContractController(db, logger)
 
   /**
    * @swagger
@@ -274,6 +278,99 @@ export default (db, logger) => {
    */
   routes.put('/players/:id', authCheck, (req, res) => {
     playerController.update(req, res)
+  })
+
+  /**
+   * @swagger
+   * /api/accounts/{id}:
+   *   x-swagger-router-controller: ../controllers/accountController
+   *   get:
+   *     tags:
+   *       - Account
+   *     description: Get account by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: player's account id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Account'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Account"
+   */
+  routes.get('/accounts/:id', authCheck, (req, res) => {
+    accountController.listOne(req, res)
+  })
+
+  /**
+   * @swagger
+   * /api/contracts:
+   *   x-swagger-router-controller: ../controllers/contractController
+   *   get:
+   *     tags:
+   *       - Contract
+   *     description: Get all contracts
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - queryProp: contract property to query by
+   *         description: contract property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - queryVal: contract property value to query by
+   *         description: contract property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Contract"
+   */
+  routes.get('/contracts', authCheck, (req, res) => {
+    contractController.list(req, res)
+  })
+  /**
+   * @swagger
+   * /api/contracts/{id}:
+   *   x-swagger-router-controller: ../controllers/contractController
+   *   get:
+   *     tags:
+   *       - Contract
+   *     description: Get contract by id
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: contract's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Contract"
+   */
+  routes.get('/contracts/:id', authCheck, (req, res) => {
+    contractController.listOne(req, res)
   })
 
   return routes

@@ -1,6 +1,8 @@
 import axios from 'axios'
 import moment from 'moment'
 
+const hostUrl = window.location.protocol + "//" + window.location.host + "/"
+
 function genericFetch(url, token) {
     return new Promise((resolve,reject) => {
         axios({
@@ -11,6 +13,59 @@ function genericFetch(url, token) {
             }
           }).then(response => {
             resolve(response.data)
+          }).catch(reject);
+    })
+}
+function fetchTeamAdmin(uid, token) {
+    return new Promise((resolve, reject) => {
+        let teamOffice = {}
+        axios({
+            method: 'GET',
+            url: hostUrl + 'api/accounts/' + uid,
+            params: {
+              access_token: token
+            }
+          }).then((response) => {
+            teamOffice.account = response.data
+            axios({
+                method: 'GET',
+                url: hostUrl + 'api/contracts',
+                params: {
+                  queryProp: 'teamUid',
+                  queryVal: uid,
+                  access_token: token
+                }
+            }).then((response2) => {
+                teamOffice.contracts = response2.data
+                resolve(teamOffice)
+            }).catch(reject);
+          }).catch(reject);
+    })
+}
+
+function fetchPlayerAdmin(uid, token) {
+    return new Promise((resolve, reject) => {
+        let playerOffice = {}
+        axios({
+            method: 'GET',
+            url: hostUrl + 'api/accounts/' + uid,
+            params: {
+              access_token: token
+            }
+          }).then((response) => {
+            playerOffice.account = response.data
+            axios({
+                method: 'GET',
+                url: hostUrl + 'api/contracts',
+                params: {
+                  queryProp: 'playerUid',
+                  queryVal: uid,
+                  access_token: token
+                }
+            }).then((response2) => {
+                playerOffice.contracts = response2.data
+                resolve(playerOffice)
+            }).catch(reject);
           }).catch(reject);
     })
 }
@@ -113,6 +168,8 @@ function createStats(events) {
 
 export default {
     genericFetch,
+    fetchTeamAdmin,
+    fetchPlayerAdmin,
     getSingleFixture,
     getAllFixtures,
     getUserTeam

@@ -73,9 +73,17 @@ class Store {
 
   @action showOfficePage() {
     ga.pageview()
-    this.currentView = {
-      name: 'office'
-    }  
+    if (this.currentUser.teamManager) {
+      this.currentView = {
+        name: 'office',
+        office: fromPromise(this.http.fetchTeamAdmin(this.currentUser.teamManager, this.accessToken))
+      }
+    } else {
+      this.currentView = {
+        name: 'office',
+        office: fromPromise(this.http.fetchPlayerAdmin(this.currentUser.createdAsUid, this.accessToken))
+      }
+    }
   }
 
   @action showPlayerPage(playerId) {
