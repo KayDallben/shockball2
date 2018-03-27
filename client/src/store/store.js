@@ -19,7 +19,10 @@ class Store {
   constructor(http) {
     this.http = http
   }
-
+  @observable modal = {
+    show: false,
+    body: null
+  }
   @observable currentView = null
   @observable topBarView = {
     currentUserTeam: {
@@ -62,6 +65,16 @@ class Store {
 
   @observable accessToken = sessionStorage.getItem('swcAccessToken')
   @observable authCode = sessionStorage.getItem("swcAuthorizationCode")
+
+  @action showModal(body) {
+    this.modal.show = true
+    this.modal.body = body
+  }
+
+  @action closeModal() {
+    this.modal.show = false
+    this.modal.body = null
+  }
 
   @action showHomePage() {
     ga.pageview()

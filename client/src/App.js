@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
-
+import Modal, {closeStyle} from 'simple-react-modal'
 
 import './App.scss'
 import './Global.scss'
@@ -38,6 +38,17 @@ class App extends Component {
           </ErrorBoundary>
           <ErrorBoundary title={'Dashboard'}>
             <Dashboard store={this.props.store}/>
+          </ErrorBoundary>
+          <ErrorBoundary title={'Modal'}>
+            <Modal show={this.props.store.modal.show}
+              className="shockball-modal"
+              containerClassName="inner-shockball-modal"
+              closeOnOuterClick={true}
+              onClose={this.props.store.closeModal.bind(this.props.store)}>
+                <a style={closeStyle}
+                  onClick={this.props.store.closeModal.bind(this.props.store)}>X</a>
+                {this.props.store.modal.body}
+            </Modal>
           </ErrorBoundary>
         </div>
       </div>

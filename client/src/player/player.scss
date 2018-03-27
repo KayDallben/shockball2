@@ -85,6 +85,18 @@
             justify-content: center;
             align-items: center;
             color: #cccccc;
+            .contract-offer {
+                border: 1px solid #026AAD;
+                padding: 8px;
+                border-radius: 4px;
+                background: #026AAD;
+                color: #f1f1f1;
+                &:hover {
+                    background: #0C93EB;
+                    color: #ffffff;
+                    cursor: pointer;
+                }
+            }
             .total-value, .team-wage, .contract-expiration {
                 font-weight: bold;
                 font-size: 1.2em;
