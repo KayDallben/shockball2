@@ -7,6 +7,7 @@ import { observer } from 'mobx-react'
 import Player from '../player/player.component'
 import Squad from '../squad/squad.component'
 import League from '../league/league.component'
+import Office from '../office/office.component'
 import Transfers from '../transfers/transfers.component'
 import Fixture from '../fixture/fixture.component'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
@@ -29,7 +30,7 @@ class Dashboard extends React.Component {
         case "fixture":
           return <Fixture view={view} store={store} />
         case "office":
-          return <div>office goes here</div>
+          return <Office view={view} store={store} />
         case "transfers":
           return <Transfers view={view} store={store} />
         default: 
