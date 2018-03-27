@@ -66,8 +66,8 @@ var AccountController = function () {
                             return _this.accounts.doc(req.params.id).getCollections().then(function (collections) {
                               collections.forEach(function (collection) {
                                 collection.get().then(function (snapshot) {
-                                  snapshot.forEach(function (doc) {
-                                    userAccount.transactions.push(doc.data());
+                                  snapshot.forEach(function (doc2) {
+                                    userAccount.transactions.push(doc2.data());
                                   });
                                   res.status(200).send(userAccount);
                                 });
