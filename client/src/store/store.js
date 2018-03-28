@@ -201,6 +201,18 @@ class Store {
     })
   }
 
+  @action createContract = (newContract) => {
+    ga.event('Contract Saved', 'form saved')
+    return axios({
+      method: 'POST',
+      url: hostUrl + 'api/contracts',
+      params: {
+        access_token: this.accessToken,
+      },
+      data: newContract
+    })
+  }
+
   @action performSwcLogin = () => {
     window.location.href = "http://www.swcombine.com/ws/oauth2/auth/?response_type=code&client_id=ac3e2848095aa5cb82f91f7fc7ac7ad53b5a51a1&scope=CHARACTER_READ&redirect_uri=" + hostUrl + "authorize/index.html&state=auth&access_type=offline"
   }

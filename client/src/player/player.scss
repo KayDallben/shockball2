@@ -85,6 +85,15 @@
             justify-content: center;
             align-items: center;
             color: #cccccc;
+            .contract-status {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+            }
+            .agent {
+                padding-top: 15px;
+            }
             .contract-offer {
                 border: 1px solid #026AAD;
                 padding: 8px;
