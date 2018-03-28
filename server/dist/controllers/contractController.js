@@ -158,7 +158,7 @@ var ContractController = function () {
     key: 'create',
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var validation, updateSet, newContract, updatedContract;
+        var validation, updateSet, newContract;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -166,7 +166,7 @@ var ContractController = function () {
                 validation = _joi2.default.validate(req.body, _Contract2.default.create);
 
                 if (!(validation.error === null)) {
-                  _context3.next = 20;
+                  _context3.next = 19;
                   break;
                 }
 
@@ -191,31 +191,30 @@ var ContractController = function () {
                 });
 
               case 11:
-                updatedContract = _context3.sent;
-                _context3.next = 18;
+                _context3.next = 17;
                 break;
 
-              case 14:
-                _context3.prev = 14;
+              case 13:
+                _context3.prev = 13;
                 _context3.t0 = _context3['catch'](2);
 
                 this.logger.error(_context3.t0);
                 res.status(400).send(_context3.t0);
 
-              case 18:
-                _context3.next = 22;
+              case 17:
+                _context3.next = 21;
                 break;
 
-              case 20:
+              case 19:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 22:
+              case 21:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[2, 14]]);
+        }, _callee3, this, [[2, 13]]);
       }));
 
       function create(_x5, _x6) {

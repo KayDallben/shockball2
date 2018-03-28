@@ -465,7 +465,7 @@ exports.default = function (db, logger) {
    *         name: teamName
    *         required: true
    *         schema:
-   *           $ref: '#/definitions/Contract' 
+   *           $ref: '#/definitions/Contract'
    *       - teamUid: Uid of purchasing team
    *         description: uid of purchasing team
    *         in: query
