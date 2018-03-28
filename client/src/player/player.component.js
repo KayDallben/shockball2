@@ -124,7 +124,7 @@ class Player extends React.Component {
     } else {
       if (!this.props.view.player.value.teamUid && this.props.store.currentUser.teamManager) {
         return (
-          <div className="contract-status">
+          <div className="contract-status agent">
             <div className="contract-offer" onClick={this.offerContract.bind(this)}>Offer Contract</div>
           </div>
         )
