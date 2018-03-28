@@ -38,7 +38,12 @@ sim > div {
       width: 100%;
     }
     a {
-      z-index: 11;
+      z-index: 11!important;
+      line-height: 24px!important;
+      position: absolute!important;
+      right: 15px!important;
+      top: 12px!important;
+      box-shadow: none!important;
     }
     .contract-wrapper {
       display: flex;
@@ -67,6 +72,14 @@ sim > div {
         #contract {
           display: flex;
           flex-direction: column;
+          button {
+            position: absolute;
+            bottom: 0;
+            right: 50px;
+          }
+          .displayErrors input:invalid {
+            border-color: red;
+          }
         }
       }
       .player-value {

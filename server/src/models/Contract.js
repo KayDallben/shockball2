@@ -8,5 +8,15 @@ export default {
   }),
   listOneParams: Joi.object().keys({
     id: Joi.string().required()
-  })
+  }),
+  create: Joi.object().keys({
+    playerName: Joi.string().required(),
+    playerUid: Joi.string().required(),
+    purchasePrice: Joi.string().required(),
+    currentSeason: Joi.number().required(),
+    acceptedDuration: Joi.number().required(),
+    status: Joi.string().required(),
+    teamName: Joi.string().required(),
+    teamUid: Joi.string().required()
+  }),
 }

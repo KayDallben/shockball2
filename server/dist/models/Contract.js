@@ -18,6 +18,16 @@ exports.default = {
   }),
   listOneParams: _joi2.default.object().keys({
     id: _joi2.default.string().required()
+  }),
+  create: _joi2.default.object().keys({
+    playerName: _joi2.default.string().required(),
+    playerUid: _joi2.default.string().required(),
+    purchasePrice: _joi2.default.string().required(),
+    currentSeason: _joi2.default.number().required(),
+    acceptedDuration: _joi2.default.number().required(),
+    status: _joi2.default.string().required(),
+    teamName: _joi2.default.string().required(),
+    teamUid: _joi2.default.string().required()
   })
 };
 //# sourceMappingURL=Contract.js.map

@@ -406,6 +406,83 @@ exports.default = function (db, logger) {
     contractController.listOne(req, res);
   });
 
+  /**
+   * @swagger
+   * /api/contracts:
+   *   x-swagger-router-controller: ../controllers/contractController
+   *   post:
+   *     tags:
+   *       - Contract
+   *     description: Creates a new Contract
+   *     operationId: create
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - acceptedDuration: time length of contract
+   *         description: time length of contract
+   *         in: query
+   *         name: acceptedDuration
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - currentSeason: the current season contract is created/modified in
+   *         description: the current season contract is created/modified in
+   *         in: query
+   *         name: currentSeason
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - playerName: name of player to be purchased
+   *         description: name of player to be purchased
+   *         in: query
+   *         name: playerName
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - playerUid: uid of player to be purchased
+   *         description: uid of player to be purchased
+   *         in: query
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - purchasePrice: purchasePrice of contract
+   *         description: purchasePrice of contract
+   *         in: query
+   *         name: purchasePrice
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - status: status of contract
+   *         description: status of contract
+   *         in: query
+   *         name: status
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - teamName: name of purchasing team
+   *         description: name of purchasing team
+   *         in: query
+   *         name: teamName
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract' 
+   *       - teamUid: Uid of purchasing team
+   *         description: uid of purchasing team
+   *         in: query
+   *         name: teamUid
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *     responses:
+   *       201:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Contract"
+   */
+  routes.post('/contracts', _authCheck2.default, function (req, res) {
+    contractController.create(req, res);
+  });
+
   return routes;
 };
 //# sourceMappingURL=routes.js.map

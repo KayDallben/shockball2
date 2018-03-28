@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import Modal, {closeStyle} from 'simple-react-modal'
+import { ToastContainer } from 'react-toastify'
 
 import './App.scss'
 import './Global.scss'
@@ -46,9 +47,10 @@ class App extends Component {
               closeOnOuterClick={true}
               onClose={this.props.store.closeModal.bind(this.props.store)}>
                 <a style={closeStyle}
-                  onClick={this.props.store.closeModal.bind(this.props.store)}>X</a>
+                  onClick={this.props.store.closeModal.bind(this.props.store)} className="modal-close-link">X</a>
                 {this.props.store.modal.body}
             </Modal>
+            <ToastContainer autoClose={8000} />
           </ErrorBoundary>
         </div>
       </div>

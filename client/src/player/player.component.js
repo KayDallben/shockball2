@@ -1,18 +1,17 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
 import moment from 'moment'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
 import ReactDataGrid from 'react-data-grid'
 import { Radar } from 'react-chartjs'
-import Select2 from 'react-select'
+import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import { Form, Text, TextArea, Radio, RadioGroup, Select, Checkbox } from 'react-form'
-
 import NumberFormat from 'react-number-format'
 
+//internal
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
+import ContractForm from '../player/contractForm'
 import './player.scss'
 
 @observer
@@ -70,20 +69,6 @@ class Player extends React.Component {
         name: 'Goal Average',
         width: 150
       }
-    ],
-    this.statusOptions = [
-      {
-        label: 'Single',
-        value: 'single',
-      },
-      {
-        label: 'In a Relationship',
-        value: 'relationship',
-      },
-      {
-        label: "It's Complicated",
-        value: 'complicated',
-      },
     ]
   }
 
@@ -120,58 +105,32 @@ class Player extends React.Component {
         </div>
         <div className="contract-offer">
           <h3>Contract Bid:</h3>
-          <Form onSubmit={submittedValues => console.log(submittedValues)}>
-            {formApi => (
-              <form onSubmit={formApi.submitForm} id="contract">
-                <label htmlFor="firstName">First name</label>
-                <Text field="firstName" id="firstName" />
-                <label htmlFor="lastName">Last name</label>
-                <Text field="lastName" id="lastName" />
-                <RadioGroup field="gender">
-                  <label htmlFor="male" className="mr-2">Male</label>
-                  <Radio value="male" id="male" className="mr-3 d-inline-block" />
-                  <label htmlFor="female" className="mr-2">Female</label>
-                  <Radio value="female" id="female" className="d-inline-block" />
-                </RadioGroup>
-                <label htmlFor="bio">Bio</label>
-                <TextArea field="bio" id="bio" />
-                <label htmlFor="authorize" className="mr-2">Authorize</label>
-                <Checkbox field="authorize" id="authorize" className="d-inline-block" />
-                <label htmlFor="status" className="d-block">Relationship status</label>
-                <Select field="status" id="status" options={this.statusOptions} className="mb-4" />
-                <button type="submit" className="mb-4 btn btn-primary">
-                  Submit
-                </button>
-              </form>
-            )}
-          </Form>
+          <ContractForm store={this.props.store} signingPlayer={this.props.view.player.value} signingTeam={this.props.store.currentUser.teamData} />
         </div>
       </div>
     )
   }
 
   renderPlayerValueInfo() {
-    if (this.props.view.player.value.marketValue) {
+    if (this.props.view.player.value.contractData.contractEndDate) {
       return (
-        <div className="player-value">
-          <div className="total-value"><NumberFormat value={this.props.view.player.value.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
-          <div className="label">Value</div>
-          <div className="team-wage"><NumberFormat value={this.props.view.player.value.contractData.salary} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
-          <div className="label">Wage</div>
-          <div className="contract-expiration">{moment(this.props.view.player.value.contractData.contractEndDate).format('L')}</div>
-          <div className="label">Contract Expiry</div>
-        </div>
+          <div className="contract-status">
+            <div className="team-wage"><NumberFormat value={this.props.view.player.value.contractData.salary} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="label">Wage</div>
+            <div className="contract-expiration">{moment(this.props.view.player.value.contractData.contractEndDate).format('L')}</div>
+            <div className="label">Contract Expiry</div>
+          </div>
       )
     } else {
       if (!this.props.view.player.value.teamUid && this.props.store.currentUser.teamManager) {
         return (
-          <div className="player-value">
+          <div className="contract-status">
             <div className="contract-offer" onClick={this.offerContract.bind(this)}>Offer Contract</div>
           </div>
         )
       } else {
         return (
-          <div className="player-value"></div>
+          <div className="contract-status"></div>
         )
       }
     }
@@ -216,7 +175,7 @@ class Player extends React.Component {
       return (
         <div className="train">
           <h2>Training Regimen</h2>
-          <Select2 name="train-field"
+          <Select name="train-field"
             value={this.props.store.currentUser.regimen}
             onChange={this.handleTrainChange.bind(this)}
             options={[
@@ -269,7 +228,11 @@ class Player extends React.Component {
                   <img src={this.props.view.player.value.image}/>
                 </div>
                 {this.renderPlayerTeamInfo()}
-                {this.renderPlayerValueInfo()}
+                <div className="player-value">
+                  <div className="total-value"><NumberFormat value={this.props.view.player.value.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+                  <div className="label">Value</div>
+                  {this.renderPlayerValueInfo()}
+                </div>
                 {this.renderRadar()}
               </div>
               <div className="player-body">
