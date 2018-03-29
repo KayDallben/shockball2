@@ -418,17 +418,17 @@ exports.default = function (db, logger) {
    *     produces:
    *       - application/json
    *     parameters:
-   *       - acceptedDuration: time length of contract
-   *         description: time length of contract
+   *       - games: number of games committed to by player
+   *         description: number of games committed to by player
    *         in: query
-   *         name: acceptedDuration
+   *         name: games
    *         required: true
    *         schema:
    *           $ref: '#/definitions/Contract'
-   *       - currentSeason: the current season contract is created/modified in
-   *         description: the current season contract is created/modified in
+   *       - salary: player's salary, calculated from total price over total games
+   *         description: player's salary, calculated from total price over total games
    *         in: query
-   *         name: currentSeason
+   *         name: salary
    *         required: true
    *         schema:
    *           $ref: '#/definitions/Contract'

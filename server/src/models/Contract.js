@@ -12,9 +12,9 @@ export default {
   create: Joi.object().keys({
     playerName: Joi.string().required(),
     playerUid: Joi.string().required(),
-    purchasePrice: Joi.string().required(),
-    currentSeason: Joi.number().required(),
-    acceptedDuration: Joi.number().required(),
+    purchasePrice: Joi.number().required(),
+    salary: Joi.number().required(),
+    games: Joi.number().required(),
     status: Joi.string().required(),
     teamName: Joi.string().required(),
     teamUid: Joi.string().required()

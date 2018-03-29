@@ -7,6 +7,7 @@ import {
 import { fromPromise } from 'mobx-utils'
 import axios from 'axios'
 import moment from 'moment'
+import { toast } from 'react-toastify'
 import * as ga from '../ga/ga'
 
 const hostUrl = window.location.protocol + "//" + window.location.host + "/"
@@ -197,7 +198,14 @@ class Store {
         regimen: selectedOption
       }
     }).then(response => {
+      toast.success("Training Regimen updated!", {
+        position: toast.POSITION.TOP_CENTER
+      })
       this.setUser(response.data)
+    }).catch((error) => {
+      toast.error("SCHEISSE! Unable to update Training Regimen :(", {
+        position: toast.POSITION.TOP_CENTER
+      })
     })
   }
 

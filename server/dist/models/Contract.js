@@ -22,9 +22,9 @@ exports.default = {
   create: _joi2.default.object().keys({
     playerName: _joi2.default.string().required(),
     playerUid: _joi2.default.string().required(),
-    purchasePrice: _joi2.default.string().required(),
-    currentSeason: _joi2.default.number().required(),
-    acceptedDuration: _joi2.default.number().required(),
+    purchasePrice: _joi2.default.number().required(),
+    salary: _joi2.default.number().required(),
+    games: _joi2.default.number().required(),
     status: _joi2.default.string().required(),
     teamName: _joi2.default.string().required(),
     teamUid: _joi2.default.string().required()
