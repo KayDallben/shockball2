@@ -168,6 +168,7 @@ function trainPlayer(player) {
         player.fatigue = decrement(player.fatigue, 1)
         player.leadership = decrement(player.leadership, 1)
     }
+    player = updatePlayerValue(player)
     //we reset the regimen to require daily picking of training
     player.regimen = {
         value: 'none',
@@ -189,4 +190,35 @@ async function updatePlayer(player) {
     return db.collection('players').doc(player.createdAsUid).update(player)
 }
 
+function updatePlayerValue(player) {
+    const baseStats = {
+        blocking: player.blocking,
+        endurance: player.endurance,
+        leadership: player.leadership,
+        passing: player.passing,
+        throwing: player.throwing,
+        toughness: player.toughness,
+        vision: player.vision
+    }
+    const playerValue = calculatePlayerValue(baseStats)
+    player.marketValue = playerValue.marketValue
+    player.rating = playerValue.playerRating
+    return player
+}
+
+function calculatePlayerValue(baseStats) {
+    let playerValue = {
+      marketValue: 0,
+      playerRating: 0
+    }
+    let numberStats = 0
+    let totalStatValueCount = 0
+    for (const [key, value] of Object.entries(baseStats)) {
+      numberStats++
+      totalStatValueCount += value
+    }
+    playerValue.playerRating = Math.floor(totalStatValueCount / numberStats)
+    playerValue.marketValue = Math.floor(playerValue.playerRating * 1.6 * 60000)
+    return playerValue
+}
 init()
