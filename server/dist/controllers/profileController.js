@@ -52,6 +52,7 @@ var ProfileController = function () {
     this.players = db.collection('players');
     this.teams = db.collection('teams');
     this.contracts = db.collection('contracts');
+    this.accounts = db.collection('accounts');
     this.events = db.collection('events');
     this.playerCaps = db.collection('playerCaps');
     this.logger = logger;
@@ -152,11 +153,15 @@ var ProfileController = function () {
 
               case 5:
                 _context2.next = 7;
-                return this.getCharacterInfo(uid, accessToken);
+                return this.createPlayerAccount(uid);
 
               case 7:
+                _context2.next = 9;
+                return this.getCharacterInfo(uid, accessToken);
+
+              case 9:
                 swcCharacter = _context2.sent;
-                _context2.next = 10;
+                _context2.next = 12;
                 return this.players.doc(uid).set({
                   name: swcCharacter.character.name,
                   image: swcCharacter.character.image,
@@ -178,28 +183,28 @@ var ProfileController = function () {
                   rating: playerValue.playerRating
                 });
 
-              case 10:
-                _context2.next = 12;
+              case 12:
+                _context2.next = 14;
                 return this.players.doc(uid).get().then(function (doc) {
                   return doc.data();
                 });
 
-              case 12:
+              case 14:
                 return _context2.abrupt('return', _context2.sent);
 
-              case 15:
-                _context2.prev = 15;
+              case 17:
+                _context2.prev = 17;
                 _context2.t0 = _context2['catch'](0);
 
                 this.logger.error(_context2.t0);
                 return _context2.abrupt('return', false);
 
-              case 19:
+              case 21:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 15]]);
+        }, _callee2, this, [[0, 17]]);
       }));
 
       function createNewPlayer(_x3, _x4) {
@@ -226,13 +231,56 @@ var ProfileController = function () {
       return baseStats;
     }
   }, {
-    key: 'createPlayerStatCaps',
+    key: 'createPlayerAccount',
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(uid) {
-        var playerWithStatCaps;
+        var updatedAccount;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return this.accounts.doc(uid).set({
+                  createdAsUid: uid,
+                  created: FieldValue.serverTimestamp(),
+                  lastModified: FieldValue.serverTimestamp()
+                });
+
+              case 2:
+                _context3.next = 4;
+                return this.accounts.doc(uid).get();
+
+              case 4:
+                updatedAccount = _context3.sent;
+                _context3.next = 7;
+                return updatedAccount.collection('transactions').add({
+                  activityType: 'Player account created for ' + uid,
+                  timestamp: FieldValue.serverTimestamp(),
+                  amount: 0
+                });
+
+              case 7:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function createPlayerAccount(_x5) {
+        return _ref3.apply(this, arguments);
+      }
+
+      return createPlayerAccount;
+    }()
+  }, {
+    key: 'createPlayerStatCaps',
+    value: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(uid) {
+        var playerWithStatCaps;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 playerWithStatCaps = {
                   createdAsUid: uid,
@@ -244,22 +292,22 @@ var ProfileController = function () {
                   endurance: chance.integer({ min: 75, max: 100 }),
                   vision: chance.integer({ min: 75, max: 100 })
                 };
-                _context3.next = 3;
+                _context4.next = 3;
                 return this.playerCaps.doc(uid).set(playerWithStatCaps);
 
               case 3:
-                return _context3.abrupt('return', _context3.sent);
+                return _context4.abrupt('return', _context4.sent);
 
               case 4:
               case 'end':
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee4, this);
       }));
 
-      function createPlayerStatCaps(_x5) {
-        return _ref3.apply(this, arguments);
+      function createPlayerStatCaps(_x6) {
+        return _ref4.apply(this, arguments);
       }
 
       return createPlayerStatCaps;
@@ -270,14 +318,14 @@ var ProfileController = function () {
       var _this = this;
 
       return this.players.doc(uid).get().then(function () {
-        var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(doc) {
+        var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(doc) {
           var playerData;
-          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
                   if (!doc.exists) {
-                    _context4.next = 15;
+                    _context5.next = 15;
                     break;
                   }
 
@@ -287,28 +335,28 @@ var ProfileController = function () {
                   playerData.contractData = {};
 
                   if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
-                    _context4.next = 7;
+                    _context5.next = 7;
                     break;
                   }
 
-                  _context4.next = 7;
+                  _context5.next = 7;
                   return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
                     playerData.teamData = doc2.data();
                   });
 
                 case 7:
                   if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
-                    _context4.next = 10;
+                    _context5.next = 10;
                     break;
                   }
 
-                  _context4.next = 10;
+                  _context5.next = 10;
                   return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
                     playerData.contractData = doc3.data();
                   });
 
                 case 10:
-                  _context4.next = 12;
+                  _context5.next = 12;
                   return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
                     var events = [];
                     snapshot.forEach(function (doc4) {
@@ -333,21 +381,21 @@ var ProfileController = function () {
                   });
 
                 case 12:
-                  return _context4.abrupt('return', playerData);
+                  return _context5.abrupt('return', playerData);
 
                 case 15:
-                  return _context4.abrupt('return', false);
+                  return _context5.abrupt('return', false);
 
                 case 16:
                 case 'end':
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4, _this);
+          }, _callee5, _this);
         }));
 
-        return function (_x6) {
-          return _ref4.apply(this, arguments);
+        return function (_x7) {
+          return _ref5.apply(this, arguments);
         };
       }()).catch(function (error) {
         _this.logger.error(error);

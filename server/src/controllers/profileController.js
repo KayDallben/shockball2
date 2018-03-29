@@ -17,6 +17,7 @@ class ProfileController {
     this.players = db.collection('players')
     this.teams = db.collection('teams')
     this.contracts = db.collection('contracts')
+    this.accounts = db.collection('accounts')
     this.events = db.collection('events')
     this.playerCaps = db.collection('playerCaps')
     this.logger = logger
@@ -53,6 +54,7 @@ class ProfileController {
       const baseStats = this.rollBaseStats()
       const playerValue = util.calculatePlayerValue(baseStats)
       await this.createPlayerStatCaps(uid)
+      await this.createPlayerAccount(uid)
       const swcCharacter = await this.getCharacterInfo(uid, accessToken)
       await this.players.doc(uid).set({
         name: swcCharacter.character.name,
@@ -97,6 +99,20 @@ class ProfileController {
       fatigue: 0
     }
     return baseStats
+  }
+
+  async createPlayerAccount(uid) {
+    await this.accounts.doc(uid).set({
+      createdAsUid: uid,
+      created: FieldValue.serverTimestamp(),
+      lastModified: FieldValue.serverTimestamp(),
+    })
+    const updatedAccount = await this.accounts.doc(uid).get()
+    await updatedAccount.collection('transactions').add({
+      activityType: 'Player account created for ' + uid,
+      timestamp: FieldValue.serverTimestamp(),
+      amount: 0
+    })
   }
 
   async createPlayerStatCaps(uid) {
