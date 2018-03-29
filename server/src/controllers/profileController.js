@@ -51,6 +51,7 @@ class ProfileController {
   async createNewPlayer(uid, accessToken) {
     try {
       const baseStats = this.rollBaseStats()
+      const playerValue = util.calculatePlayerValue(baseStats)
       await this.createPlayerStatCaps(uid)
       const swcCharacter = await this.getCharacterInfo(uid, accessToken)
       await this.players.doc(uid).set({
@@ -69,7 +70,9 @@ class ProfileController {
         leadership: baseStats.leadership,
         aggression: baseStats.aggression,
         endurance: baseStats.endurance,
-        fatigue: baseStats.fatigue
+        fatigue: baseStats.fatigue,
+        marketValue: playerValue.marketValue,
+        rating: playerValue.playerRating
       })
       return await this.players.doc(uid).get().then(doc => {
         return doc.data()

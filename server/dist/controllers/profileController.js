@@ -139,23 +139,24 @@ var ProfileController = function () {
     key: 'createNewPlayer',
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(uid, accessToken) {
-        var baseStats, swcCharacter;
+        var baseStats, playerValue, swcCharacter;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.prev = 0;
                 baseStats = this.rollBaseStats();
-                _context2.next = 4;
+                playerValue = util.calculatePlayerValue(baseStats);
+                _context2.next = 5;
                 return this.createPlayerStatCaps(uid);
 
-              case 4:
-                _context2.next = 6;
+              case 5:
+                _context2.next = 7;
                 return this.getCharacterInfo(uid, accessToken);
 
-              case 6:
+              case 7:
                 swcCharacter = _context2.sent;
-                _context2.next = 9;
+                _context2.next = 10;
                 return this.players.doc(uid).set({
                   name: swcCharacter.character.name,
                   image: swcCharacter.character.image,
@@ -172,31 +173,33 @@ var ProfileController = function () {
                   leadership: baseStats.leadership,
                   aggression: baseStats.aggression,
                   endurance: baseStats.endurance,
-                  fatigue: baseStats.fatigue
+                  fatigue: baseStats.fatigue,
+                  marketValue: playerValue.marketValue,
+                  rating: playerValue.playerRating
                 });
 
-              case 9:
-                _context2.next = 11;
+              case 10:
+                _context2.next = 12;
                 return this.players.doc(uid).get().then(function (doc) {
                   return doc.data();
                 });
 
-              case 11:
+              case 12:
                 return _context2.abrupt('return', _context2.sent);
 
-              case 14:
-                _context2.prev = 14;
+              case 15:
+                _context2.prev = 15;
                 _context2.t0 = _context2['catch'](0);
 
                 this.logger.error(_context2.t0);
                 return _context2.abrupt('return', false);
 
-              case 18:
+              case 19:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 14]]);
+        }, _callee2, this, [[0, 15]]);
       }));
 
       function createNewPlayer(_x3, _x4) {

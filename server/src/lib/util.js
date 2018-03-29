@@ -22,6 +22,31 @@ function testPromise() {
   return promise
 }
 
+function calculatePlayerValue(playerStats) {
+  const baseStats = {
+    blocking: playerStats.blocking,
+    endurance: playerStats.endurance,
+    leadership: playerStats.leadership,
+    passing: playerStats.passing,
+    throwing: playerStats.throwing,
+    toughness: playerStats.toughness,
+    vision: playerStats.vision
+  }
+  let playerValue = {
+    marketValue: 0,
+    playerRating: 0
+  }
+  let numberStats = 0
+  let totalStatValueCount = 0
+  for (const [key, value] of Object.entries(baseStats)) { // eslint-disable-line no-unused-vars
+    numberStats++
+    totalStatValueCount += value
+  }
+  playerValue.playerRating = Math.floor(totalStatValueCount / numberStats)
+  playerValue.marketValue = Math.floor(playerValue.playerRating * 1.6 * 60000)
+  return playerValue
+}
+
 function generateSummaryRecords(events) {
   //season, matches, goals, passes, blocks, tackles, goalAverage
   const currentSeasonEvents = getSeasonRecords('1', events)
@@ -77,6 +102,7 @@ function countMatches(events) {
 export {
   reverseString,
   testPromise,
+  calculatePlayerValue,
   generateSummaryRecords,
   averageActivityPerMatch,
   getActivityTypeCount,

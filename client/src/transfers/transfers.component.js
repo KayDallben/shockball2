@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import ReactDataGrid from 'react-data-grid'
 import Spinner from 'react-spinkit'
+import NumberFormat from 'react-number-format'
 
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -17,9 +18,24 @@ class Transfers extends React.Component {
         {
             key: 'name',
             name: 'Name',
+            width: 180,
             locked: true,
             formatter: this.createPlayerLink,
             getRowMetaData: (data)=>(data)
+        },
+        {
+          key: 'marketValue',
+          name: 'Value',
+          width: 100,
+          formatter: this.marketValueFormat,
+          getRowMetaData: (data)=>(data),
+          sortable: true
+        },
+        {
+          key: 'rating',
+          name: 'Rating',
+          width: 100,
+          sortable: true
         },
         {
           key: 'throwing',
@@ -72,10 +88,15 @@ class Transfers extends React.Component {
         {
           key: 'morale',
           name: 'Morale',
-          width: 100,
           sortable: true
         }
       ];
+  }
+
+  marketValueFormat = (row) => {
+    return (
+      <NumberFormat value={row.dependentValues.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+    )
   }
 
   createPlayerLink = (row) => {

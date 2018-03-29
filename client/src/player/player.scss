@@ -18,11 +18,35 @@
     flex-direction: column;
     .player-name-holder {
         flex:1;
+        display: flex;
         .player-name {
             padding: 10px;
             padding-left: 40px;
             font-size: 1.4em;
             font-weight: 900;
+        }
+        .player-rating {
+            font-size: 1.4em;
+            padding-top: 10px;
+            font-weight: 900;
+            border: 1px solid #0c93eb;
+            background-color: #0c93eb;
+            box-sizing: border-box;
+            padding: 6px;
+            height: 35px;
+            line-height: 19px;
+            margin-top: 9px;
+            margin-left: 10px;
+            border-radius: 5px;
+            min-width: 60px;
+            text-align: right;
+            position: relative;
+            padding-right: 10px;
+            &:before {
+                position: absolute;
+                left: 8px;
+                font-size: 12px;
+            }
         }
     }
     .player-info-row {
