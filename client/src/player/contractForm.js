@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { toast } from 'react-toastify'
+require('formdata-polyfill')
+
 
 var formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -76,7 +78,7 @@ class ContractForm extends React.Component {
         playerUid: this.props.signingPlayer.createdAsUid,
         purchasePrice: parseInt(purchasePrice),
         games: parseInt(games),
-        salary: (purchasePrice / games),
+        salary: Math.floor(purchasePrice / games),
         status: 'pending',
         teamName: this.props.signingTeam.teamName,
         teamUid: this.props.signingTeam.teamUid
