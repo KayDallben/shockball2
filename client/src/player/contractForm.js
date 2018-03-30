@@ -87,7 +87,9 @@ class ContractForm extends React.Component {
         this.toastSuccess()
         this.props.store.closeModal()
       }).catch(() => {
-        this.toastError()
+        toast.error("Must offer player a minimum bid equal to their market value.", {
+          position: toast.POSITION.TOP_CENTER
+        })
         this.props.store.closeModal()
       })
     }
@@ -97,6 +99,7 @@ class ContractForm extends React.Component {
         return true
       } else {
         return false
+        this.toastError()
       }
     }
   

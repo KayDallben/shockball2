@@ -33,6 +33,7 @@ class ProfileController {
         } else {
           //we need to create a new player
           const newPlayer = await this.createNewPlayer(req.uid, req.swcToken)
+          await this.decoratePlayer(newPlayer)
           if (newPlayer) {
             res.status(201).send(newPlayer)
           } else {
@@ -128,46 +129,61 @@ class ProfileController {
     return await this.playerCaps.doc(uid).set(playerWithStatCaps)
   }
 
+  async decoratePlayer(player) {
+    let playerData = player
+    playerData.teamData = {}
+    playerData.contractData = {}
+    if (playerData.teamUid && playerData.teamUid.length > 0) {
+      await this.teams.doc(playerData.teamUid).get().then((doc2) => {
+        playerData.teamData = doc2.data()
+      })
+    }
+    if (playerData.contractUid && playerData.contractUid.length > 0) {
+      await this.contracts.doc(playerData.contractUid).get().then((doc3) => {
+        playerData.contractData = doc3.data()
+      })
+    }
+    try {
+      await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
+        let events = []
+        snapshot.forEach((doc4) => {
+          events.push(doc4.data())
+        })
+        if (events.length > 0) {
+          playerData.records = util.generateSummaryRecords(events)
+        } else {
+          playerData.records = [{
+            season: '1',
+            matches: 0,
+            goals: 0,
+            shots: 0,
+            passes: 0,
+            blocksPass: 0,
+            blocksShot: 0,
+            tackles: 0,
+            runsBall: 0,
+            goalAverage: 0
+          }]
+        }
+      })
+    } catch (error) {
+      this.logger.error(error)
+    }
+    return playerData
+  }
+
   checkIfPlayerExists(uid) {
     return this.players.doc(uid).get().then(async(doc) => {
       if (doc.exists) {
-        let playerData = doc.data()
-        playerData.teamData = {}
-        playerData.contractData = {}
-        if (playerData.teamUid && playerData.teamUid.length > 0) {
-          await this.teams.doc(playerData.teamUid).get().then((doc2) => {
-            playerData.teamData = doc2.data()
-          })
+        try {
+          const player = await this.decoratePlayer(doc.data())
+          return player
+        } catch(error) {
+          this.logger.error(error)
+          return false
         }
-        if (playerData.contractUid && playerData.contractUid.length > 0) {
-          await this.contracts.doc(playerData.contractUid).get().then((doc3) => {
-            playerData.contractData = doc3.data()
-          })
-        }
-        await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
-          let events = []
-          snapshot.forEach((doc4) => {
-            events.push(doc4.data())
-          })
-          if (events.length > 0) {
-            playerData.records = util.generateSummaryRecords(events)
-          } else {
-            playerData.records = [{
-              season: '1',
-              matches: 0,
-              goals: 0,
-              shots: 0,
-              passes: 0,
-              blocksPass: 0,
-              blocksShot: 0,
-              tackles: 0,
-              runsBall: 0,
-              goalAverage: 0
-            }]
-          }
-        })
-        return playerData
       } else {
+        this.logger.error('checkIfPlayerExists did not find a player')
         return false
       }
     }).catch(error => {

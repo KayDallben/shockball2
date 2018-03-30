@@ -10,6 +10,7 @@ class ContractController {
 
   constructor(db, logger) {
     this.contracts = db.collection('contracts')
+    this.accounts = db.collection('accounts')
     this.logger = logger
   }
 
@@ -56,14 +57,24 @@ class ContractController {
     if (validation.error === null) {
       try {
         const updateSet = req.body
-        const newContract = await this.contracts.add(updateSet)
-        await newContract.update({
-          contractUid: newContract.id,
-          created: FieldValue.serverTimestamp(),
-          lastModified: FieldValue.serverTimestamp(),
-        })
-        await this.contracts.doc(newContract.id).get().then((doc) => {
-          res.status(201).send(doc.data())
+        await this.accounts.doc(req.body.teamUid).get().then(async (doc) => {
+          const teamAccount = doc.data()
+          if (teamAccount.availableBudget - req.body.purchasePrice < 0) {
+            res.status(400).send('Cannot spend more than availble team budget!')
+            return
+          } else {
+            const newContract = await this.contracts.add(updateSet)
+            await newContract.update({
+              contractUid: newContract.id,
+              created: FieldValue.serverTimestamp(),
+              lastModified: FieldValue.serverTimestamp(),
+            })
+            await this.contracts.doc(newContract.id).get().then(async (doc2) => {
+              const savedContract = doc2.data()
+              await this.updateTeamAccount(savedContract, teamAccount)
+              res.status(201).send(savedContract)
+            })
+          }
         })
       } catch (error) {
         this.logger.error(error)
@@ -73,6 +84,17 @@ class ContractController {
       this.logger.error('Joi validation error: ' + validation.error)
       res.status(400).send(validation.error)
     }
+  }
+
+  async updateTeamAccount(contract, teamAccount) {
+    await this.accounts.doc(contract.teamUid).collection('transactions').add({
+      activityType: `Player contract bid sent to ${contract.playerName}`,
+      timestamp: FieldValue.serverTimestamp(),
+      amount: contract.purchasePrice
+    })
+    await this.accounts.doc(contract.teamUid).update({
+      availableBudget: teamAccount.availableBudget - contract.purchasePrice
+    })
   }
 }
 

@@ -70,7 +70,7 @@ var ProfileController = function () {
                 validation = _joi2.default.validate(req.query, _Profile2.default.listOneParams);
 
                 if (!(validation.error === null)) {
-                  _context.next = 22;
+                  _context.next = 24;
                   break;
                 }
 
@@ -87,7 +87,7 @@ var ProfileController = function () {
                 }
 
                 res.status(200).send(player);
-                _context.next = 14;
+                _context.next = 16;
                 break;
 
               case 10:
@@ -96,38 +96,41 @@ var ProfileController = function () {
 
               case 12:
                 newPlayer = _context.sent;
+                _context.next = 15;
+                return this.decoratePlayer(newPlayer);
 
+              case 15:
                 if (newPlayer) {
                   res.status(201).send(newPlayer);
                 } else {
                   res.status(400).send('Error creating new player in database');
                 }
 
-              case 14:
-                _context.next = 20;
+              case 16:
+                _context.next = 22;
                 break;
 
-              case 16:
-                _context.prev = 16;
+              case 18:
+                _context.prev = 18;
                 _context.t0 = _context['catch'](2);
 
                 this.logger.error(_context.t0);
                 res.status(400).send(_context.t0);
 
-              case 20:
-                _context.next = 24;
+              case 22:
+                _context.next = 26;
                 break;
 
-              case 22:
+              case 24:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 24:
+              case 26:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[2, 16]]);
+        }, _callee, this, [[2, 18]]);
       }));
 
       function listOne(_x, _x2) {
@@ -307,89 +310,143 @@ var ProfileController = function () {
       return createPlayerStatCaps;
     }()
   }, {
+    key: 'decoratePlayer',
+    value: function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(player) {
+        var playerData;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                playerData = player;
+
+                playerData.teamData = {};
+                playerData.contractData = {};
+
+                if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _context5.next = 6;
+                return this.teams.doc(playerData.teamUid).get().then(function (doc2) {
+                  playerData.teamData = doc2.data();
+                });
+
+              case 6:
+                if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
+                  _context5.next = 9;
+                  break;
+                }
+
+                _context5.next = 9;
+                return this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
+                  playerData.contractData = doc3.data();
+                });
+
+              case 9:
+                _context5.prev = 9;
+                _context5.next = 12;
+                return this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+                  var events = [];
+                  snapshot.forEach(function (doc4) {
+                    events.push(doc4.data());
+                  });
+                  if (events.length > 0) {
+                    playerData.records = util.generateSummaryRecords(events);
+                  } else {
+                    playerData.records = [{
+                      season: '1',
+                      matches: 0,
+                      goals: 0,
+                      shots: 0,
+                      passes: 0,
+                      blocksPass: 0,
+                      blocksShot: 0,
+                      tackles: 0,
+                      runsBall: 0,
+                      goalAverage: 0
+                    }];
+                  }
+                });
+
+              case 12:
+                _context5.next = 17;
+                break;
+
+              case 14:
+                _context5.prev = 14;
+                _context5.t0 = _context5['catch'](9);
+
+                this.logger.error(_context5.t0);
+
+              case 17:
+                return _context5.abrupt('return', playerData);
+
+              case 18:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this, [[9, 14]]);
+      }));
+
+      function decoratePlayer(_x7) {
+        return _ref5.apply(this, arguments);
+      }
+
+      return decoratePlayer;
+    }()
+  }, {
     key: 'checkIfPlayerExists',
     value: function checkIfPlayerExists(uid) {
       var _this = this;
 
       return this.players.doc(uid).get().then(function () {
-        var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(doc) {
-          var playerData;
-          return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(doc) {
+          var player;
+          return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context6.prev = _context6.next) {
                 case 0:
                   if (!doc.exists) {
-                    _context5.next = 15;
+                    _context6.next = 14;
                     break;
                   }
 
-                  playerData = doc.data();
+                  _context6.prev = 1;
+                  _context6.next = 4;
+                  return _this.decoratePlayer(doc.data());
 
-                  playerData.teamData = {};
-                  playerData.contractData = {};
+                case 4:
+                  player = _context6.sent;
+                  return _context6.abrupt('return', player);
 
-                  if (!(playerData.teamUid && playerData.teamUid.length > 0)) {
-                    _context5.next = 7;
-                    break;
-                  }
+                case 8:
+                  _context6.prev = 8;
+                  _context6.t0 = _context6['catch'](1);
 
-                  _context5.next = 7;
-                  return _this.teams.doc(playerData.teamUid).get().then(function (doc2) {
-                    playerData.teamData = doc2.data();
-                  });
-
-                case 7:
-                  if (!(playerData.contractUid && playerData.contractUid.length > 0)) {
-                    _context5.next = 10;
-                    break;
-                  }
-
-                  _context5.next = 10;
-                  return _this.contracts.doc(playerData.contractUid).get().then(function (doc3) {
-                    playerData.contractData = doc3.data();
-                  });
-
-                case 10:
-                  _context5.next = 12;
-                  return _this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
-                    var events = [];
-                    snapshot.forEach(function (doc4) {
-                      events.push(doc4.data());
-                    });
-                    if (events.length > 0) {
-                      playerData.records = util.generateSummaryRecords(events);
-                    } else {
-                      playerData.records = [{
-                        season: '1',
-                        matches: 0,
-                        goals: 0,
-                        shots: 0,
-                        passes: 0,
-                        blocksPass: 0,
-                        blocksShot: 0,
-                        tackles: 0,
-                        runsBall: 0,
-                        goalAverage: 0
-                      }];
-                    }
-                  });
+                  _this.logger.error(_context6.t0);
+                  return _context6.abrupt('return', false);
 
                 case 12:
-                  return _context5.abrupt('return', playerData);
+                  _context6.next = 16;
+                  break;
 
-                case 15:
-                  return _context5.abrupt('return', false);
+                case 14:
+                  _this.logger.error('checkIfPlayerExists did not find a player');
+                  return _context6.abrupt('return', false);
 
                 case 16:
                 case 'end':
-                  return _context5.stop();
+                  return _context6.stop();
               }
             }
-          }, _callee5, _this);
+          }, _callee6, _this, [[1, 8]]);
         }));
 
-        return function (_x7) {
-          return _ref5.apply(this, arguments);
+        return function (_x8) {
+          return _ref6.apply(this, arguments);
         };
       }()).catch(function (error) {
         _this.logger.error(error);
