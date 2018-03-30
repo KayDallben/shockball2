@@ -234,7 +234,6 @@ var ProfileController = function () {
     key: 'createPlayerAccount',
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(uid) {
-        var updatedAccount;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -248,18 +247,13 @@ var ProfileController = function () {
 
               case 2:
                 _context3.next = 4;
-                return this.accounts.doc(uid).get();
-
-              case 4:
-                updatedAccount = _context3.sent;
-                _context3.next = 7;
-                return updatedAccount.collection('transactions').add({
+                return this.accounts.doc(uid).collection('transactions').add({
                   activityType: 'Player account created for ' + uid,
                   timestamp: FieldValue.serverTimestamp(),
                   amount: 0
                 });
 
-              case 7:
+              case 4:
               case 'end':
                 return _context3.stop();
             }
