@@ -27,7 +27,10 @@ class Store {
   @observable currentView = null
   @observable topBarView = {
     currentUserTeam: {
-      teamPicUrl: '',
+      value: {
+        teamPicUrl: '',
+        teamName: '',
+      },
       state: 'pending'
     }
   }
@@ -230,6 +233,9 @@ class Store {
   @action setUser = (data) => {
     this.currentUser = data
   }
+  @action fulfillTopBarView = () => {
+    this.topBarView.currentUserTeam.state = 'fulfilled'
+  }
 
   @action setUserProfile = () => {
     return new Promise((resolve, reject) => {
@@ -244,6 +250,8 @@ class Store {
         ga.init(this.currentUser.createdAsUid)
         if (response.data.teamUid) {
           this.showUserTeam(response.data.teamUid)
+        } else {
+          this.fulfillTopBarView()
         }
         resolve(response.data)
       }).catch(reject)

@@ -37,6 +37,7 @@ var ContractController = function () {
     _classCallCheck(this, ContractController);
 
     this.contracts = db.collection('contracts');
+    this.accounts = db.collection('accounts');
     this.logger = logger;
   }
 
@@ -157,64 +158,121 @@ var ContractController = function () {
   }, {
     key: 'create',
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var validation, updateSet, newContract;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
+        var _this = this;
+
+        var validation, updateSet;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 validation = _joi2.default.validate(req.body, _Contract2.default.create);
 
                 if (!(validation.error === null)) {
-                  _context3.next = 19;
+                  _context5.next = 14;
                   break;
                 }
 
-                _context3.prev = 2;
+                _context5.prev = 2;
                 updateSet = req.body;
-                _context3.next = 6;
-                return this.contracts.add(updateSet);
+                _context5.next = 6;
+                return this.accounts.doc(req.body.teamUid).get().then(function () {
+                  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(doc) {
+                    var teamAccount, newContract;
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            teamAccount = doc.data();
+
+                            if (!(teamAccount.availableBudget - req.body.purchasePrice < 0)) {
+                              _context4.next = 6;
+                              break;
+                            }
+
+                            res.status(400).send('Cannot spend more than availble team budget!');
+                            return _context4.abrupt('return');
+
+                          case 6:
+                            _context4.next = 8;
+                            return _this.contracts.add(updateSet);
+
+                          case 8:
+                            newContract = _context4.sent;
+                            _context4.next = 11;
+                            return newContract.update({
+                              contractUid: newContract.id,
+                              created: FieldValue.serverTimestamp(),
+                              lastModified: FieldValue.serverTimestamp()
+                            });
+
+                          case 11:
+                            _context4.next = 13;
+                            return _this.contracts.doc(newContract.id).get().then(function () {
+                              var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(doc2) {
+                                var savedContract;
+                                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                                  while (1) {
+                                    switch (_context3.prev = _context3.next) {
+                                      case 0:
+                                        savedContract = doc2.data();
+                                        _context3.next = 3;
+                                        return _this.updateTeamAccount(savedContract, teamAccount);
+
+                                      case 3:
+                                        res.status(201).send(savedContract);
+
+                                      case 4:
+                                      case 'end':
+                                        return _context3.stop();
+                                    }
+                                  }
+                                }, _callee3, _this);
+                              }));
+
+                              return function (_x8) {
+                                return _ref5.apply(this, arguments);
+                              };
+                            }());
+
+                          case 13:
+                          case 'end':
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, _this);
+                  }));
+
+                  return function (_x7) {
+                    return _ref4.apply(this, arguments);
+                  };
+                }());
 
               case 6:
-                newContract = _context3.sent;
-                _context3.next = 9;
-                return newContract.update({
-                  contractUid: newContract.id,
-                  created: FieldValue.serverTimestamp(),
-                  lastModified: FieldValue.serverTimestamp()
-                });
-
-              case 9:
-                _context3.next = 11;
-                return this.contracts.doc(newContract.id).get().then(function (doc) {
-                  res.status(201).send(doc.data());
-                });
-
-              case 11:
-                _context3.next = 17;
+                _context5.next = 12;
                 break;
 
-              case 13:
-                _context3.prev = 13;
-                _context3.t0 = _context3['catch'](2);
+              case 8:
+                _context5.prev = 8;
+                _context5.t0 = _context5['catch'](2);
 
-                this.logger.error(_context3.t0);
-                res.status(400).send(_context3.t0);
+                this.logger.error(_context5.t0);
+                res.status(400).send(_context5.t0);
 
-              case 17:
-                _context3.next = 21;
+              case 12:
+                _context5.next = 16;
                 break;
 
-              case 19:
+              case 14:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 21:
+              case 16:
               case 'end':
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3, this, [[2, 13]]);
+        }, _callee5, this, [[2, 8]]);
       }));
 
       function create(_x5, _x6) {
@@ -222,6 +280,41 @@ var ContractController = function () {
       }
 
       return create;
+    }()
+  }, {
+    key: 'updateTeamAccount',
+    value: function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(contract, teamAccount) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return this.accounts.doc(contract.teamUid).collection('transactions').add({
+                  activityType: 'Player contract bid sent to ' + contract.playerName,
+                  timestamp: FieldValue.serverTimestamp(),
+                  amount: contract.purchasePrice
+                });
+
+              case 2:
+                _context6.next = 4;
+                return this.accounts.doc(contract.teamUid).update({
+                  availableBudget: teamAccount.availableBudget - contract.purchasePrice
+                });
+
+              case 4:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function updateTeamAccount(_x9, _x10) {
+        return _ref6.apply(this, arguments);
+      }
+
+      return updateTeamAccount;
     }()
   }]);
 
