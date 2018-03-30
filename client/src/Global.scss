@@ -23,6 +23,7 @@ $transition: all .2s ease-in-out;
 html, body, sim {
   height:100vh;
   font-family: $fontFamily;
+  text-rendering: optimizeLegibility!important;
 }
 #root {
   height:100%;
