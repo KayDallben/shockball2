@@ -221,6 +221,34 @@ class Store {
         access_token: this.accessToken,
       },
       data: newContract
+    }).then(() => {
+      this.showOfficePage()
+    })
+  }
+
+  @action acceptContract = (contractUid) => {
+    ga.event('Contract Accepted')
+    return axios({
+      method: 'PUT',
+      url: hostUrl + 'api/contracts/' + contractUid,
+      params: {
+        access_token: this.accessToken,
+        status: 'accepted'
+      }
+    }).then(() => {
+      this.showOfficePage()
+    })
+  }
+
+  @action rejectContract = (contractUid) => {
+    ga.event('Contract Rejected')
+    return axios({
+      method: 'PUT',
+      url: hostUrl + 'api/contracts/' + contractUid,
+      params: {
+        access_token: this.accessToken,
+        status: 'rejected'
+      }
     })
   }
 

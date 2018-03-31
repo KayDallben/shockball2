@@ -28,6 +28,10 @@ exports.default = {
     status: _joi2.default.string().required(),
     teamName: _joi2.default.string().required(),
     teamUid: _joi2.default.string().required()
+  }),
+  updateParams: _joi2.default.object().keys({
+    status: _joi2.default.string().required(),
+    access_token: _joi2.default.string().required()
   })
 };
 //# sourceMappingURL=Contract.js.map

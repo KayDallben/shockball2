@@ -107,6 +107,7 @@ class ProfileController {
       createdAsUid: uid,
       created: FieldValue.serverTimestamp(),
       lastModified: FieldValue.serverTimestamp(),
+      totalBalance: 0
     })
     await this.accounts.doc(uid).collection('transactions').add({
       activityType: 'Player account created for ' + uid,

@@ -86,6 +86,35 @@ class ContractController {
     }
   }
 
+  async update(req, res) {
+    const { id } = req.params
+    const validation = Joi.validate(req.query, ContractSchema.updateParams)
+    if (validation.error === null) {
+      try {
+        const updateSet = {
+          status: req.query.status
+        }
+        await this.contracts.doc(id).update(updateSet).then(async (doc) => {
+          if (doc._writeTime) {
+            await this.contracts.doc(id).get().then(doc2 => {
+              res.status(200).send(doc2.data())
+            })
+          } else {
+            const errorMessage = 'Failed to write update to contract.'
+            this.logger.error(errorMessage)
+            res.status(400).send(errorMessage)
+          }
+        })
+      } catch (error) {
+        this.logger.error(error)
+        res.status(400).send(error)
+      }
+    } else {
+      this.logger.error('Joi validation error: ' + validation.error)
+      res.status(400).send(validation.error)
+    }
+  }
+
   async updateTeamAccount(contract, teamAccount) {
     await this.accounts.doc(contract.teamUid).collection('transactions').add({
       activityType: `Player contract bid sent to ${contract.playerName}`,

@@ -19,4 +19,8 @@ export default {
     teamName: Joi.string().required(),
     teamUid: Joi.string().required()
   }),
+  updateParams: Joi.object().keys({
+    status: Joi.string().required(),
+    access_token: Joi.string().required()
+  })
 }
