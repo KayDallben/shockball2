@@ -245,7 +245,8 @@ var ProfileController = function () {
                 return this.accounts.doc(uid).set({
                   createdAsUid: uid,
                   created: FieldValue.serverTimestamp(),
-                  lastModified: FieldValue.serverTimestamp()
+                  lastModified: FieldValue.serverTimestamp(),
+                  totalBalance: 0
                 });
 
               case 2:

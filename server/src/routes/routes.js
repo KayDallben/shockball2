@@ -450,5 +450,40 @@ export default (db, logger) => {
     contractController.create(req, res)
   })
 
+    /**
+   * @swagger
+   * /api/contracts/{id}:
+   *   x-swagger-router-controller: ../controllers/contractController
+   *   put:
+   *     tags:
+   *       - Contract
+   *     description: Updates a Contract
+   *     operationId: update
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: Contract's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *       - name: status
+   *         description: A string with the status of the contract
+   *         in: query
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Contract"
+   */
+  routes.put('/contracts/:id', authCheck, (req, res) => {
+    contractController.update(req, res)
+  })
+
   return routes
 }

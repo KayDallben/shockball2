@@ -5,6 +5,7 @@ import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
 import ReactDataGrid from 'react-data-grid'
+import { toast } from 'react-toastify'
 
 import NumberFormat from 'react-number-format'
 
@@ -17,7 +18,9 @@ class Office extends React.Component {
     this._contractColumns = [
       {
         key: 'teamName',
-        name: 'Team'
+        name: 'Team',
+        formatter: this.createContractReviewLink,
+        getRowMetaData: (data)=>(data),
       },
       {
         key: 'playerName',
@@ -64,6 +67,13 @@ class Office extends React.Component {
         name: 'Status',
         width: 100,
         sortable: true
+      },
+      {
+        key: '',
+        name: 'Actions',
+        width: 80,
+        formatter: this.actionsFormat,
+        getRowMetaData: (data)=>(data)
       }
     ]
     this._transactionColumns = [
@@ -115,10 +125,114 @@ class Office extends React.Component {
     )
   }
 
+  createContractReviewLink = (row) => {
+    if (this.props.store.currentUser.teamManager) {
+      return (
+        <div>{row.dependentValues.teamName}</div>
+      )
+    } else {
+        //TODO - return link to squad page
+      return (
+        <div>{row.dependentValues.teamName}</div>
+      ) 
+    }
+  }
+
   createPlayerLink = (row) => {
-    return (
-      <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.playerUid)}>{row.dependentValues.playerName}</a>
+    if (this.props.store.currentUser.teamManager) {
+      return (
+        <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.playerUid)}>{row.dependentValues.playerName}</a>
+      )
+    } else {
+      return (
+        <div>{row.dependentValues.playerName}</div>
+      )
+    }
+  }
+
+  actionsFormat = (row) => {
+    if (this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      //current user has a contract and is not a manager - so is a league playe
+      return (
+        <div></div>
+      )
+    } else if (!this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      // current user has no contract and is not a manager - so is a free agent
+      return (
+        <div onClick={() => this.editContract(row)}>Review</div>
+      )
+    } else if (this.props.store.currentUser.contractUid && this.props.store.currentUser.teamManager) {
+      // EDGE CASE! current user has both a team contract AND is a team manager.  We don't want to support this.
+      console.error(this.props.store.currentUser.name + ' is both a player and a manager! No Bueno!')
+      return (
+        <div></div>
+      )
+    } else {
+      // current user has no contract and is a manager - so is a team manager
+      return (
+        <div></div>
+      )
+    }
+  }
+
+  editContract(rowData) {
+    //currently assumes only free agent is calling this method - 3/30/2018
+    const playerContract = rowData.dependentValues
+    this.props.store.showModal(
+      <div className="contract-wrapper">
+        <div className="modal-title">Update Contract</div>
+        <div className="player-value">
+            <h3>Player:</h3>
+            <div className="player-photo">
+              <img src={this.props.store.currentUser.image}/>
+            </div>
+            <div className="total-value">
+              <div>Market Value:</div>
+              <NumberFormat value={this.props.store.currentUser.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+        </div>
+        <div className="contract-offer">
+          <h3>Contract Bid:</h3>
+          <div className="contract-item">
+            <div className="label">Purchase Price</div>
+            <div className="item-value"><NumberFormat value={playerContract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+          </div>
+          <div className="contract-item">
+            <div className="label">Number Games</div>
+            <div className="item-value">{playerContract.games}</div>
+          </div>
+          <button type="submit" className="mb-4 btn btn-primary" onClick={() => {this.acceptContract(playerContract)}}>Accept</button>
+          <button type="submit" className="mb-4 btn btn-danger" onClick={() => {this.rejectContract(playerContract)}}>Reject</button>
+        </div>
+      </div>
     )
+  }
+
+  acceptContract(playerContract) {
+    this.props.store.acceptContract(playerContract.contractUid).then(() => {
+      toast.success("Contract accepted!", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    }).catch(() => {
+      toast.error("Sheeeeit, problem accepting contract.", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    })
+  }
+
+  rejectContract(playerContract) {
+    this.props.store.rejectContract(playerContract.contractUid).then(() => {
+      toast.success("Contract rejected!", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    }).catch(() => {
+      toast.error("Sheeeeit, problem rejecting contract.", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    })
   }
 
   purchasePriceFormat = (row) => {
@@ -142,22 +256,121 @@ class Office extends React.Component {
   }
 
   renderContracts() {
-    return (
-      <div className="inner-wrapper">
-        <div className="contract-header">Current Contracts</div>
-        <div className="contracts-data-grid">
-          <ReactDataGrid
-            columns={this._contractColumns}
-            rowGetter={this.contractRowGetter}
-            rowsCount={this.props.view.office.value.contracts.length}
-            minHeight={200} />
+    if (this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      //current user has a contract and is not a manager - so is a league player
+      return (
+        <div className="inner-wrapper">
+          <div className="contract-header"></div>
+          <div className="contracts-data-grid">
+          </div>
         </div>
-      </div>
-    )
+      )
+
+    } else if (!this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      // current user has no contract and is not a manager - so is a free agent
+      return (
+        <div className="inner-wrapper">
+          <div className="contract-header">My Contract Offers</div>
+          <div className="contracts-data-grid">
+            <ReactDataGrid
+              columns={this._contractColumns}
+              rowGetter={this.contractRowGetter}
+              rowsCount={this.props.view.office.value.contracts.length}
+              minHeight={200} />
+          </div>
+        </div>
+      )
+
+    } else if (this.props.store.currentUser.contractUid && this.props.store.currentUser.teamManager) {
+      // EDGE CASE! current user has both a team contract AND is a team manager.  We don't want to support this.
+      console.error(this.props.store.currentUser.name + ' is both a player and a manager! No Bueno!')
+      return (
+        <div className="inner-wrapper">
+          <div className="contract-header">All Team Contracts</div>
+          <div className="contracts-data-grid">
+            <ReactDataGrid
+              columns={this._contractColumns}
+              rowGetter={this.contractRowGetter}
+              rowsCount={this.props.view.office.value.contracts.length}
+              minHeight={200} />
+          </div>
+        </div>
+      )
+    } else {
+      // current user has no contract and is a manager - so is a team manager
+      return (
+        <div className="inner-wrapper">
+          <div className="contract-header">All Team Contracts</div>
+          <div className="contracts-data-grid">
+            <ReactDataGrid
+              columns={this._contractColumns}
+              rowGetter={this.contractRowGetter}
+              rowsCount={this.props.view.office.value.contracts.length}
+              minHeight={200} />
+          </div>
+        </div>
+      )
+    }
   }
 
-  renderTeamAccountStatement() {
-    if (this.props.store.currentUser.teamManager) {
+  getCurrentContract() {
+    let currentContract = {}
+    for (let contract of this.props.view.office.value.contracts) {
+      if (contract.contractUid === this.props.store.currentUser.contractUid) {
+        currentContract = contract
+        break
+      }
+    }
+    return currentContract
+  }
+
+  renderStatement() {
+    if (this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      //current user has a contract and is not a manager - so is a league player
+      const playerContract = this.getCurrentContract()
+      return (
+        <div className="inner-wrapper">
+          <div className="accounts">
+            <div className="contract-header">Player Account</div>
+            <div className="accounts-header">Account Balance: <NumberFormat value={this.props.view.office.value.account.totalBalance} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="account-info">Last Modified: {moment(this.props.view.office.value.account.lastModified).format('L')}</div>
+          </div>
+          <div className="accounts">
+            <div className="contract-header">Active Contract</div>
+            <div className="accounts-header">Team: {playerContract.teamName}</div>
+            <div className="accounts-header">Purchase Price: <NumberFormat value={playerContract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="accounts-header">Games Committed: {playerContract.games}</div>
+            <div className="accounts-header">Signed: {moment(playerContract.lastModified).format('L')}</div>
+          </div>
+        </div>
+      )
+
+    } else if (!this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
+      // current user has no contract and is not a manager - so is a free agent
+      return (
+        <div className="inner-wrapper">
+          <div className="accounts">
+            <div className="contract-header">Player Account</div>
+            <div className="accounts-header">Account Balance: <NumberFormat value={this.props.view.office.value.account.totalBalance} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="account-info">Last Modified: {moment(this.props.view.office.value.account.lastModified).format('L')}</div>
+          </div>
+        </div>
+      )
+    } else if (this.props.store.currentUser.contractUid && this.props.store.currentUser.teamManager) {
+      // EDGE CASE! current user has both a team contract AND is a team manager.  We don't want to support this.
+      console.error(this.props.store.currentUser.name + ' is both a player and a manager! No Bueno!')
+      return (
+        <div className="inner-wrapper">
+          <div className="accounts">
+            <div className="contract-header">Account Statement</div>
+            <div className="accounts-header">Potential Budget: <NumberFormat value={this.props.view.office.value.account.potentialBudget} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="accounts-header">Available Budget: <NumberFormat value={this.props.view.office.value.account.availableBudget} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+            <div className="account-info">Last Modified: {moment(this.props.view.office.value.account.lastModified).format('L')}</div>
+          </div>
+        </div>
+      )
+    } else {
+      // current user has no contract and is a manager - so is a team manager
       return (
         <div className="inner-wrapper">
           <div className="accounts">
@@ -168,8 +381,6 @@ class Office extends React.Component {
           </div>
         </div>
       )
-    } else {
-      return null
     }
   }
 
@@ -198,7 +409,7 @@ class Office extends React.Component {
         return (
           <div className="office-wrapper">
             <div className="team-info">
-              {this.renderTeamAccountStatement()}
+              {this.renderStatement()}
               {this.renderTransactions()}
             </div>
             {this.renderContracts()}

@@ -282,14 +282,111 @@ var ContractController = function () {
       return create;
     }()
   }, {
+    key: 'update',
+    value: function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(req, res) {
+        var _this2 = this;
+
+        var id, validation, updateSet;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                id = req.params.id;
+                validation = _joi2.default.validate(req.query, _Contract2.default.updateParams);
+
+                if (!(validation.error === null)) {
+                  _context7.next = 15;
+                  break;
+                }
+
+                _context7.prev = 3;
+                updateSet = {
+                  status: req.query.status
+                };
+                _context7.next = 7;
+                return this.contracts.doc(id).update(updateSet).then(function () {
+                  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(doc) {
+                    var errorMessage;
+                    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                      while (1) {
+                        switch (_context6.prev = _context6.next) {
+                          case 0:
+                            if (!doc._writeTime) {
+                              _context6.next = 5;
+                              break;
+                            }
+
+                            _context6.next = 3;
+                            return _this2.contracts.doc(id).get().then(function (doc2) {
+                              res.status(200).send(doc2.data());
+                            });
+
+                          case 3:
+                            _context6.next = 8;
+                            break;
+
+                          case 5:
+                            errorMessage = 'Failed to write update to contract.';
+
+                            _this2.logger.error(errorMessage);
+                            res.status(400).send(errorMessage);
+
+                          case 8:
+                          case 'end':
+                            return _context6.stop();
+                        }
+                      }
+                    }, _callee6, _this2);
+                  }));
+
+                  return function (_x11) {
+                    return _ref7.apply(this, arguments);
+                  };
+                }());
+
+              case 7:
+                _context7.next = 13;
+                break;
+
+              case 9:
+                _context7.prev = 9;
+                _context7.t0 = _context7['catch'](3);
+
+                this.logger.error(_context7.t0);
+                res.status(400).send(_context7.t0);
+
+              case 13:
+                _context7.next = 17;
+                break;
+
+              case 15:
+                this.logger.error('Joi validation error: ' + validation.error);
+                res.status(400).send(validation.error);
+
+              case 17:
+              case 'end':
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this, [[3, 9]]);
+      }));
+
+      function update(_x9, _x10) {
+        return _ref6.apply(this, arguments);
+      }
+
+      return update;
+    }()
+  }, {
     key: 'updateTeamAccount',
     value: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(contract, teamAccount) {
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(contract, teamAccount) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
-                _context6.next = 2;
+                _context8.next = 2;
                 return this.accounts.doc(contract.teamUid).collection('transactions').add({
                   activityType: 'Player contract bid sent to ' + contract.playerName,
                   timestamp: FieldValue.serverTimestamp(),
@@ -297,21 +394,21 @@ var ContractController = function () {
                 });
 
               case 2:
-                _context6.next = 4;
+                _context8.next = 4;
                 return this.accounts.doc(contract.teamUid).update({
                   availableBudget: teamAccount.availableBudget - contract.purchasePrice
                 });
 
               case 4:
               case 'end':
-                return _context6.stop();
+                return _context8.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee8, this);
       }));
 
-      function updateTeamAccount(_x9, _x10) {
-        return _ref6.apply(this, arguments);
+      function updateTeamAccount(_x12, _x13) {
+        return _ref8.apply(this, arguments);
       }
 
       return updateTeamAccount;
