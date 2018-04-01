@@ -81,7 +81,8 @@ class ContractForm extends React.Component {
         salary: Math.floor(purchasePrice / games),
         status: 'pending',
         teamName: this.props.signingTeam.teamName,
-        teamUid: this.props.signingTeam.teamUid
+        teamUid: this.props.signingTeam.teamUid,
+        isFeePaid: false
       }
       this.props.store.createContract(newContract).then(() => {
         this.toastSuccess()

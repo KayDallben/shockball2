@@ -17,7 +17,8 @@ export default {
     games: Joi.number().required(),
     status: Joi.string().required(),
     teamName: Joi.string().required(),
-    teamUid: Joi.string().required()
+    teamUid: Joi.string().required(),
+    isFeePaid: Joi.boolean().required()
   }),
   updateParams: Joi.object().keys({
     status: Joi.string().required(),

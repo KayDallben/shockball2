@@ -249,6 +249,8 @@ class Store {
         access_token: this.accessToken,
         status: 'rejected'
       }
+    }).then(() => {
+      this.showOfficePage()
     })
   }
 
