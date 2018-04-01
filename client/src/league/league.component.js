@@ -48,6 +48,7 @@ class League extends React.Component {
       case "fulfilled":
           return (
             <div className="league-wrapper">
+              <h2 className="section-title">League</h2>
               <div className="fixture-set">
                 <div className="header">
                   <div>Date</div>

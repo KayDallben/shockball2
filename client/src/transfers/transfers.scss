@@ -1,9 +1,12 @@
 .transfers-wrapper {
     color: inherit;
-    width: 100%;
+    width: calc(100% - 10px);
     position: relative;
     padding: 12px;
     box-sizing: border-box;
+    margin: 5px;
+    background: rgba(0,0,0,.5);
+    border-radius: 5px;
     a {
         color: #007bff!important;
         text-decoration: none!important;
@@ -16,7 +19,7 @@
             outline:none;
             .react-grid-Grid {
                 background:transparent;
-                border: 1px solid #0f0f0f;
+                border: none;
                 border-top-right-radius: 4px;
                 border-top-left-radius: 4px;
                 .react-grid-Header {
@@ -31,6 +34,7 @@
                 }
                 .react-grid-Canvas {
                     background-color: transparent;
+                    overflow-y: hidden!important;
                 }
                 .react-grid-Row--even {
                     color: #ffffff;
@@ -51,6 +55,9 @@
                         background: none;
                         &:hover {
                             background:inherit;
+                        }
+                        .react-grid-Cell--locked {
+                            background: #040A0F!important;
                         }
                     }
                 }

@@ -159,7 +159,7 @@ class Office extends React.Component {
     } else if (!this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
       // current user has no contract and is not a manager - so is a free agent
       return (
-        <div onClick={() => this.editContract(row)}>Review</div>
+        <div className="btn btn-secondary" onClick={() => this.editContract(row)}>Review</div>
       )
     } else if (this.props.store.currentUser.contractUid && this.props.store.currentUser.teamManager) {
       // EDGE CASE! current user has both a team contract AND is a team manager.  We don't want to support this.
@@ -173,6 +173,57 @@ class Office extends React.Component {
         <div></div>
       )
     }
+  }
+
+  renderContractFields(contract) {
+    if (contract.status === 'accepted' && !contract.isFeePaid) {
+      return (
+        <div className="inner-contract-fields">
+          <div className="fee-title">League Fee Required: <NumberFormat value={1000000} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+          <p className="disclaimer">Disclaimer: because the actual payment is made from an external system (star wars combine), this system cannot validate that your payment was made. This is a manual process
+            where our administrators check the payment events from Star Wars Combine, validate authenticity, and then update the ShockBall league to reflect your payment.
+          </p>
+          <p className="disclaimer">In other words: <b>It is totally possible to pay the League twice so PLEASE DO NOT DO THAT. :)</b></p>
+        </div>
+      )
+    } else if (contract.status ==='pending') {
+      return (
+        <div className="inner-contract-fields">
+          <div className="contract-item">
+            <div className="label">Purchase Price</div>
+            <div className="item-value"><NumberFormat value={contract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+          </div>
+          <div className="contract-item">
+            <div className="label">Number Games</div>
+            <div className="item-value">{contract.games}</div>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  renderContractActions(contract) {
+    if (contract.status === 'accepted' && !contract.isFeePaid) {
+      return (
+        <div className="contract-action-holder">
+          <button type="submit" className="mb-4 btn btn-primary" onClick={() => {this.sendCreditsLink(contract)}}>Pay League Fee</button>
+        </div>
+      )
+    } else {
+      return (
+        <div className="contract-action-holder">
+          <button type="submit" className="mb-4 btn btn-danger" onClick={() => {this.rejectContract(contract)}}>Reject</button>
+          <button type="submit" className="mb-4 btn btn-success" onClick={() => {this.acceptContract(contract)}}>Accept</button>
+        </div>
+      )
+    }
+  }
+
+  sendCreditsLink(contract) {
+    const receiver = encodeURIComponent('Tholme So')
+    const amount = 1000000
+    const communication = `Player Contract Fee | Contract ID: ${contract.contractUid} | Player ID: ${contract.playerUid}, Player Name: ${contract.playerName} | Team ID: ${contract.teamUid}, Team Name: ${contract.teamName} | Purchase Price: ${contract.purchasePrice}, Games: ${contract.games}`
+    window.open(`http://www.swcombine.com/members/credits/?receiver=${receiver}&amount=${amount}&communication=${communication}`, '_blank')
   }
 
   editContract(rowData) {
@@ -192,16 +243,8 @@ class Office extends React.Component {
         </div>
         <div className="contract-offer">
           <h3>Contract Bid:</h3>
-          <div className="contract-item">
-            <div className="label">Purchase Price</div>
-            <div className="item-value"><NumberFormat value={playerContract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
-          </div>
-          <div className="contract-item">
-            <div className="label">Number Games</div>
-            <div className="item-value">{playerContract.games}</div>
-          </div>
-          <button type="submit" className="mb-4 btn btn-primary" onClick={() => {this.acceptContract(playerContract)}}>Accept</button>
-          <button type="submit" className="mb-4 btn btn-danger" onClick={() => {this.rejectContract(playerContract)}}>Reject</button>
+          {this.renderContractFields(playerContract)}
+          {this.renderContractActions(playerContract)}
         </div>
       </div>
     )

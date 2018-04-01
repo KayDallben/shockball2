@@ -123,12 +123,15 @@ class Transfers extends React.Component {
 
   allPlayers() {
     return (
+      <div>
+        <h2 className="section-title">Transfer Market</h2>
         <ReactDataGrid
         onGridSort={this.handleGridSort}
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.props.view.players.value.length}
         minHeight={500} />
+      </div>
     )
   }
 

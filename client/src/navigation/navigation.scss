@@ -11,6 +11,9 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+      padding: 3px;
+      padding-top: 0;
+      padding-bottom: 0;
       > a {
         flex:1;
         text-align: center;
@@ -37,7 +40,7 @@
           }
           .title {
             position: absolute;
-            bottom: 12px;
+            bottom: 4px;
             left: 0;
             right: 0;
             color: #e1e1e1;

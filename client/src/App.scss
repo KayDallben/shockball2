@@ -12,6 +12,12 @@ sim > div {
   background-attachment: fixed;
 }
 
+.react-grid-Cell__value {
+  .btn {
+    padding: .05rem .05rem;
+  }
+}
+
 .shockball-modal {
   position: fixed;
   top: 0;
@@ -36,6 +42,9 @@ sim > div {
     padding: 10px;
     @include mobile {
       width: 100%;
+      height: 100%;
+      margin: 0;
+      border-radius: 0;
     }
     a {
       z-index: 11!important;
@@ -79,6 +88,14 @@ sim > div {
           }
           .displayErrors input:invalid {
             border-color: red;
+          }
+        }
+        .contract-action-holder {
+          position: absolute;
+          bottom: 0;
+          right: 30px;
+          button {
+              margin-left: 10px;
           }
         }
       }

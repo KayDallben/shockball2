@@ -27,7 +27,8 @@ exports.default = {
     games: _joi2.default.number().required(),
     status: _joi2.default.string().required(),
     teamName: _joi2.default.string().required(),
-    teamUid: _joi2.default.string().required()
+    teamUid: _joi2.default.string().required(),
+    isFeePaid: _joi2.default.boolean().required()
   }),
   updateParams: _joi2.default.object().keys({
     status: _joi2.default.string().required(),

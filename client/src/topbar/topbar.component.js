@@ -84,7 +84,7 @@ class TopBar extends React.Component {
                 {this.renderTeamImage()}
                 <div className="team-longname">
                   <div className="team-name">{this.renderTeamName()}</div>
-                  <div className="team-edit button">Edit</div>
+                  {/* <div className="team-edit button">Edit</div> */}
                 </div>
               </div>
               <div className="shockball-logo-holder">
