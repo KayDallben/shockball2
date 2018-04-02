@@ -130,10 +130,13 @@ sim > div {
     width: 80%;
     margin: 0 auto;
     max-width: 1200px;
-    min-width: 400px;
+    min-width: 300px;
     height: auto;
     position: relative;
     z-index: 1;
+    @include mobile {
+      width: 100%;
+    }
     top-header {
       position: relative;
       z-index: 1;
