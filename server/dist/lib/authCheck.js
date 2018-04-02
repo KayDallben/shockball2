@@ -34,6 +34,7 @@ exports.default = function () {
           case 4:
             validCombinePlayer = _context.sent;
 
+            // console.log(validCombinePlayer)
             req.uid = validCombinePlayer.data.character.uid;
             req.swcToken = swcToken;
             _context.next = 12;

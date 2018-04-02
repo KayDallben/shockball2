@@ -80,9 +80,9 @@ export default class Challenge {
       return player.tackleScore === highestTackleScore
     })
     this.record.add(winningPlayer, 'tackles ball', this.board.gameTime)
-    this.ball.possess(winningPlayer.createdAsUid)
+    this.ball.possess(winningPlayer.shockballPlayerUid)
     this.ball.lastSideTouched = winningPlayer.homeGoalSide
-    this.ball.lastPlayerTouched = winningPlayer.createdAsUid
+    this.ball.lastPlayerTouched = winningPlayer.shockballPlayerUid
   }
 
   resolvePlayerRun() {
@@ -90,7 +90,7 @@ export default class Challenge {
     // for now, he is unhindered
     const theBall = this.ball
     const runningPlayer = this.playerTryRun.find(function(player) {
-      return player.createdAsUid === theBall.possessedBy
+      return player.shockballPlayerUid === theBall.possessedBy
     })
 
     //first player needs to beat tackle challenges from opposition, if there are any
@@ -116,7 +116,7 @@ export default class Challenge {
     // for now, there are no other players so he's free to proceed unhindered, will write logic for challenging later
     const theBall = this.ball
     const shootingPlayer = this.playerTryScore.find(function(player) {
-      return player.createdAsUid === theBall.possessedBy
+      return player.shockballPlayerUid === theBall.possessedBy
     })
 
     if (!shootingPlayer) {
@@ -173,7 +173,7 @@ export default class Challenge {
     const rightPlayers = this.rightPlayers.slice()
 
     const passingPlayer = this.playerTryPass.find(function(player) {
-      return player.createdAsUid === theBall.possessedBy
+      return player.shockballPlayerUid === theBall.possessedBy
     })
 
     if (!passingPlayer) {
@@ -221,7 +221,7 @@ export default class Challenge {
   }
 
   score(shootingPlayer, opposingPlayer, ball) {
-    shootingPlayer.opposingActorUid = opposingPlayer.createdAsUid
+    shootingPlayer.opposingActorUid = opposingPlayer.shockballPlayerUid
     shootingPlayer.opposingActorName = opposingPlayer.name
     this.record.add(shootingPlayer, 'goal', this.board.gameTime)
     ball.reset()
@@ -232,10 +232,10 @@ export default class Challenge {
   }
 
   goalBlock(shootingPlayer, opposingPlayer, ball) {
-    opposingPlayer.opposingActorUid = shootingPlayer.createdAsUid
+    opposingPlayer.opposingActorUid = shootingPlayer.shockballPlayerUid
     opposingPlayer.opposingActorName = shootingPlayer.name
     this.record.add(opposingPlayer, 'goal blocked', this.board.gameTime)
-    ball.possessedBy = opposingPlayer.createdAsUid
+    ball.possessedBy = opposingPlayer.shockballPlayerUid
     ball.lastSideTouched = opposingPlayer.homeGoalSide
   }
 
@@ -260,40 +260,40 @@ export default class Challenge {
   passForward(passingPlayer, ball, leftPlayers, rightPlayers) {
     if (passingPlayer.homeGoalSide === 'right') {
       const availableTeammates = rightPlayers.filter(function(player) {
-        return player.createdAsUid !== passingPlayer.createdAsUid
+        return player.shockballPlayerUid !== passingPlayer.shockballPlayerUid
       })
       const playerToWinPossession = chance.pickone(availableTeammates, 1)
       this.record.add(passingPlayer, 'passes ball', this.board.gameTime)
       if (this.pitch.goalPit.left < ball.goalProximity) {
         ball.goalProximity--
       }
-      ball.possessedBy = playerToWinPossession.createdAsUid
+      ball.possessedBy = playerToWinPossession.shockballPlayerUid
     } else {
       const availableTeammates = leftPlayers.filter(function(player) {
-        return player.createdAsUid !== passingPlayer.createdAsUid
+        return player.shockballPlayerUid !== passingPlayer.shockballPlayerUid
       })
       const playerToWinPossession = chance.pickone(availableTeammates, 1)
       this.record.add(passingPlayer, 'passes ball', this.board.gameTime)
       if (this.pitch.goalPit.right > ball.goalProximity) {
         ball.goalProximity++
       }
-      ball.possessedBy = playerToWinPossession.createdAsUid
+      ball.possessedBy = playerToWinPossession.shockballPlayerUid
     }
   }
 
   passBlock(opposingPlayer, ball) {
     this.record.add(opposingPlayer, 'pass blocked', this.board.gameTime)
     ball.lastSideTouched = opposingPlayer.homeGoalSide
-    ball.possessedBy = opposingPlayer.createdAsUid
+    ball.possessedBy = opposingPlayer.shockballPlayerUid
   }
 
   getsTackled(runningPlayer, randomTackler, ball) {
-    randomTackler.opposingActorUid = runningPlayer.createdAsUid
+    randomTackler.opposingActorUid = runningPlayer.shockballPlayerUid
     randomTackler.opposingActorName = runningPlayer.name
     this.record.add(randomTackler, 'tackles', this.board.gameTime)
-    ball.possess(randomTackler.createdAsUid)
+    ball.possess(randomTackler.shockballPlayerUid)
     ball.lastSideTouched = randomTackler.homeGoalSide
-    ball.lastPlayerTouched = randomTackler.createdAsUid
+    ball.lastPlayerTouched = randomTackler.shockballPlayerUid
   }
 
 }

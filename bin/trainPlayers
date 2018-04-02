@@ -80,7 +80,7 @@ function mapDataAndCaps(players, playerCaps) {
         let playerWithCaps = {}
         Object.assign(playerWithCaps, player)
         for (var playerCap of playerCaps) {
-            if (player.createdAsUid === playerCap.createdAsUid) {
+            if (player.shockballPlayerUid === playerCap.shockballPlayerUid) {
                 playerWithCaps.blockingCap = playerCap.blocking
                 playerWithCaps.throwingCap = playerCap.throwing
                 playerWithCaps.passingCap = playerCap.passing
@@ -187,7 +187,7 @@ function trainPlayer(player) {
 }
 
 async function updatePlayer(player) {
-    return db.collection('players').doc(player.createdAsUid).update(player)
+    return db.collection('players').doc(player.shockballPlayerUid).update(player)
 }
 
 function updatePlayerValue(player) {

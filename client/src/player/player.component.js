@@ -171,7 +171,7 @@ class Player extends React.Component {
   }
 
   renderTrainingInput() {
-    if (this.props.view.player.value.createdAsUid === this.props.store.currentUser.createdAsUid) {
+    if (this.props.view.player.value.shockballPlayerUid === this.props.store.currentUser.shockballPlayerUid) {
       return (
         <div className="train">
           <h2>Training Regimen</h2>

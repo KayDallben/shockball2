@@ -25,6 +25,7 @@ class App extends Component {
     }
     return divStyle
   }
+
   componentWillMount() {
     this.props.store.handleUserSetup()
   }

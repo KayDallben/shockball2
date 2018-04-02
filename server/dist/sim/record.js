@@ -33,7 +33,7 @@ var Record = function () {
       player.opposingActorName = player.opposingActorName ? player.opposingActorName : 'somebody';
 
       this.records.push({
-        actorUid: player.createdAsUid,
+        actorUid: player.shockballPlayerUid,
         actorName: player.name,
         actorPicUrl: player.image,
         opposingActorUid: player.opposingActorUid,
