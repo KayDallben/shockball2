@@ -130,12 +130,15 @@
               color: #fff;
               box-sizing: border-box;
               padding-top: 4px;
-              padding-left: 7px;        
+              padding-left: 36px;
             }
           }
           .countdown {
             flex:1;
             color: #999;
+            @include mobile {
+              display:none;
+            }
           }
         }
       }
