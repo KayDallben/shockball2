@@ -6,7 +6,7 @@ const util = new Util()
 export default class Player {
   constructor(playerStats, world, challenge, homeGoalSide) {
     if (util.getType(playerStats) === '[object Object]') {
-      this.createdAsUid = playerStats.createdAsUid
+      this.shockballPlayerUid = playerStats.shockballPlayerUid
       this.name = playerStats.name
       this.image = playerStats.image
       this.teamUid = playerStats.teamUid
@@ -85,7 +85,7 @@ export default class Player {
       this.tryTackleBall()
       return
     }
-    if (pitch.state === 'play_on' && ball.possessedBy === this.createdAsUid) {
+    if (pitch.state === 'play_on' && ball.possessedBy === this.shockballPlayerUid) {
       // this player has the ball - better trying priority 1 action first!
       // player looks to score first, if he's in range.
       // for now the goal is empty and it has a default resistence of 2
@@ -149,7 +149,7 @@ export default class Player {
 
   analyzeNextAction(opposingPlayers, ball) {
     const ballCarrier = opposingPlayers.find(function(player) {
-      return player.createdAsUid === ball.possessedBy
+      return player.shockballPlayerUid === ball.possessedBy
     })
     if (ballCarrier.throwing + ballCarrier.passing > ballCarrier.toughness + chance.rpg('1d12', {sum:true})) {
       return 'throw'
@@ -160,7 +160,7 @@ export default class Player {
 
   analyzeMoreLikelyToShoot(players, ball) {
     const ballCarrier = players.find(function(player) {
-      return player.createdAsUid === ball.possessedBy
+      return player.shockballPlayerUid === ball.possessedBy
     })
     //simple determinatin right now - if throwing higher than passing, then this player assumes they'll shoot
     if (ballCarrier && ballCarrier.throwing > ballCarrier.passing) {

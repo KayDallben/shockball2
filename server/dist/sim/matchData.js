@@ -13,7 +13,7 @@ var MatchData = function MatchData() {
     teamVenueName: 'Abregado Galactic Stadium',
     teamName: 'Abregado Gentlemen',
     players: [{
-      createdAsUid: 1,
+      shockballPlayerUid: 1,
       name: 'Tholme So',
       image: '//i736.photobucket.com/albums/xx4/bpkennedy/norringtonfreelance.jpg',
       teamUid: '-KnCepjY8BLF_0bcANzF',
@@ -27,7 +27,7 @@ var MatchData = function MatchData() {
   this.awayTeam = {
     teamName: 'Kashyyyk Rangers',
     players: [{
-      createdAsUid: 2,
+      shockballPlayerUid: 2,
       name: 'Yan Yansen',
       image: '//tresario.com/forum/index.php?action=dlattach;attach=271;type=avatar',
       teamUid: '-KnGp3lbMpZVvl1bGGvy',

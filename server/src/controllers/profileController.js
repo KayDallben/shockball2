@@ -54,16 +54,14 @@ class ProfileController {
     try {
       const baseStats = this.rollBaseStats()
       const playerValue = util.calculatePlayerValue(baseStats)
-      await this.createPlayerStatCaps(uid)
-      await this.createPlayerAccount(uid)
       const swcCharacter = await this.getCharacterInfo(uid, accessToken)
-      await this.players.doc(uid).set({
+      const playerEntity = {
         name: swcCharacter.character.name,
         image: swcCharacter.character.image,
         gender: swcCharacter.character.gender,
         race: swcCharacter.character.race.value,
         created: FieldValue.serverTimestamp(),
-        createdAsUid: uid,
+        swcPlayerUid: uid,
         passing: baseStats.passing,
         throwing: baseStats.throwing,
         blocking: baseStats.blocking,
@@ -76,8 +74,14 @@ class ProfileController {
         fatigue: baseStats.fatigue,
         marketValue: playerValue.marketValue,
         rating: playerValue.playerRating
+      }
+      const newPlayer = await this.players.add(playerEntity)
+      await this.players.doc(newPlayer.id).update({
+        shockballPlayerUid: newPlayer.id
       })
-      return await this.players.doc(uid).get().then(doc => {
+      await this.createPlayerStatCaps(newPlayer.id)
+      await this.createPlayerAccount(newPlayer.id, playerEntity)
+      return await this.players.doc(newPlayer.id).get().then(doc => {
         return doc.data()
       })
     } catch (error) {
@@ -102,15 +106,16 @@ class ProfileController {
     return baseStats
   }
 
-  async createPlayerAccount(uid) {
-    await this.accounts.doc(uid).set({
-      createdAsUid: uid,
+  async createPlayerAccount(playerId, player) {
+    await this.accounts.doc(playerId).set({
+      shockballPlayerUid: playerId,
+      name: player.name,
       created: FieldValue.serverTimestamp(),
       lastModified: FieldValue.serverTimestamp(),
       totalBalance: 0
     })
-    await this.accounts.doc(uid).collection('transactions').add({
-      activityType: 'Player account created for ' + uid,
+    await this.accounts.doc(playerId).collection('transactions').add({
+      activityType: 'Player account created for ' + player.name,
       timestamp: FieldValue.serverTimestamp(),
       amount: 0
     })
@@ -118,7 +123,7 @@ class ProfileController {
 
   async createPlayerStatCaps(uid) {
     const playerWithStatCaps = {
-      createdAsUid: uid,
+      shockballPlayerUid: uid,
       created: FieldValue.serverTimestamp(),
       passing: chance.integer({min:75, max:100}),
       throwing: chance.integer({min:75, max:100}),
@@ -145,7 +150,10 @@ class ProfileController {
       })
     }
     try {
-      await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
+      if (!playerData.shockballPlayerUid) {
+        playerData.shockballPlayerUid = '1'
+      }
+      await this.events.where('actorUid', '==', playerData.shockballPlayerUid).get().then((snapshot) => {
         let events = []
         snapshot.forEach((doc4) => {
           events.push(doc4.data())
@@ -173,22 +181,26 @@ class ProfileController {
     return playerData
   }
 
-  checkIfPlayerExists(uid) {
-    return this.players.doc(uid).get().then(async(doc) => {
-      if (doc.exists) {
+  checkIfPlayerExists(swcPlayerUid) {
+    // important: here we are taking the swcUser uid to find the player - so this is a query to players collection
+    return this.players.where('swcPlayerUid', '==', swcPlayerUid).get().then(async (snapshot) => {
+      let players = []
+      snapshot.forEach((doc) => {
+        players.push(doc.data())
+      })
+      if (players.length > 0) {
+        const player = players[0] // Should only ever be a single user, but this takes the first if there happens to be more than one?
         try {
-          const player = await this.decoratePlayer(doc.data())
-          return player
+          const decoratedPlayer = await this.decoratePlayer(player)
+          return decoratedPlayer
         } catch(error) {
           this.logger.error(error)
           return false
         }
       } else {
-        this.logger.error('checkIfPlayerExists did not find a player')
+        this.logger.error('checkIfPlayerExists did not find a matching player')
         return false
       }
-    }).catch(error => {
-      this.logger.error(error)
     })
   }
 

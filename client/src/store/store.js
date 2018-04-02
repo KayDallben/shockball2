@@ -84,7 +84,7 @@ class Store {
     ga.pageview()
     this.currentView = {
       name: 'home',
-      player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.createdAsUid, this.accessToken))
+      player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.shockballPlayerUid, this.accessToken))
     }  
   }
 
@@ -98,7 +98,7 @@ class Store {
     } else {
       this.currentView = {
         name: 'office',
-        office: fromPromise(this.http.fetchPlayerAdmin(this.currentUser.createdAsUid, this.accessToken))
+        office: fromPromise(this.http.fetchPlayerAdmin(this.currentUser.shockballPlayerUid, this.accessToken))
       }
     }
   }
@@ -111,13 +111,13 @@ class Store {
         playerId,
         player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + playerId, this.accessToken))
       }  
-    } else if (!playerId && this.currentUser.createdAsUid) {
+    } else if (!playerId && this.currentUser.shockballPlayerUid) {
       this.currentView = {
         name: 'player',
         playerId,
-        player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.createdAsUid, this.accessToken))
+        player: fromPromise(this.http.genericFetch(hostUrl + 'api/players/' + this.currentUser.shockballPlayerUid, this.accessToken))
       }  
-    } else if (!playerId && !this.currentUser.createdAsUid) {
+    } else if (!playerId && !this.currentUser.shockballPlayerUid) {
       this.currentView = {
         name: 'player',
         playerId,
@@ -195,7 +195,7 @@ class Store {
     ga.event('Training Regimen', 'clicked')
     axios({
       method: 'PUT',
-      url: hostUrl + 'api/players/' + this.currentUser.createdAsUid,
+      url: hostUrl + 'api/players/' + this.currentUser.shockballPlayerUid,
       params: {
         access_token: this.accessToken,
         regimen: selectedOption
@@ -277,7 +277,7 @@ class Store {
         }
       }).then(response => {
         this.setUser(response.data)
-        ga.init(this.currentUser.createdAsUid)
+        ga.init(this.currentUser.shockballPlayerUid)
         if (response.data.teamUid) {
           this.showUserTeam(response.data.teamUid)
         } else {
@@ -288,9 +288,7 @@ class Store {
     })
   }
   @action handleUserSetup = () => {
-    if (this.hasAccessToken) {
-      this.setUserProfile()
-    } else if (!this.hasAccessToken) {
+    if (!this.hasAccessToken) {
       this.sendToLoginPage()
     }
   }

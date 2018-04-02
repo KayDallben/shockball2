@@ -75,7 +75,7 @@ class ContractForm extends React.Component {
     saveContract(purchasePrice, games) {
       const newContract = {
         playerName: this.props.signingPlayer.name,
-        playerUid: this.props.signingPlayer.createdAsUid,
+        playerUid: this.props.signingPlayer.shockballPlayerUid,
         purchasePrice: parseInt(purchasePrice),
         games: parseInt(games),
         salary: Math.floor(purchasePrice / games),

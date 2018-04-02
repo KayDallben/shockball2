@@ -260,7 +260,7 @@ var PlayerController = function () {
 
                           case 10:
                             _context4.next = 12;
-                            return _this2.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+                            return _this2.events.where('actorUid', '==', playerData.shockballPlayerUid).get().then(function (snapshot) {
                               var events = [];
                               snapshot.forEach(function (doc4) {
                                 events.push(doc4.data());

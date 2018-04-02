@@ -143,7 +143,7 @@ var ProfileController = function () {
     key: 'createNewPlayer',
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(uid, accessToken) {
-        var baseStats, playerValue, swcCharacter;
+        var baseStats, playerValue, swcCharacter, playerEntity, newPlayer;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -152,26 +152,17 @@ var ProfileController = function () {
                 baseStats = this.rollBaseStats();
                 playerValue = util.calculatePlayerValue(baseStats);
                 _context2.next = 5;
-                return this.createPlayerStatCaps(uid);
-
-              case 5:
-                _context2.next = 7;
-                return this.createPlayerAccount(uid);
-
-              case 7:
-                _context2.next = 9;
                 return this.getCharacterInfo(uid, accessToken);
 
-              case 9:
+              case 5:
                 swcCharacter = _context2.sent;
-                _context2.next = 12;
-                return this.players.doc(uid).set({
+                playerEntity = {
                   name: swcCharacter.character.name,
                   image: swcCharacter.character.image,
                   gender: swcCharacter.character.gender,
                   race: swcCharacter.character.race.value,
                   created: FieldValue.serverTimestamp(),
-                  createdAsUid: uid,
+                  swcPlayerUid: uid,
                   passing: baseStats.passing,
                   throwing: baseStats.throwing,
                   blocking: baseStats.blocking,
@@ -184,30 +175,47 @@ var ProfileController = function () {
                   fatigue: baseStats.fatigue,
                   marketValue: playerValue.marketValue,
                   rating: playerValue.playerRating
+                };
+                _context2.next = 9;
+                return this.players.add(playerEntity);
+
+              case 9:
+                newPlayer = _context2.sent;
+                _context2.next = 12;
+                return this.players.doc(newPlayer.id).update({
+                  shockballPlayerUid: newPlayer.id
                 });
 
               case 12:
                 _context2.next = 14;
-                return this.players.doc(uid).get().then(function (doc) {
+                return this.createPlayerStatCaps(newPlayer.id);
+
+              case 14:
+                _context2.next = 16;
+                return this.createPlayerAccount(newPlayer.id, playerEntity);
+
+              case 16:
+                _context2.next = 18;
+                return this.players.doc(newPlayer.id).get().then(function (doc) {
                   return doc.data();
                 });
 
-              case 14:
+              case 18:
                 return _context2.abrupt('return', _context2.sent);
 
-              case 17:
-                _context2.prev = 17;
+              case 21:
+                _context2.prev = 21;
                 _context2.t0 = _context2['catch'](0);
 
                 this.logger.error(_context2.t0);
                 return _context2.abrupt('return', false);
 
-              case 21:
+              case 25:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 17]]);
+        }, _callee2, this, [[0, 21]]);
       }));
 
       function createNewPlayer(_x3, _x4) {
@@ -236,14 +244,15 @@ var ProfileController = function () {
   }, {
     key: 'createPlayerAccount',
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(uid) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(playerId, player) {
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return this.accounts.doc(uid).set({
-                  createdAsUid: uid,
+                return this.accounts.doc(playerId).set({
+                  shockballPlayerUid: playerId,
+                  name: player.name,
                   created: FieldValue.serverTimestamp(),
                   lastModified: FieldValue.serverTimestamp(),
                   totalBalance: 0
@@ -251,8 +260,8 @@ var ProfileController = function () {
 
               case 2:
                 _context3.next = 4;
-                return this.accounts.doc(uid).collection('transactions').add({
-                  activityType: 'Player account created for ' + uid,
+                return this.accounts.doc(playerId).collection('transactions').add({
+                  activityType: 'Player account created for ' + player.name,
                   timestamp: FieldValue.serverTimestamp(),
                   amount: 0
                 });
@@ -265,7 +274,7 @@ var ProfileController = function () {
         }, _callee3, this);
       }));
 
-      function createPlayerAccount(_x5) {
+      function createPlayerAccount(_x5, _x6) {
         return _ref3.apply(this, arguments);
       }
 
@@ -281,7 +290,7 @@ var ProfileController = function () {
             switch (_context4.prev = _context4.next) {
               case 0:
                 playerWithStatCaps = {
-                  createdAsUid: uid,
+                  shockballPlayerUid: uid,
                   created: FieldValue.serverTimestamp(),
                   passing: chance.integer({ min: 75, max: 100 }),
                   throwing: chance.integer({ min: 75, max: 100 }),
@@ -304,7 +313,7 @@ var ProfileController = function () {
         }, _callee4, this);
       }));
 
-      function createPlayerStatCaps(_x6) {
+      function createPlayerStatCaps(_x7) {
         return _ref4.apply(this, arguments);
       }
 
@@ -347,8 +356,12 @@ var ProfileController = function () {
 
               case 9:
                 _context5.prev = 9;
-                _context5.next = 12;
-                return this.events.where('actorUid', '==', playerData.createdAsUid).get().then(function (snapshot) {
+
+                if (!playerData.shockballPlayerUid) {
+                  playerData.shockballPlayerUid = '1';
+                }
+                _context5.next = 13;
+                return this.events.where('actorUid', '==', playerData.shockballPlayerUid).get().then(function (snapshot) {
                   var events = [];
                   snapshot.forEach(function (doc4) {
                     events.push(doc4.data());
@@ -371,28 +384,28 @@ var ProfileController = function () {
                   }
                 });
 
-              case 12:
-                _context5.next = 17;
+              case 13:
+                _context5.next = 18;
                 break;
 
-              case 14:
-                _context5.prev = 14;
+              case 15:
+                _context5.prev = 15;
                 _context5.t0 = _context5['catch'](9);
 
                 this.logger.error(_context5.t0);
 
-              case 17:
+              case 18:
                 return _context5.abrupt('return', playerData);
 
-              case 18:
+              case 19:
               case 'end':
                 return _context5.stop();
             }
           }
-        }, _callee5, this, [[9, 14]]);
+        }, _callee5, this, [[9, 15]]);
       }));
 
-      function decoratePlayer(_x7) {
+      function decoratePlayer(_x8) {
         return _ref5.apply(this, arguments);
       }
 
@@ -400,58 +413,65 @@ var ProfileController = function () {
     }()
   }, {
     key: 'checkIfPlayerExists',
-    value: function checkIfPlayerExists(uid) {
+    value: function checkIfPlayerExists(swcPlayerUid) {
       var _this = this;
 
-      return this.players.doc(uid).get().then(function () {
-        var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(doc) {
-          var player;
+      // important: here we are taking the swcUser uid to find the player - so this is a query to players collection
+      return this.players.where('swcPlayerUid', '==', swcPlayerUid).get().then(function () {
+        var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(snapshot) {
+          var players, player, decoratedPlayer;
           return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
               switch (_context6.prev = _context6.next) {
                 case 0:
-                  if (!doc.exists) {
-                    _context6.next = 14;
+                  players = [];
+
+                  snapshot.forEach(function (doc) {
+                    players.push(doc.data());
+                  });
+
+                  if (!(players.length > 0)) {
+                    _context6.next = 17;
                     break;
                   }
 
-                  _context6.prev = 1;
-                  _context6.next = 4;
-                  return _this.decoratePlayer(doc.data());
+                  player = players[0]; // Should only ever be a single user, but this takes the first if there happens to be more than one?
 
-                case 4:
-                  player = _context6.sent;
-                  return _context6.abrupt('return', player);
+                  _context6.prev = 4;
+                  _context6.next = 7;
+                  return _this.decoratePlayer(player);
 
-                case 8:
-                  _context6.prev = 8;
-                  _context6.t0 = _context6['catch'](1);
+                case 7:
+                  decoratedPlayer = _context6.sent;
+                  return _context6.abrupt('return', decoratedPlayer);
+
+                case 11:
+                  _context6.prev = 11;
+                  _context6.t0 = _context6['catch'](4);
 
                   _this.logger.error(_context6.t0);
                   return _context6.abrupt('return', false);
 
-                case 12:
-                  _context6.next = 16;
+                case 15:
+                  _context6.next = 19;
                   break;
 
-                case 14:
-                  _this.logger.error('checkIfPlayerExists did not find a player');
+                case 17:
+                  _this.logger.error('checkIfPlayerExists did not find a matching player');
                   return _context6.abrupt('return', false);
 
-                case 16:
+                case 19:
                 case 'end':
                   return _context6.stop();
               }
             }
-          }, _callee6, _this, [[1, 8]]);
+          }, _callee6, _this, [[4, 11]]);
         }));
 
-        return function (_x8) {
+        return function (_x9) {
           return _ref6.apply(this, arguments);
         };
-      }()).catch(function (error) {
-        _this.logger.error(error);
-      });
+      }());
     }
   }, {
     key: 'getCharacterInfo',

@@ -18,7 +18,7 @@ var chance = new _chance2.default();
 chance.mixin({
   'player': function player(teamUid, teamName, teamPicUrl) {
     return {
-      createdAsUid: chance.guid(),
+      shockballPlayerUid: chance.guid(),
       name: 'BOT ' + chance.first({ nationality: 'nl' }) + ' ' + chance.last({ nationality: 'nl' }),
       image: chance.avatar(),
       teamUid: teamUid,

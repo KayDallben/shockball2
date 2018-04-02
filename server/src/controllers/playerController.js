@@ -91,7 +91,7 @@ class PlayerController {
               playerData.contractData = doc3.data()
             })
           }
-          await this.events.where('actorUid', '==', playerData.createdAsUid).get().then((snapshot) => {
+          await this.events.where('actorUid', '==', playerData.shockballPlayerUid).get().then((snapshot) => {
             let events = []
             snapshot.forEach((doc4) => {
               events.push(doc4.data())

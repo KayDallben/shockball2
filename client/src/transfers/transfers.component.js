@@ -101,7 +101,7 @@ class Transfers extends React.Component {
 
   createPlayerLink = (row) => {
     return (
-      <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.createdAsUid)}>{row.dependentValues.name}</a>
+      <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.shockballPlayerUid)}>{row.dependentValues.name}</a>
     )
   }
 
