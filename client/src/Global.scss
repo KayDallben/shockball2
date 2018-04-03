@@ -497,3 +497,54 @@ li.left .eventTime {
   position: absolute;
   bottom: -7px;
 }
+
+.react-grid-Container {
+  width:100%!important;
+  .react-grid-Main {
+      background:transparent;
+      outline:none;
+      .react-grid-Grid {
+          background:transparent;
+          border: none;
+          border-top-right-radius: 4px;
+          border-top-left-radius: 4px;
+          .react-grid-Header {
+              background-color: #0C93EB;
+              color: #ffffff;
+              border-top-right-radius: 4px;
+              border-top-left-radius: 4px;
+              .react-grid-HeaderCell {
+                  background-color: #0C93EB;
+                  color: #ffffff;
+              }
+          }
+          .react-grid-Canvas {
+              background-color: transparent;
+              overflow-y: auto!important;
+              height: 100%!important;
+          }
+          .react-grid-Row--even {
+              color: #ffffff;
+              background: rgba(0,0,0, 0.5);
+              .react-grid-Cell {
+                  color: #ffffff;
+                  background: rgba(0,0,0, 0.5);
+                  &:hover {
+                      background:inherit;
+                  }
+              }
+          }
+          .react-grid-Row--odd {
+              color: #ffffff;
+              background: none;
+              .react-grid-Cell {
+                  color: #ffffff;
+                  background: none;
+                  &:hover {
+                      background:inherit;
+                  }
+              }
+          }
+      }
+  }
+}

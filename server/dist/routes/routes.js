@@ -408,6 +408,35 @@ exports.default = function (db, logger) {
 
   /**
    * @swagger
+   * /api/contracts/{id}:
+   *   x-swagger-router-controller: ../controllers/contractController
+   *   get:
+   *     tags:
+   *       - Contract
+   *     description: Delete contract by id
+   *     operationId: remove
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - id: id
+   *         description: contract's id
+   *         in: query
+   *         name: id
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Contract'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Contract"
+   */
+  routes.delete('/contracts/:id', _authCheck2.default, function (req, res) {
+    contractController.remove(req, res);
+  });
+
+  /**
+   * @swagger
    * /api/contracts:
    *   x-swagger-router-controller: ../controllers/contractController
    *   post:

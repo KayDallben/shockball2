@@ -67,7 +67,14 @@ class ContractForm extends React.Component {
       }
 
       if (this.meetsMarketRules(data.get('purchasePrice'))) {
-        this.saveContract(data.get('purchasePrice'), data.get('games'))
+        const purchasePrice = data.get('purchasePrice')
+        if (purchasePrice < this.props.signingPlayer.marketValue) {
+          toast.error("Must offer player a minimum bid equal to their market value.", {
+            position: toast.POSITION.TOP_CENTER
+          })
+        } else {
+          this.saveContract(purchasePrice, data.get('games'))
+        }
       }
 
     }
@@ -87,11 +94,17 @@ class ContractForm extends React.Component {
       this.props.store.createContract(newContract).then(() => {
         this.toastSuccess()
         this.props.store.closeModal()
-      }).catch(() => {
-        toast.error("Must offer player a minimum bid equal to their market value.", {
-          position: toast.POSITION.TOP_CENTER
-        })
-        this.props.store.closeModal()
+      }).catch(error => {
+        if (error.response.data === 'Cannot spend more than available team budget!') {
+          toast.error(error.response.data, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        } else {
+          toast.error(error.response.data, {
+            position: toast.POSITION.TOP_CENTER
+          })
+          this.props.store.closeModal()
+        }
       })
     }
 
@@ -109,7 +122,7 @@ class ContractForm extends React.Component {
       return (
         <form novalidate onSubmit={this.handleSubmit} id="contract" className={displayErrors ? 'displayErrors' : ''}>
           <label htmlFor="purchasePrice">Enter Purchase Price</label>
-          <input id="purchasePrice" name="purchasePrice" type="number" data-parse="number" min="0" required />
+          <input id="purchasePrice" name="purchasePrice" type="number" data-parse="number" min={this.props.signingPlayer.marketValue} required />
 
           <label htmlFor="games">Number Games</label>
           <input id="games" name="games" type="number" data-parse="number" min="0" required />

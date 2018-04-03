@@ -22,6 +22,11 @@ export default {
   }),
   updateParams: Joi.object().keys({
     status: Joi.string().required(),
-    access_token: Joi.string().required()
+    access_token: Joi.string().required(),
+    isFeePaid: Joi.boolean()
+  }),
+  removeParams: Joi.object().keys({
+    access_token: Joi.string().required(),
+    swcUid: Joi.string().required()
   })
 }

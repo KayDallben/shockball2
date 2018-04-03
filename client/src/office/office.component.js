@@ -251,7 +251,7 @@ class Office extends React.Component {
   }
 
   acceptContract(playerContract) {
-    this.props.store.acceptContract(playerContract.contractUid).then(() => {
+    this.props.store.updateContractState(playerContract.contractUid, 'accepted', 'office').then(() => {
       toast.success("Contract accepted!", {
         position: toast.POSITION.TOP_CENTER
       })
@@ -265,7 +265,7 @@ class Office extends React.Component {
   }
 
   rejectContract(playerContract) {
-    this.props.store.rejectContract(playerContract.contractUid).then(() => {
+    this.props.store.updateContractState(playerContract.contractUid, 'rejected', 'office').then(() => {
       toast.success("Contract rejected!", {
         position: toast.POSITION.TOP_CENTER
       })
@@ -428,18 +428,22 @@ class Office extends React.Component {
   }
 
   renderTransactions() {
-    return (
-      <div className="inner-wrapper transaction-wrapper">
-        <div className="contract-header">Transaction History</div>
-        <div className="transactions-data-grid">
-          <ReactDataGrid
-            columns={this._transactionColumns}
-            rowGetter={this.transactionRowGetter}
-            rowsCount={this.props.view.office.value.account.transactions.length}
-            minHeight={200} />
+    if (this.props.view.office.value.account.transactions) {
+      return (
+        <div className="inner-wrapper transaction-wrapper">
+          <div className="contract-header">Transaction History</div>
+          <div className="transactions-data-grid">
+            <ReactDataGrid
+              columns={this._transactionColumns}
+              rowGetter={this.transactionRowGetter}
+              rowsCount={this.props.view.office.value.account.transactions.length}
+              minHeight={200} />
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return null
+    }
   }
 
   render() {

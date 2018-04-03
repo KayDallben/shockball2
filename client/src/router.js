@@ -29,6 +29,9 @@ export function startRouter(store) {
         "/office": () => {
             store.showOfficePage()
         },
+        "/admin": () => {
+            store.showAdminPage()
+        },
         "/": () => {
             store.showPlayerPage()
         }

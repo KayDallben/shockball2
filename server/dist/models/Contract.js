@@ -32,7 +32,12 @@ exports.default = {
   }),
   updateParams: _joi2.default.object().keys({
     status: _joi2.default.string().required(),
-    access_token: _joi2.default.string().required()
+    access_token: _joi2.default.string().required(),
+    isFeePaid: _joi2.default.boolean()
+  }),
+  removeParams: _joi2.default.object().keys({
+    access_token: _joi2.default.string().required(),
+    swcUid: _joi2.default.string().required()
   })
 };
 //# sourceMappingURL=Contract.js.map

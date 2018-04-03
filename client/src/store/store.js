@@ -126,6 +126,13 @@ class Store {
     }
   }
 
+  @action showAdminPage = () => {
+    this.currentView = {
+      name: 'admin',
+      adminModel: fromPromise(this.http.fetchShockballAdmin(this.currentUser.shockballPlayerUid, this.accessToken))
+    }
+  }
+
   @action showUserTeam = (teamId) => {
     this.topBarView = {
       name: 'topBar',
@@ -178,6 +185,7 @@ class Store {
         case "squad": return `/squad/${this.currentView.squadId}`
         case "office": return `/office`
         case "transfers": return `/transfers`
+        case "admin": return `/admin`
     }
   }
 
@@ -221,36 +229,44 @@ class Store {
         access_token: this.accessToken,
       },
       data: newContract
-    }).then(() => {
+    }).then((response) => {
       this.showOfficePage()
     })
   }
 
-  @action acceptContract = (contractUid) => {
-    ga.event('Contract Accepted')
+  @action deleteContract = (contractUid) => {
+    ga.event('Contract Deleted')
     return axios({
-      method: 'PUT',
+      method: 'DELETE',
       url: hostUrl + 'api/contracts/' + contractUid,
       params: {
         access_token: this.accessToken,
-        status: 'accepted'
+        swcUid: this.currentUser.swcPlayerUid
       }
     }).then(() => {
-      this.showOfficePage()
+      this.showAdminPage()
     })
   }
 
-  @action rejectContract = (contractUid) => {
-    ga.event('Contract Rejected')
+  @action updateContractState = (contractUid, state, viewRefresh, isFeePaid) => {
+    ga.event('Contract ' + state)
+    let params = {
+      access_token: this.accessToken,
+      status: state
+    }
+    if (isFeePaid) {
+      params = Object.assign(params, { isFeePaid: true })
+    }
     return axios({
       method: 'PUT',
       url: hostUrl + 'api/contracts/' + contractUid,
-      params: {
-        access_token: this.accessToken,
-        status: 'rejected'
-      }
+      params: params
     }).then(() => {
-      this.showOfficePage()
+      if (viewRefresh === 'office') {
+        this.showOfficePage()
+      } else if (viewRefresh === 'admin') {
+        this.showAdminPage()
+      }
     })
   }
 

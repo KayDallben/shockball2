@@ -34,11 +34,31 @@ class Navigation extends React.Component {
     }
   }
 
+  mapAdmin() {
+    try {
+      if (this.props.store.currentUser.isAdmin) {
+        return (
+          <a onClick={() => this.props.store.showAdminPage()}>
+            <div className="title-and-icon" key={1337}>
+              <div className="title-icon fa fa-edit"></div>
+              <div className="title">Admin</div>
+            </div>
+          </a>
+        )
+      } else {
+        return null
+      }
+    } catch (e) {
+      throw new NavigationError("Map admin items", e);
+    }
+  }
+
   render() {
     return (
       <div className="navigation">
         <div className="nav-wrapper">
           {this.mapItems()}
+          {this.mapAdmin()}
         </div>
       </div>
     )
