@@ -19,14 +19,20 @@ class AccountController {
           let userAccount = doc.data()
           userAccount.transactions = []
           await this.accounts.doc(req.params.id).getCollections().then(collections => {
-            collections.forEach(collection => {
-              collection.get().then(snapshot => {
-                snapshot.forEach((doc2) => {
-                  userAccount.transactions.push(doc2.data())
+            if (collections.length > 0) {
+              collections.forEach(collection => {
+                collection.get().then(snapshot => {
+                  snapshot.forEach((doc2) => {
+                    userAccount.transactions.push(doc2.data())
+                  })
+                  res.status(200).send(userAccount)
                 })
-                res.status(200).send(userAccount)
               })
-            })
+            } else {
+              //transactions collection doesn't exist
+              userAccount.transactions = []
+              res.status(200).send(userAccount)
+            }
           })
         })
       } catch (error) {

@@ -64,14 +64,20 @@ var AccountController = function () {
                             userAccount.transactions = [];
                             _context.next = 4;
                             return _this.accounts.doc(req.params.id).getCollections().then(function (collections) {
-                              collections.forEach(function (collection) {
-                                collection.get().then(function (snapshot) {
-                                  snapshot.forEach(function (doc2) {
-                                    userAccount.transactions.push(doc2.data());
+                              if (collections.length > 0) {
+                                collections.forEach(function (collection) {
+                                  collection.get().then(function (snapshot) {
+                                    snapshot.forEach(function (doc2) {
+                                      userAccount.transactions.push(doc2.data());
+                                    });
+                                    res.status(200).send(userAccount);
                                   });
-                                  res.status(200).send(userAccount);
                                 });
-                              });
+                              } else {
+                                //transactions collection doesn't exist
+                                userAccount.transactions = [];
+                                res.status(200).send(userAccount);
+                              }
                             });
 
                           case 4:
