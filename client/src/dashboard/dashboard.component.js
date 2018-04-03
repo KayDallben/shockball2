@@ -10,6 +10,7 @@ import League from '../league/league.component'
 import Office from '../office/office.component'
 import Transfers from '../transfers/transfers.component'
 import Fixture from '../fixture/fixture.component'
+import Admin from '../admin/admin.component'
 import ErrorBoundary from '../errorBoundary/errorBoundary.component'
 
 @observer
@@ -33,6 +34,8 @@ class Dashboard extends React.Component {
           return <Office view={view} store={store} />
         case "transfers":
           return <Transfers view={view} store={store} />
+        case "admin":
+          return <Admin view={view} store={store} />
         default: 
           return <Player view={view} store={store} />
     }

@@ -1,0 +1,22 @@
+.admin-wrapper {
+    position: relative;
+    z-index: 1;
+    margin: 5px;
+    width: calc(100% - 10px);
+    height: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    background: rgba(0,0,0,0.5);
+    border-radius: 4px;
+    color:#ffffff;
+    padding:20px;
+    a {
+        color: #007bff!important;
+        text-decoration: none!important;
+        cursor: pointer;
+    }
+    .contract-header {
+        text-align: center;
+        padding: 5px;
+    }
+}

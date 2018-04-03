@@ -16,6 +16,33 @@ function genericFetch(url, token) {
           }).catch(reject);
     })
 }
+function fetchShockballAdmin(uid, token) {
+    return new Promise((resolve, reject) => {
+        let adminModel = {}
+        axios({
+            method: 'GET',
+            url: hostUrl + 'api/contracts',
+            params: {
+                queryProp: 'status',
+                queryVal: 'accepted',
+                access_token: token
+            }
+        }).then(response => {
+            adminModel.contracts = response.data
+            resolve(adminModel)
+            // axios({
+            //     method: 'GET',
+            //     url: hostUrl + 'api/teams',
+            //     params: {
+            //         access_token: token
+            //     }
+            // }).then(response2 => {
+            //     adminModel.teams = response2.data
+            //     resolve(adminModel)
+            // }).catch(reject)
+        }).catch(reject)
+    })
+}
 function fetchTeamAdmin(uid, token) {
     return new Promise((resolve, reject) => {
         let teamOffice = {}
@@ -27,6 +54,11 @@ function fetchTeamAdmin(uid, token) {
             }
           }).then((response) => {
             teamOffice.account = response.data
+            teamOffice.account.transactions.sort(function(a, b) {
+                a = new Date(a.timestamp);
+                b = new Date(b.timestamp);
+                return a>b ? -1 : a<b ? 1 : 0;
+            })
             axios({
                 method: 'GET',
                 url: hostUrl + 'api/contracts',
@@ -168,6 +200,7 @@ function createStats(events) {
 
 export default {
     genericFetch,
+    fetchShockballAdmin,
     fetchTeamAdmin,
     fetchPlayerAdmin,
     getSingleFixture,

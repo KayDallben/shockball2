@@ -33,7 +33,7 @@ var TeamController = function () {
   }
 
   _createClass(TeamController, [{
-    key: 'listOne',
+    key: 'list',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
         var validation;
@@ -41,7 +41,7 @@ var TeamController = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                validation = _joi2.default.validate(req.params, _Team2.default.listOneParams);
+                validation = _joi2.default.validate(req.params, _Team2.default.listParams);
 
                 if (!(validation.error === null)) {
                   _context.next = 13;
@@ -50,8 +50,19 @@ var TeamController = function () {
 
                 _context.prev = 2;
                 _context.next = 5;
-                return this.teams.doc(req.params.id).get().then(function (doc) {
-                  res.status(200).send(doc.data());
+                return this.teams.get().then(function (snapshot) {
+                  var teams = [];
+                  snapshot.forEach(function (doc) {
+                    teams.push(doc.data());
+                  });
+                  if (teams.length > -1) {
+                    res.status(200).send(teams);
+                  } else {
+                    throw {
+                      name: 'NoTeamsExist',
+                      message: 'There were no teams found in the database for this query!'
+                    };
+                  }
                 });
 
               case 5:
@@ -81,8 +92,63 @@ var TeamController = function () {
         }, _callee, this, [[2, 7]]);
       }));
 
-      function listOne(_x, _x2) {
+      function list(_x, _x2) {
         return _ref.apply(this, arguments);
+      }
+
+      return list;
+    }()
+  }, {
+    key: 'listOne',
+    value: function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
+        var validation;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                validation = _joi2.default.validate(req.params, _Team2.default.listOneParams);
+
+                if (!(validation.error === null)) {
+                  _context2.next = 13;
+                  break;
+                }
+
+                _context2.prev = 2;
+                _context2.next = 5;
+                return this.teams.doc(req.params.id).get().then(function (doc) {
+                  res.status(200).send(doc.data());
+                });
+
+              case 5:
+                _context2.next = 11;
+                break;
+
+              case 7:
+                _context2.prev = 7;
+                _context2.t0 = _context2['catch'](2);
+
+                this.logger.error(_context2.t0);
+                res.status(400).send(_context2.t0);
+
+              case 11:
+                _context2.next = 15;
+                break;
+
+              case 13:
+                this.logger.error('Joi validation error: ' + validation.error);
+                res.status(400).send(validation.error);
+
+              case 15:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[2, 7]]);
+      }));
+
+      function listOne(_x3, _x4) {
+        return _ref2.apply(this, arguments);
       }
 
       return listOne;
