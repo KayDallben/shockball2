@@ -54,11 +54,15 @@ function fetchTeamAdmin(uid, token) {
             }
           }).then((response) => {
             teamOffice.account = response.data
-            teamOffice.account.transactions.sort(function(a, b) {
-                a = new Date(a.timestamp);
-                b = new Date(b.timestamp);
-                return a>b ? -1 : a<b ? 1 : 0;
-            })
+            if (teamOffice.account && !teamOffice.account.transactions) {
+                teamOffice.account.transactions = []
+            } else {
+                teamOffice.account.transactions.sort(function(a, b) {
+                    a = new Date(a.timestamp);
+                    b = new Date(b.timestamp);
+                    return a>b ? -1 : a<b ? 1 : 0;
+                })
+            }
             axios({
                 method: 'GET',
                 url: hostUrl + 'api/contracts',
@@ -70,8 +74,12 @@ function fetchTeamAdmin(uid, token) {
             }).then((response2) => {
                 teamOffice.contracts = response2.data
                 resolve(teamOffice)
-            }).catch(reject);
-          }).catch(reject);
+            }).catch((error) => {
+                reject(error)
+              })
+          }).catch((error) => {
+            reject(error)
+          })
     })
 }
 
