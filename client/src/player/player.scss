@@ -5,7 +5,8 @@
     z-index: 1;
     margin: 5px;
     width: calc(100% - 10px);
-    height: 100%;
+    height: auto;
+    min-height: calc(100% + 340px);
     box-sizing: border-box;
     display: inline-block;
     background: rgba(0,0,0,0.5);
