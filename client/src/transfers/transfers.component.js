@@ -24,6 +24,14 @@ class Transfers extends React.Component {
             getRowMetaData: (data)=>(data)
         },
         {
+          key: 'teamName',
+          name: 'Team',
+          width: 180,
+          formatter: this.createTeamLink,
+          getRowMetaData: (data)=>(data),
+          sortable: true
+        },
+        {
           key: 'marketValue',
           name: 'Value',
           width: 100,
@@ -102,6 +110,14 @@ class Transfers extends React.Component {
   createPlayerLink = (row) => {
     return (
       <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.shockballPlayerUid)}>{row.dependentValues.name}</a>
+    )
+  }
+
+  createTeamLink = (row) => {
+    const teamValue = row.dependentValues.teamName ? row.dependentValues.teamName : 'Free Agent'
+    return (
+      // <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.shockballPlayerUid)}>{row.dependentValues.name}</a>
+      <div>{teamValue}</div>
     )
   }
 

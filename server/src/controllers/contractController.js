@@ -11,6 +11,7 @@ class ContractController {
   constructor(db, logger) {
     this.contracts = db.collection('contracts')
     this.accounts = db.collection('accounts')
+    this.players = db.collection('players')
     this.logger = logger
   }
 

@@ -7,6 +7,8 @@
     border: 1px solid rgba(0,0,0, 0.2);
     color: #ffffff;
     padding: 20px;
+    height: auto;
+    min-height: calc(100% - 250px);
     .fixture-set {
         width: 100%;
         margin: 0 auto;
