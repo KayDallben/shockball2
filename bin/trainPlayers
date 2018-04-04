@@ -142,7 +142,7 @@ function trainPlayer(player) {
         player.toughness = increment(player.toughness, .5, player.toughnessCap)
         player.vision = decrement(player.vision, .25, player.visionCap)
         player.morale = increment(player.morale, 1)
-        player.fatigue = increment(plaery.fatigue, 1)
+        player.fatigue = increment(player.fatigue, 1)
         player.leadership = increment(player.leadership, .25)
     } else if (player.regimen === 'Center') {
         // primary skill throwing, secondary vision
