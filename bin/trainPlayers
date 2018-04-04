@@ -122,7 +122,7 @@ function increment(valueToChange, amount, cap) {
 
 function trainPlayer(player) {
     //check for training regimen
-    if (player.regimen === 'Wing') {
+    if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance
         player.blocking = decrement(player.blocking, .25, player.blockingCap)
         player.throwing = decrement(player.throwing, .25, player.throwingCap)
@@ -133,7 +133,7 @@ function trainPlayer(player) {
         player.morale = increment(player.morale, 1)
         player.fatigue = increment(player.fatigue, 1)
         player.leadership = increment(player.leadership, .25)
-    } else if (player.regimen === 'Guard') {
+    } else if (player.regimen.value === 'Guard') {
         // primary skill blocking, secondary toughness
         player.blocking = increment(player.blocking, 1, player.blockingCap)
         player.throwing = decrement(player.throwing, .25, player.throwingCap)
@@ -144,7 +144,7 @@ function trainPlayer(player) {
         player.morale = increment(player.morale, 1)
         player.fatigue = increment(player.fatigue, 1)
         player.leadership = increment(player.leadership, .25)
-    } else if (player.regimen === 'Center') {
+    } else if (player.regimen.value === 'Center') {
         // primary skill throwing, secondary vision
         player.blocking = decrement(player.blocking, .25, player.blockingCap) 
         player.throwing = increment(player.throwing, 1, player.throwingCap)
