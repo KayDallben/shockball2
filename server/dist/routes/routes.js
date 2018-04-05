@@ -526,13 +526,19 @@ exports.default = function (db, logger) {
   *     parameters:
   *       - id: id
   *         description: Contract's id
-  *         in: query
+  *         in: path
   *         name: id
   *         required: true
   *         schema:
   *           $ref: '#/definitions/Contract'
   *       - name: status
   *         description: A string with the status of the contract
+  *         in: query
+  *         required: true
+  *         schema:
+  *           $ref: '#/definitions/Contract'
+  *       - name: access_token
+  *         description: Access token for user
   *         in: query
   *         required: true
   *         schema:

@@ -632,7 +632,7 @@ var ContractController = function () {
 
               case 12:
                 _context13.next = 14;
-                return this.refundTeamPotentialBudget(newContract);
+                return this.refundTeamAvailableBudget(newContract);
 
               case 14:
                 _context13.next = 27;
