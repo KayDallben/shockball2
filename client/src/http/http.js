@@ -2,174 +2,235 @@ import axios from 'axios'
 import moment from 'moment'
 
 const hostUrl = window.location.protocol + "//" + window.location.host + "/"
+let tokenExpiresAt = new Date(window.sessionStorage.getItem('swcAccessTokenExpiresAt'))
+
+function ensureFreshToken(token) {
+    const isFresh = new Promise((resolve, reject) => {
+        const now = new Date()
+        if (now < tokenExpiresAt) {
+            resolve(token)
+        } else {
+            axios({
+                method: 'GET',
+                url: hostUrl + 'api/refresh',
+                params: {
+                    access_token: token
+                }
+            }).then(response => {
+                window.sessionStorage.setItem('swcAccessToken', response.data.access_token)
+                window.sessionStorage.setItem('swcAccessTokenExpiresAt', response.data.expires_at)
+                tokenExpiresAt = new Date(response.data.expires_at)
+                resolve(response.data.access_token)
+            }).catch(error => {
+                reject(error)
+            })
+        }
+    })
+    return isFresh
+}
 
 function genericFetch(url, token) {
-    return new Promise((resolve,reject) => {
-        axios({
-            method: 'GET',
-            url: url,
-            params: {
-              access_token: token
-            }
-          }).then(response => {
-            resolve(response.data)
-          }).catch(reject);
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve,reject) => {
+            axios({
+                method: 'GET',
+                url: url,
+                params: {
+                  access_token: token
+                }
+              }).then(response => {
+                resolve(response.data)
+              }).catch(reject);
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 function fetchShockballAdmin(uid, token) {
-    return new Promise((resolve, reject) => {
-        let adminModel = {}
-        axios({
-            method: 'GET',
-            url: hostUrl + 'api/contracts',
-            params: {
-                queryProp: 'status',
-                queryVal: 'accepted',
-                access_token: token
-            }
-        }).then(response => {
-            adminModel.contracts = response.data
-            resolve(adminModel)
-            // axios({
-            //     method: 'GET',
-            //     url: hostUrl + 'api/teams',
-            //     params: {
-            //         access_token: token
-            //     }
-            // }).then(response2 => {
-            //     adminModel.teams = response2.data
-            //     resolve(adminModel)
-            // }).catch(reject)
-        }).catch(reject)
-    })
-}
-function fetchTeamAdmin(uid, token) {
-    return new Promise((resolve, reject) => {
-        let teamOffice = {}
-        axios({
-            method: 'GET',
-            url: hostUrl + 'api/accounts/' + uid,
-            params: {
-              access_token: token
-            }
-          }).then((response) => {
-            teamOffice.account = response.data
-            if (teamOffice.account && !teamOffice.account.transactions) {
-                teamOffice.account.transactions = []
-            } else {
-                teamOffice.account.transactions.sort(function(a, b) {
-                    a = new Date(a.timestamp);
-                    b = new Date(b.timestamp);
-                    return a>b ? -1 : a<b ? 1 : 0;
-                })
-            }
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve, reject) => {
+            let adminModel = {}
             axios({
                 method: 'GET',
                 url: hostUrl + 'api/contracts',
                 params: {
-                  queryProp: 'teamUid',
-                  queryVal: uid,
+                    queryProp: 'status',
+                    queryVal: 'accepted',
+                    access_token: token
+                }
+            }).then(response => {
+                adminModel.contracts = response.data
+                resolve(adminModel)
+                // axios({
+                //     method: 'GET',
+                //     url: hostUrl + 'api/teams',
+                //     params: {
+                //         access_token: token
+                //     }
+                // }).then(response2 => {
+                //     adminModel.teams = response2.data
+                //     resolve(adminModel)
+                // }).catch(reject)
+            }).catch(reject)
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
+    })
+}
+function fetchTeamAdmin(uid, token) {
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve, reject) => {
+            let teamOffice = {}
+            axios({
+                method: 'GET',
+                url: hostUrl + 'api/accounts/' + uid,
+                params: {
                   access_token: token
                 }
-            }).then((response2) => {
-                teamOffice.contracts = response2.data
-                resolve(teamOffice)
-            }).catch((error) => {
+              }).then((response) => {
+                teamOffice.account = response.data
+                if (teamOffice.account && !teamOffice.account.transactions) {
+                    teamOffice.account.transactions = []
+                } else {
+                    teamOffice.account.transactions.sort(function(a, b) {
+                        a = new Date(a.timestamp);
+                        b = new Date(b.timestamp);
+                        return a>b ? -1 : a<b ? 1 : 0;
+                    })
+                }
+                axios({
+                    method: 'GET',
+                    url: hostUrl + 'api/contracts',
+                    params: {
+                      queryProp: 'teamUid',
+                      queryVal: uid,
+                      access_token: token
+                    }
+                }).then((response2) => {
+                    teamOffice.contracts = response2.data
+                    resolve(teamOffice)
+                }).catch((error) => {
+                    reject(error)
+                  })
+              }).catch((error) => {
                 reject(error)
               })
-          }).catch((error) => {
-            reject(error)
-          })
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 
 function fetchPlayerAdmin(uid, token) {
-    return new Promise((resolve, reject) => {
-        let playerOffice = {}
-        axios({
-            method: 'GET',
-            url: hostUrl + 'api/accounts/' + uid,
-            params: {
-              access_token: token
-            }
-          }).then((response) => {
-            playerOffice.account = response.data
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve, reject) => {
+            let playerOffice = {}
             axios({
                 method: 'GET',
-                url: hostUrl + 'api/contracts',
+                url: hostUrl + 'api/accounts/' + uid,
                 params: {
-                  queryProp: 'playerUid',
-                  queryVal: uid,
                   access_token: token
                 }
-            }).then((response2) => {
-                playerOffice.contracts = response2.data
-                resolve(playerOffice)
-            }).catch(reject);
-          }).catch(reject);
+              }).then((response) => {
+                playerOffice.account = response.data
+                axios({
+                    method: 'GET',
+                    url: hostUrl + 'api/contracts',
+                    params: {
+                      queryProp: 'playerUid',
+                      queryVal: uid,
+                      access_token: token
+                    }
+                }).then((response2) => {
+                    playerOffice.contracts = response2.data
+                    resolve(playerOffice)
+                }).catch(reject);
+              }).catch(reject);
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 
 function getSingleFixture(url, token) {
-    return new Promise((resolve,reject) => {
-        axios({
-            method: 'GET',
-            url: url,
-            params: {
-                access_token: token
-            }
-        }).then(response => {
-            if (response.data) {
-                let fixture = response.data
-                fixture.gameDate = moment(fixture.gameDate).format('L')
-                fixture.events.sort(function(a,b){
-                    return parseInt(a.recordGameTime) - parseInt(b.recordGameTime)
-                })
-                fixture.matchStats = createStats(fixture.events)
-                resolve(fixture)
-            } else {
-                reject(response)
-            }
-        }).catch(reject)
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve,reject) => {
+            axios({
+                method: 'GET',
+                url: url,
+                params: {
+                    access_token: currentToken
+                }
+            }).then(response => {
+                if (response.data) {
+                    let fixture = response.data
+                    fixture.gameDate = moment(fixture.gameDate).format('L')
+                    fixture.events.sort(function(a,b){
+                        return parseInt(a.recordGameTime) - parseInt(b.recordGameTime)
+                    })
+                    fixture.matchStats = createStats(fixture.events)
+                    resolve(fixture)
+                } else {
+                    reject(response)
+                }
+            }).catch(reject)
+        })
+    }).catch((error) => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 
 function getAllFixtures(url, token) {
-    return new Promise((resolve,reject) => {
-        axios({
-            method: 'GET',
-            url: url,
-            params: {
-              access_token: token
-            }
-          }).then(response => {
-            if (response.data) {
-              let fixtures = response.data
-              for (let fixture of fixtures) {
-                fixture.gameDate = moment(fixture.gameDate).format('L')
-              }
-              fixtures.sort(function(a,b){
-                return new Date(a.gameDate) - new Date(b.gameDate);
-              });
-              resolve(fixtures)
-            } else {
-                reject(response)
-            }
-        }).catch(reject)
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve,reject) => {
+            axios({
+                method: 'GET',
+                url: url,
+                params: {
+                  access_token: token
+                }
+              }).then(response => {
+                if (response.data) {
+                  let fixtures = response.data
+                  for (let fixture of fixtures) {
+                    fixture.gameDate = moment(fixture.gameDate).format('L')
+                  }
+                  fixtures.sort(function(a,b){
+                    return new Date(a.gameDate) - new Date(b.gameDate);
+                  });
+                  resolve(fixtures)
+                } else {
+                    reject(response)
+                }
+            }).catch(reject)
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 
 function getUserTeam(url, token) {
-    return new Promise((resolve,reject) => {
-        axios({
-            method: 'GET',
-            url: url,
-            params: {
-              access_token: token
-            }
-          }).then(response => {
-            resolve(response.data)
-          }).catch(reject)
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve,reject) => {
+            axios({
+                method: 'GET',
+                url: url,
+                params: {
+                  access_token: token
+                }
+              }).then(response => {
+                resolve(response.data)
+              }).catch(reject)
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
     })
 }
 
@@ -207,6 +268,7 @@ function createStats(events) {
   }
 
 export default {
+    ensureFreshToken,
     genericFetch,
     fetchShockballAdmin,
     fetchTeamAdmin,
