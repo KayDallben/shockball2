@@ -193,7 +193,7 @@ class ContractController {
         amount: newContract.purchasePrice,
         timestamp: FieldValue.serverTimestamp()
       })
-      await this.refundTeamPotentialBudget(newContract)
+      await this.refundTeamAvailableBudget(newContract)
     } else if (newContract.status === 'active') {
       await this.accounts.doc(newContract.playerUid).collection('transactions').add({
         activityType: `${newContract.playerName}'s contract is active for ${newContract.teamName}!`,
