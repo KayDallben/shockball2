@@ -51,7 +51,7 @@ class TopBar extends React.Component {
       )
     } else {
       return (
-        <div className="team-logo free-agent fa fa-user-secret fa-4x"></div>
+        <div className="team-logo free-agent fas fa-user-secret fa-4x"></div>
       )
     }
   }

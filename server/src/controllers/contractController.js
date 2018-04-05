@@ -193,6 +193,7 @@ class ContractController {
         amount: newContract.purchasePrice,
         timestamp: FieldValue.serverTimestamp()
       })
+      await this.refundTeamPotentialBudget(newContract)
     } else if (newContract.status === 'active') {
       await this.accounts.doc(newContract.playerUid).collection('transactions').add({
         activityType: `${newContract.playerName}'s contract is active for ${newContract.teamName}!`,
@@ -206,7 +207,7 @@ class ContractController {
       })
       await this.addPlayerSigningBonus(newContract)
       await this.updatePlayerEntityWithContract(newContract)
-      await this.updateTeamPotentialBudget(newContract)
+      await this.deductTeamPotentialBudget(newContract)
     }
   }
 
@@ -216,7 +217,16 @@ class ContractController {
     })
   }
 
-  async updateTeamPotentialBudget(newContract) {
+  async refundTeamAvailableBudget(newContract) {
+    const teamAccount = await this.accounts.doc(newContract.teamUid).get().then((doc) => {
+      return doc.data()
+    })
+    await this.accounts.doc(newContract.teamUid).update({
+      availableBudget: teamAccount.availableBudget + newContract.purchasePrice
+    })
+  }
+
+  async deductTeamPotentialBudget(newContract) {
     const teamAccount = await this.accounts.doc(newContract.teamUid).get().then((doc) => {
       return doc.data()
     })
@@ -241,7 +251,8 @@ class ContractController {
   async updatePlayerEntityWithContract(newContract) {
     await this.players.doc(newContract.playerUid).update({
       contractUid: newContract.contractUid,
-      teamUid: newContract.teamUid
+      teamUid: newContract.teamUid,
+      teamName: newContract.teamName
     })
   }
 

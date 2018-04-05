@@ -34,7 +34,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
         //We render the fallback UI message
         return <div className="error-boundary">
-          <div className="shockball-error fa fa-exclamation-triangle fa-2x"></div>
+          <div className="shockball-error fa fas-exclamation-triangle fa-2x"></div>
           <p className="sb-error-heading">Aw, dayum!</p>
           <p>Something went wrong, bruh.</p>
           <p>Error id: {this.state.currentErrorId}</p>

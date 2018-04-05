@@ -40,7 +40,7 @@ class Navigation extends React.Component {
         return (
           <a onClick={() => this.props.store.showAdminPage()}>
             <div className="title-and-icon" key={1337}>
-              <div className="title-icon fa fa-edit"></div>
+              <div className="title-icon fas fa-edit"></div>
               <div className="title">Admin</div>
             </div>
           </a>

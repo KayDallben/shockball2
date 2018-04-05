@@ -41,27 +41,27 @@ class Store {
     navLinks: [
       {
         title: 'Me',
-        icon: 'fa fa-user',
+        icon: 'fas fa-user',
         routeMethod: this.showPlayerPage.bind(this)
       },
       {
         title: 'Squad',
-        icon: 'fa fa-users',
+        icon: 'fas fa-users',
         routeMethod: this.showSquadPage.bind(this)
       },
       {
         title: 'Office',
-        icon: 'fa fa-briefcase',
+        icon: 'fas fa-briefcase',
         routeMethod: this.showOfficePage.bind(this)
       },
       {
         title: 'League',
-        icon: 'fa fa-flag',
+        icon: 'fas fa-flag',
         routeMethod: this.showLeaguePage.bind(this)
       },
       {
         title: 'Transfers',
-        icon: 'fa fa-building',
+        icon: 'fas fa-building',
         routeMethod: this.showTransfersPage.bind(this)
       }
     ]
