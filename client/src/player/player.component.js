@@ -83,7 +83,7 @@ class Player extends React.Component {
     } else {
       return (
         <div className="player-info">
-          <div className="team-logo free-agent fa fa-user-secret fa-2x"></div>
+          <div className="team-logo free-agent fas fa-user-secret fa-2x"></div>
           <div className="team-name">Free Agent</div>
         </div>
       )
@@ -222,7 +222,7 @@ class Player extends React.Component {
             <div className="player-wrapper">
               <div className="player-name-holder">
                 <div className="player-name">{this.props.view.player.value.name}</div>
-                <div className="fa fa-area-chart player-rating">{this.props.view.player.value.rating}</div>
+                <div className="fas fa-area-chart player-rating">{this.props.view.player.value.rating}</div>
               </div>
               <div className="player-info-row">
                 <div className="player-photo">

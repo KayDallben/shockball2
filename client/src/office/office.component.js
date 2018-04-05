@@ -158,9 +158,13 @@ class Office extends React.Component {
       )
     } else if (!this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
       // current user has no contract and is not a manager - so is a free agent
-      return (
-        <div className="btn btn-secondary" onClick={() => this.editContract(row)}>Review</div>
-      )
+      if (row.dependentValues.status === 'pending') {
+        return (
+          <div className="btn btn-secondary" onClick={() => this.editContract(row)}>Review</div>
+        )
+      } else {
+        return (<div></div>)
+      }
     } else if (this.props.store.currentUser.contractUid && this.props.store.currentUser.teamManager) {
       // EDGE CASE! current user has both a team contract AND is a team manager.  We don't want to support this.
       console.error(this.props.store.currentUser.name + ' is both a player and a manager! No Bueno!')
@@ -298,6 +302,18 @@ class Office extends React.Component {
     return this.props.view.office.value.account.transactions[i];
   }
 
+  handleContractSort = (sortColumn, sortDirection) => {
+    const comparer = (a, b) => {
+      if (sortDirection === 'ASC') {
+        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+      } else if (sortDirection === 'DESC') {
+        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+      }
+    }
+
+    const rows = sortDirection === 'NONE' ? this.props.view.office.value.contracts.slice(0) : this.props.view.office.value.contracts.sort(comparer);
+  }
+
   renderContracts() {
     if (this.props.store.currentUser.contractUid && !this.props.store.currentUser.teamManager) {
       //current user has a contract and is not a manager - so is a league player
@@ -316,6 +332,7 @@ class Office extends React.Component {
           <div className="contract-header">My Contract Offers</div>
           <div className="contracts-data-grid">
             <ReactDataGrid
+              onGridSort={this.handleContractSort}
               columns={this._contractColumns}
               rowGetter={this.contractRowGetter}
               rowsCount={this.props.view.office.value.contracts.length}
@@ -332,6 +349,7 @@ class Office extends React.Component {
           <div className="contract-header">All Team Contracts</div>
           <div className="contracts-data-grid">
             <ReactDataGrid
+              onGridSort={this.handleContractSort}
               columns={this._contractColumns}
               rowGetter={this.contractRowGetter}
               rowsCount={this.props.view.office.value.contracts.length}
@@ -346,6 +364,7 @@ class Office extends React.Component {
           <div className="contract-header">All Team Contracts</div>
           <div className="contracts-data-grid">
             <ReactDataGrid
+              onGridSort={this.handleContractSort}
               columns={this._contractColumns}
               rowGetter={this.contractRowGetter}
               rowsCount={this.props.view.office.value.contracts.length}
@@ -427,6 +446,18 @@ class Office extends React.Component {
     }
   }
 
+  handleTransactionSort = (sortColumn, sortDirection) => {
+    const comparer = (a, b) => {
+      if (sortDirection === 'ASC') {
+        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+      } else if (sortDirection === 'DESC') {
+        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+      }
+    }
+
+    const rows = sortDirection === 'NONE' ? this.props.view.office.value.account.transactions.slice(0) : this.props.view.office.value.account.transactions.sort(comparer);
+  }
+
   renderTransactions() {
     if (this.props.view.office.value.account.transactions) {
       return (
@@ -434,6 +465,7 @@ class Office extends React.Component {
           <div className="contract-header">Transaction History</div>
           <div className="transactions-data-grid">
             <ReactDataGrid
+              onGridSort={this.handleTransactionSort}
               columns={this._transactionColumns}
               rowGetter={this.transactionRowGetter}
               rowsCount={this.props.view.office.value.account.transactions.length}
