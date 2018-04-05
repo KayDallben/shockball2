@@ -99,8 +99,7 @@
   
         $.ajax(settings).done(function (response) {
           sessionStorage.setItem('swcAccessToken', response.access_token)
-          sessionStorage.setItem('swcAccessTokenExpiresIn', response.expires_in)
-          sessionStorage.setItem('swcRefreshToken', response.refresh_token)
+          sessionStorage.setItem('swcAccessTokenExpiresAt', response.expires_at)
           returnToHome()
         }).fail(function(error) {
         });

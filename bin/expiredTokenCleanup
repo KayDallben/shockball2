@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+const admin = require('firebase-admin')
+const sim = require('../server/dist/sim')
+
+const FieldValue = admin.firestore.FieldValue
+
+let serviceAccount
+if (!process.env.FIREBASE_DATABASE_URL) {
+    serviceAccount = require('../firebase-security.json')
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: 'https://swc-shockball3.firebaseio.com/'
+    })
+} else {
+    admin.initializeApp({
+        credential: admin.credential.cert({
+            'projectId': process.env.FIREBASE_PROJECT_ID,
+            'clientEmail': process.env.FIREBASE_CLIENT_EMAIL,
+            'privateKey': process.env.FIREBASE_PRIVATE_KEY,
+        }),
+        databaseURL: process.env.FIREBASE_DATABASE_URL
+    })
+}
+
+
+
+let db = admin.firestore()
+
+async function init() {
+    const startTime = new Date().getTime()
+    try {
+        // get all tokens
+        const tokens = await getTokens()
+        // find which are expired
+        const expiredTokens = getExpiredTokens(tokens)
+        // delete these tokens
+        for (let token of expiredTokens) {
+            db.collection('tokens').doc(token.uid).delete()
+        }
+        const endTime = new Date().getTime()
+        await recordCron(`Deleted Expired Tokens`, startTime, endTime)
+    } catch (error) {
+        console.log(error)
+        const endTime = new Date().getTime()
+        await recordCron('Failed Deleting expired tokens', startTime, endTime, error)
+    }
+
+}
+
+function getExpiredTokens(tokens) {
+    let expiredTokens = []
+    for (let token of tokens) {
+        let threeDaysFromCreated = token.created_at.setDate(token.created_at.getDate() + 3) 
+        if (token.expires_at > threeDaysFromCreated) {
+            //token is more than 3 days old so it should be expired from our db!
+            expiredTokens.push(token)
+        }
+    }
+    return expiredTokens
+}
+
+function getTokens() {
+    return db.collection('tokens').get().then((snapshot) => {
+        let tokens = []
+        snapshot.forEach((doc) => {
+            tokens.push(doc.data())
+        })
+        return tokens
+    })
+}
+
+function recordCron(type, startTime, endTime, error) {
+    return db.collection('cronHistory').add({
+        completed: FieldValue.serverTimestamp(),
+        taskStartTime: new Date(startTime),
+        taskEndTime: new Date(endTime),
+        type: type,
+        error: error ? JSON.stringify(error) : null
+    })
+}
+
+init()

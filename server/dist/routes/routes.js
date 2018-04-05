@@ -18,6 +18,10 @@ var _loginController = require('../controllers/loginController');
 
 var _loginController2 = _interopRequireDefault(_loginController);
 
+var _refreshController = require('../controllers/refreshController');
+
+var _refreshController2 = _interopRequireDefault(_refreshController);
+
 var _teamController = require('../controllers/teamController');
 
 var _teamController2 = _interopRequireDefault(_teamController);
@@ -47,7 +51,8 @@ var routes = (0, _express.Router)();
 
 exports.default = function (db, logger) {
   var profileController = new _profileController2.default(db, logger);
-  var loginController = new _loginController2.default(logger);
+  var loginController = new _loginController2.default(db, logger);
+  var refreshController = new _refreshController2.default(db, logger);
   var teamController = new _teamController2.default(db, logger);
   var fixtureController = new _fixtureController2.default(db, logger);
   var playerController = new _playerController2.default(db, logger);
@@ -132,6 +137,36 @@ exports.default = function (db, logger) {
   routes.get('/login', function (req, res) {
     loginController.listOne(req, res);
   });
+
+  /**
+  * @swagger
+  * /api/refresh:
+  *   x-swagger-router-controller: ../controllers/refreshController
+  *   get:
+  *     tags:
+  *       - Refresh
+  *     description: Get a new access_token and refresh_token from SWC api
+  *     operationId: listOne
+  *     produces:
+  *       - application/json
+  *     parameters:
+  *       - access_token: access_token
+  *         description: SWC access token of the current user
+  *         in: query
+  *         name: access_token
+  *         required: true
+  *         schema:
+  *           $ref: '#/definitions/Refresh'
+  *     responses:
+  *       200:
+  *         description: Success
+  *         schema:
+  *           $ref: "#/definitions/Refresh"
+  */
+  routes.get('/refresh', function (req, res) {
+    refreshController.listOne(req, res);
+  });
+
   /**
      * @swagger
      * /api/teams:

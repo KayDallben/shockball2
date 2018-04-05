@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAccessToken = exports.getPlayerUid = undefined;
+exports.getAccessToken = exports.refreshAccessToken = exports.getPlayerUid = undefined;
 
 var _axios = require('axios');
 
@@ -40,6 +40,30 @@ function getPlayerUid(token) {
   });
 }
 
+function refreshAccessToken(refreshToken) {
+  console.log('refresh token calling with is:**************************');
+  console.log(refreshToken);
+  var request = {
+    url: 'http://www.swcombine.com/ws/oauth2/token/',
+    method: 'POST',
+    data: _qs2.default.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: process.env.SWC_CLIENT_ID,
+      client_secret: process.env.SWC_CLIENT_SECRET
+    }),
+    headers: {
+      'Accept': 'application/json'
+    }
+  };
+  return (0, _axios2.default)(request).then(function (response) {
+    return response;
+  }).catch(function (error) {
+    var swcError = new Error(error.message);
+    return swcError;
+  });
+}
+
 function getAccessToken(authCode) {
   var request = {
     url: 'http://www.swcombine.com/ws/oauth2/token/',
@@ -65,5 +89,6 @@ function getAccessToken(authCode) {
 }
 
 exports.getPlayerUid = getPlayerUid;
+exports.refreshAccessToken = refreshAccessToken;
 exports.getAccessToken = getAccessToken;
 //# sourceMappingURL=swcApi.js.map

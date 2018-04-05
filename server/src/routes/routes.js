@@ -6,6 +6,7 @@ const routes = Router()
 import authCheck from '../lib/authCheck'
 import ProfileController from '../controllers/profileController'
 import LoginController from '../controllers/loginController'
+import RefreshController from '../controllers/refreshController'
 import TeamController from '../controllers/teamController'
 import FixtureController from '../controllers/fixtureController'
 import PlayerController from '../controllers/playerController'
@@ -14,7 +15,8 @@ import ContractController from '../controllers/contractController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
-  const loginController = new LoginController(logger)
+  const loginController = new LoginController(db, logger)
+  const refreshController = new RefreshController(db, logger)
   const teamController = new TeamController(db, logger)
   const fixtureController = new FixtureController(db, logger)
   const playerController = new PlayerController(db, logger)
@@ -99,6 +101,36 @@ export default (db, logger) => {
   routes.get('/login', (req, res) => {
     loginController.listOne(req, res)
   })
+
+    /**
+   * @swagger
+   * /api/refresh:
+   *   x-swagger-router-controller: ../controllers/refreshController
+   *   get:
+   *     tags:
+   *       - Refresh
+   *     description: Get a new access_token and refresh_token from SWC api
+   *     operationId: listOne
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - access_token: access_token
+   *         description: SWC access token of the current user
+   *         in: query
+   *         name: access_token
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Refresh'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Refresh"
+   */
+  routes.get('/refresh', (req, res) => {
+    refreshController.listOne(req, res)
+  })
+
 /**
    * @swagger
    * /api/teams:

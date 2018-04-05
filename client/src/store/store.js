@@ -67,7 +67,10 @@ class Store {
     ]
   }
 
-  @observable accessToken = sessionStorage.getItem('swcAccessToken')
+  @computed get accessToken() {
+    return sessionStorage.getItem('swcAccessToken')
+  }
+
   @observable authCode = sessionStorage.getItem("swcAuthorizationCode")
 
   @action showModal(body) {
@@ -201,50 +204,65 @@ class Store {
 
   @action setTrainingRegimen = (selectedOption) => {
     ga.event('Training Regimen', 'clicked')
-    axios({
-      method: 'PUT',
-      url: hostUrl + 'api/players/' + this.currentUser.shockballPlayerUid,
-      params: {
-        access_token: this.accessToken,
-        regimen: selectedOption
-      }
-    }).then(response => {
-      toast.success("Training Regimen updated!", {
-        position: toast.POSITION.TOP_CENTER
+    return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+      axios({
+        method: 'PUT',
+        url: hostUrl + 'api/players/' + this.currentUser.shockballPlayerUid,
+        params: {
+          access_token: this.accessToken,
+          regimen: selectedOption
+        }
+      }).then(response => {
+        toast.success("Training Regimen updated!", {
+          position: toast.POSITION.TOP_CENTER
+        })
+        this.setUser(response.data)
+      }).catch((error) => {
+        toast.error("SCHEISSE! Unable to update Training Regimen :(", {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
-      this.setUser(response.data)
-    }).catch((error) => {
-      toast.error("SCHEISSE! Unable to update Training Regimen :(", {
-        position: toast.POSITION.TOP_CENTER
-      })
+    }).catch(error => {
+        console.log('error getting refresh token')
+        console.log(error)
     })
   }
 
   @action createContract = (newContract) => {
     ga.event('Contract Saved', 'form saved')
-    return axios({
-      method: 'POST',
-      url: hostUrl + 'api/contracts',
-      params: {
-        access_token: this.accessToken,
-      },
-      data: newContract
-    }).then((response) => {
-      this.showOfficePage()
+    return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+      return axios({
+        method: 'POST',
+        url: hostUrl + 'api/contracts',
+        params: {
+          access_token: this.accessToken,
+        },
+        data: newContract
+      }).then((response) => {
+        this.showOfficePage()
+      })
+    }).catch(error => {
+        console.log('error getting refresh token')
+        console.log(error)
     })
   }
 
   @action deleteContract = (contractUid) => {
     ga.event('Contract Deleted')
-    return axios({
-      method: 'DELETE',
-      url: hostUrl + 'api/contracts/' + contractUid,
-      params: {
-        access_token: this.accessToken,
-        swcUid: this.currentUser.swcPlayerUid
-      }
-    }).then(() => {
-      this.showAdminPage()
+    return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+      return axios({
+        method: 'DELETE',
+        url: hostUrl + 'api/contracts/' + contractUid,
+        params: {
+          access_token: this.accessToken,
+          swcUid: this.currentUser.swcPlayerUid
+        }
+      }).then(() => {
+        this.showAdminPage()
+      })
+    }).catch(error => {
+        console.log('error getting refresh token')
+        console.log(error)
     })
   }
 
@@ -257,16 +275,21 @@ class Store {
     if (isFeePaid) {
       params = Object.assign(params, { isFeePaid: true })
     }
-    return axios({
-      method: 'PUT',
-      url: hostUrl + 'api/contracts/' + contractUid,
-      params: params
-    }).then(() => {
-      if (viewRefresh === 'office') {
-        this.showOfficePage()
-      } else if (viewRefresh === 'admin') {
-        this.showAdminPage()
-      }
+    return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+      return axios({
+        method: 'PUT',
+        url: hostUrl + 'api/contracts/' + contractUid,
+        params: params
+      }).then(() => {
+        if (viewRefresh === 'office') {
+          this.showOfficePage()
+        } else if (viewRefresh === 'admin') {
+          this.showAdminPage()
+        }
+      })
+    }).catch(error => {
+        console.log('error getting refresh token')
+        console.log(error)
     })
   }
 
@@ -285,22 +308,27 @@ class Store {
 
   @action setUserProfile = () => {
     return new Promise((resolve, reject) => {
-      axios({
-        method: 'GET',
-        url: hostUrl + 'api/profile',
-        params: {
-          access_token: this.accessToken
-        }
-      }).then(response => {
-        this.setUser(response.data)
-        ga.init(this.currentUser.shockballPlayerUid)
-        if (response.data.teamUid) {
-          this.showUserTeam(response.data.teamUid)
-        } else {
-          this.fulfillTopBarView()
-        }
-        resolve(response.data)
-      }).catch(reject)
+      return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+        axios({
+          method: 'GET',
+          url: hostUrl + 'api/profile',
+          params: {
+            access_token: this.accessToken
+          }
+        }).then(response => {
+          this.setUser(response.data)
+          ga.init(this.currentUser.shockballPlayerUid)
+          if (response.data.teamUid) {
+            this.showUserTeam(response.data.teamUid)
+          } else {
+            this.fulfillTopBarView()
+          }
+          resolve(response.data)
+        }).catch(reject)
+      }).catch(error => {
+          console.log('error getting refresh token')
+          console.log(error)
+      })
     })
   }
   @action handleUserSetup = () => {

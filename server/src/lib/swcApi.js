@@ -26,6 +26,28 @@ function getPlayerUid(token) {
   })
 }
 
+function refreshAccessToken(refreshToken) {
+  const request = {
+    url: 'http://www.swcombine.com/ws/oauth2/token/',
+    method: 'POST',
+    data: qs.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: process.env.SWC_CLIENT_ID,
+      client_secret: process.env.SWC_CLIENT_SECRET
+    }),
+    headers: {
+      'Accept': 'application/json'
+    }
+  }
+  return axios(request).then(response => {
+    return response
+  }).catch(error => {
+    const swcError = new Error(error.message)
+    return swcError
+  })
+}
+
 function getAccessToken(authCode) {
   const request = {
     url: 'http://www.swcombine.com/ws/oauth2/token/',
@@ -52,5 +74,6 @@ function getAccessToken(authCode) {
 
 export {
   getPlayerUid,
+  refreshAccessToken,
   getAccessToken
 }

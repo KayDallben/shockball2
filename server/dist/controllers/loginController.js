@@ -31,9 +31,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var LoginController = function () {
-  function LoginController(logger) {
+  function LoginController(db, logger) {
     _classCallCheck(this, LoginController);
 
+    this.tokens = db.collection('tokens');
     this.logger = logger;
   }
 
@@ -41,7 +42,7 @@ var LoginController = function () {
     key: 'listOne',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-        var validation, tokenInfo;
+        var validation, tokenInfo, expiresAtMinutes, newToken, safeTokenInfo;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -49,7 +50,7 @@ var LoginController = function () {
                 validation = _joi2.default.validate(req.query, _Login2.default.listOneParams);
 
                 if (!(validation.error === null)) {
-                  _context.next = 15;
+                  _context.next = 22;
                   break;
                 }
 
@@ -59,32 +60,53 @@ var LoginController = function () {
 
               case 5:
                 tokenInfo = _context.sent;
-
-                res.status(200).send(tokenInfo.data);
-                _context.next = 13;
-                break;
+                expiresAtMinutes = (tokenInfo.data.expires_in - 120) / 60;
+                _context.next = 9;
+                return this.tokens.add({
+                  access_token: tokenInfo.data.access_token,
+                  refresh_token: tokenInfo.data.refresh_token,
+                  expires_at: this.dateWithAddedMinutes(expiresAtMinutes),
+                  created_at: new Date()
+                });
 
               case 9:
-                _context.prev = 9;
+                newToken = _context.sent;
+                _context.next = 12;
+                return this.tokens.doc(newToken.id).update({
+                  uid: newToken.id
+                });
+
+              case 12:
+                safeTokenInfo = {
+                  access_token: tokenInfo.data.access_token,
+                  expires_at: this.dateWithAddedMinutes(expiresAtMinutes)
+                };
+
+                res.status(200).send(safeTokenInfo);
+                _context.next = 20;
+                break;
+
+              case 16:
+                _context.prev = 16;
                 _context.t0 = _context['catch'](2);
 
                 this.logger.error(_context.t0);
                 res.status(400).send('Error creating new player in database');
 
-              case 13:
-                _context.next = 17;
+              case 20:
+                _context.next = 24;
                 break;
 
-              case 15:
+              case 22:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 17:
+              case 24:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[2, 9]]);
+        }, _callee, this, [[2, 16]]);
       }));
 
       function listOne(_x, _x2) {
@@ -93,6 +115,11 @@ var LoginController = function () {
 
       return listOne;
     }()
+  }, {
+    key: 'dateWithAddedMinutes',
+    value: function dateWithAddedMinutes(minutes) {
+      return new Date(new Date().getTime() + minutes * 60000);
+    }
   }]);
 
   return LoginController;
