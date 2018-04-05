@@ -41,8 +41,6 @@ function getPlayerUid(token) {
 }
 
 function refreshAccessToken(refreshToken) {
-  console.log('refresh token calling with is:**************************');
-  console.log(refreshToken);
   var request = {
     url: 'http://www.swcombine.com/ws/oauth2/token/',
     method: 'POST',
