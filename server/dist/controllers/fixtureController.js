@@ -37,20 +37,19 @@ var FixtureController = function () {
     key: 'list',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-        var _validation, searchValidation;
-
+        var validation, searchValidation;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!(Object.keys(req.query).length === 0 && obj.constructor === Object)) {
+                if (!(Object.keys(req.query).length === 0 && req.query.constructor === Object)) {
                   _context.next = 18;
                   break;
                 }
 
-                _validation = _joi2.default.validate(req.params, _Fixture2.default.listParams);
+                validation = _joi2.default.validate(req.params, _Fixture2.default.listParams);
 
-                if (!(_validation.error === null)) {
+                if (!(validation.error === null)) {
                   _context.next = 14;
                   break;
                 }
@@ -88,25 +87,24 @@ var FixtureController = function () {
                 break;
 
               case 14:
-                this.logger.error('Joi validation error: ' + _validation.error);
-                res.status(400).send(_validation.error);
+                this.logger.error('Joi validation error: ' + validation.error);
+                res.status(400).send(validation.error);
 
               case 16:
-                _context.next = 34;
+                _context.next = 33;
                 break;
 
               case 18:
                 //we are searching for fixtures by criteria
-                console.log(req.query);
                 searchValidation = _joi2.default.validate(req.query, _Fixture2.default.listSearchParams);
 
                 if (!(searchValidation.error === null)) {
-                  _context.next = 32;
+                  _context.next = 31;
                   break;
                 }
 
-                _context.prev = 21;
-                _context.next = 24;
+                _context.prev = 20;
+                _context.next = 23;
                 return this.fixtures.where(req.query.queryProp, '==', req.query.queryVal).get().then(function (snapshot) {
                   var fixtures = [];
                   snapshot.forEach(function (doc) {
@@ -122,31 +120,31 @@ var FixtureController = function () {
                   }
                 });
 
-              case 24:
-                _context.next = 30;
+              case 23:
+                _context.next = 29;
                 break;
 
-              case 26:
-                _context.prev = 26;
-                _context.t1 = _context['catch'](21);
+              case 25:
+                _context.prev = 25;
+                _context.t1 = _context['catch'](20);
 
                 this.logger.error(_context.t1);
                 res.status(400).send(_context.t1);
 
-              case 30:
-                _context.next = 34;
+              case 29:
+                _context.next = 33;
                 break;
 
-              case 32:
-                this.logger.error('Joi validation error: ' + validation.error);
-                res.status(400).send(validation.error);
+              case 31:
+                this.logger.error('Joi validation error: ' + searchValidation.error);
+                res.status(400).send(searchValidation.error);
 
-              case 34:
+              case 33:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[3, 8], [21, 26]]);
+        }, _callee, this, [[3, 8], [20, 25]]);
       }));
 
       function list(_x, _x2) {

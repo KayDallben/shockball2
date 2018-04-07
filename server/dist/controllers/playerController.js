@@ -52,7 +52,7 @@ var PlayerController = function () {
               case 0:
                 validation = _joi2.default.validate(req.params, _Player2.default.listParams);
 
-                if (!(Object.keys(req.query).length === 0 && obj.constructor === Object)) {
+                if (!(Object.keys(req.query).length === 0 && req.query.constructor === Object)) {
                   _context.next = 18;
                   break;
                 }
