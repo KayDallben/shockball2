@@ -25,13 +25,19 @@ class League extends React.Component {
       }
   }
 
+  createTeamLink(teamUid, teamName) {
+    return (
+      <a onClick={() => this.props.store.showSquadPage(teamUid)}>{teamName}</a>
+    )
+  }
+
   allFixtures() {
       const fixtures = this.props.view.fixtures.value.map((fixture) => {
           return (
             <div className="row">
                 <div>{fixture.gameDate}</div>
-                <div><img src={fixture.homeTeamLogo}/>{fixture.homeTeamName}</div>
-                <div><img src={fixture.awayTeamLogo}/>{fixture.awayTeamName}</div>
+                <div><img src={fixture.homeTeamLogo}/>{this.createTeamLink(fixture.homeTeam, fixture.homeTeamName)}</div>
+                <div><img src={fixture.awayTeamLogo}/>{this.createTeamLink(fixture.awayTeam, fixture.awayTeamName)}</div>
                 {this.calculateScore(fixture)}
             </div>
           )

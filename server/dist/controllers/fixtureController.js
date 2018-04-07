@@ -37,21 +37,27 @@ var FixtureController = function () {
     key: 'list',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-        var validation;
+        var _validation, searchValidation;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                validation = _joi2.default.validate(req.params, _Fixture2.default.listParams);
-
-                if (!(validation.error === null)) {
-                  _context.next = 13;
+                if (!(Object.keys(req.query).length === 0 && obj.constructor === Object)) {
+                  _context.next = 18;
                   break;
                 }
 
-                _context.prev = 2;
-                _context.next = 5;
-                return this.fixtures.where('season', '==', '1').get().then(function (snapshot) {
+                _validation = _joi2.default.validate(req.params, _Fixture2.default.listParams);
+
+                if (!(_validation.error === null)) {
+                  _context.next = 14;
+                  break;
+                }
+
+                _context.prev = 3;
+                _context.next = 6;
+                return this.fixtures.get().then(function (snapshot) {
                   var fixtures = [];
                   snapshot.forEach(function (doc) {
                     fixtures.push(doc.data());
@@ -66,31 +72,81 @@ var FixtureController = function () {
                   }
                 });
 
-              case 5:
-                _context.next = 11;
+              case 6:
+                _context.next = 12;
                 break;
 
-              case 7:
-                _context.prev = 7;
-                _context.t0 = _context['catch'](2);
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context['catch'](3);
 
                 this.logger.error(_context.t0);
                 res.status(400).send(_context.t0);
 
-              case 11:
-                _context.next = 15;
+              case 12:
+                _context.next = 16;
                 break;
 
-              case 13:
+              case 14:
+                this.logger.error('Joi validation error: ' + _validation.error);
+                res.status(400).send(_validation.error);
+
+              case 16:
+                _context.next = 34;
+                break;
+
+              case 18:
+                //we are searching for fixtures by criteria
+                console.log(req.query);
+                searchValidation = _joi2.default.validate(req.query, _Fixture2.default.listSearchParams);
+
+                if (!(searchValidation.error === null)) {
+                  _context.next = 32;
+                  break;
+                }
+
+                _context.prev = 21;
+                _context.next = 24;
+                return this.fixtures.where(req.query.queryProp, '==', req.query.queryVal).get().then(function (snapshot) {
+                  var fixtures = [];
+                  snapshot.forEach(function (doc) {
+                    fixtures.push(doc.data());
+                  });
+                  if (fixtures.length > -1) {
+                    res.status(200).send(fixtures);
+                  } else {
+                    throw {
+                      name: 'NoFixturesExist',
+                      message: 'There were no fixtures found in the database for this query!'
+                    };
+                  }
+                });
+
+              case 24:
+                _context.next = 30;
+                break;
+
+              case 26:
+                _context.prev = 26;
+                _context.t1 = _context['catch'](21);
+
+                this.logger.error(_context.t1);
+                res.status(400).send(_context.t1);
+
+              case 30:
+                _context.next = 34;
+                break;
+
+              case 32:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 15:
+              case 34:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[2, 7]]);
+        }, _callee, this, [[3, 8], [21, 26]]);
       }));
 
       function list(_x, _x2) {

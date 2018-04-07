@@ -42,6 +42,10 @@ var _contractController = require('../controllers/contractController');
 
 var _contractController2 = _interopRequireDefault(_contractController);
 
+var _eventController = require('../controllers/eventController');
+
+var _eventController2 = _interopRequireDefault(_eventController);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var routes = (0, _express.Router)();
@@ -58,6 +62,7 @@ exports.default = function (db, logger) {
   var playerController = new _playerController2.default(db, logger);
   var accountController = new _accountController2.default(db, logger);
   var contractController = new _contractController2.default(db, logger);
+  var eventController = new _eventController2.default(db, logger);
 
   /**
    * @swagger
@@ -227,6 +232,21 @@ exports.default = function (db, logger) {
    *     operationId: list
    *     produces:
    *       - application/json
+   *     parameters:
+   *       - queryProp: fixture property to query by
+   *         description: fixture property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
+   *       - queryVal: fixture property value to query by
+   *         description: fixture property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
    *     responses:
    *       200:
    *         description: Success
@@ -275,6 +295,21 @@ exports.default = function (db, logger) {
    *     operationId: list
    *     produces:
    *       - application/json
+   *     parameters:
+   *       - queryProp: player property to query by
+   *         description: player property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Player'
+   *       - queryVal: player property value to query by
+   *         description: player property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Player'
    *     responses:
    *       200:
    *         description: Success
@@ -586,6 +621,42 @@ exports.default = function (db, logger) {
   */
   routes.put('/contracts/:id', _authCheck2.default, function (req, res) {
     contractController.update(req, res);
+  });
+
+  /**
+   * @swagger
+   * /api/events:
+   *   x-swagger-router-controller: ../controllers/eventController
+   *   get:
+   *     tags:
+   *       - Event
+   *     description: Search events
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - queryProp: event property to query by
+   *         description: event property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Events'
+   *       - queryVal: event property value to query by
+   *         description: event property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Event'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Event"
+   */
+  routes.get('/events', _authCheck2.default, function (req, res) {
+    eventController.list(req, res);
   });
 
   return routes;

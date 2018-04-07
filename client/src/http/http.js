@@ -47,6 +47,81 @@ function genericFetch(url, token) {
         console.log(error)
     })
 }
+
+function getTeam(teamUid, token) {
+    return axios({
+        method: 'GET',
+        url: hostUrl + 'api/teams/' + teamUid,
+        params: {
+            access_token: token
+        }
+    })
+}
+
+function getTeamPlayers(teamUid) {
+    return axios({
+        method: 'GET',
+        url: hostUrl + 'api/players',
+        params: {
+            queryProp: 'teamUid',
+            queryVal: teamUid
+        }
+    })
+}
+
+function getTeamEvents(teamUid) {
+    return axios({
+        method: 'GET',
+        url: hostUrl + 'api/events',
+        params: {
+            queryProp: 'teamUid',
+            queryVal: teamUid
+        }
+    })
+}
+
+function getTeamHomeFixtures(teamUid) {
+    return axios({
+        method: 'GET',
+        url: hostUrl + 'api/fixtures',
+        params: {
+            queryProp: 'homeTeam',
+            queryVal: teamUid
+        }
+    })
+}
+
+function getTeamAwayFixtures(teamUid) {
+    return axios({
+        method: 'GET',
+        url: hostUrl + 'api/fixtures',
+        params: {
+            queryProp: 'awayTeam',
+            queryVal: teamUid
+        }
+    })
+}
+
+function fetchShockballSquad(teamUid, token) {
+    return ensureFreshToken(token).then((currentToken) => {
+        return new Promise((resolve, reject) => {
+            let squadModel = {}
+            axios.all([getTeam(teamUid, token), getTeamPlayers(teamUid), getTeamEvents(teamUid), getTeamHomeFixtures(teamUid), getTeamAwayFixtures(teamUid)]).then(axios.spread(function (team, teamPlayers, teamEvents, teamHomeFixtures, teamAwayFixtures) {
+                squadModel = {
+                    teamInfo: team.data,
+                    teamPlayers: teamPlayers.data,
+                    teamEvents: teamEvents.data,
+                    teamFixtures: teamHomeFixtures.data.concat(teamAwayFixtures.data)
+                }
+                resolve(squadModel)
+            }))
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
+    })
+}
+
 function fetchShockballAdmin(uid, token) {
     return ensureFreshToken(token).then((currentToken) => {
         return new Promise((resolve, reject) => {
@@ -192,6 +267,8 @@ function getAllFixtures(url, token) {
                 method: 'GET',
                 url: url,
                 params: {
+                  queryProp: 'season',
+                  queryVal: '1',
                   access_token: token
                 }
               }).then(response => {
@@ -271,6 +348,7 @@ export default {
     ensureFreshToken,
     genericFetch,
     fetchShockballAdmin,
+    fetchShockballSquad,
     fetchTeamAdmin,
     fetchPlayerAdmin,
     getSingleFixture,
