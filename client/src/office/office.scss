@@ -1,5 +1,21 @@
 @import "../Global";
 
+#deposit {
+    margin-bottom:30px;
+    input {
+        display:block;
+    }
+    button {
+        position: absolute;
+        right: 20px;
+        bottom: -15px;
+    }
+    .disclaimer {
+        font-size: 0.9em;
+        color: red;
+    }
+}
+
 .office-wrapper {
     position: relative;
     z-index: 1;
@@ -43,6 +59,9 @@
         }
         .accounts {
             text-align: center;
+            .btn-primary {
+                margin-top: 20px;
+            }
         }
         .contract-header {
             font-size: 1.5em;

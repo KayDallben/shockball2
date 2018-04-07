@@ -184,10 +184,9 @@ class Office extends React.Component {
       return (
         <div className="inner-contract-fields">
           <div className="fee-title">League Fee Required: <NumberFormat value={1000000} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
-          <p className="disclaimer">Disclaimer: because the actual payment is made from an external system (star wars combine), this system cannot validate that your payment was made. This is a manual process
-            where our administrators check the payment events from Star Wars Combine, validate authenticity, and then update the ShockBall league to reflect your payment.
+          <p className="disclaimer">Disclaimer: because the actual payment is made via an external system (star wars combine), the Shockball application cannot validate that your payment was made. Processing your payment is a manual task
+            where our administrators check the payment events from Star Wars Combine, validate authenticity, and then update the ShockBall league to reflect your payment.  We try to be timely.
           </p>
-          <p className="disclaimer">In other words: <b>It is totally possible to pay the League twice so PLEASE DO NOT DO THAT. :)</b></p>
         </div>
       )
     } else if (contract.status ==='pending') {
@@ -209,9 +208,7 @@ class Office extends React.Component {
   renderContractActions(contract) {
     if (contract.status === 'accepted' && !contract.isFeePaid) {
       return (
-        <div className="contract-action-holder">
-          <button type="submit" className="mb-4 btn btn-primary" onClick={() => {this.sendCreditsLink(contract)}}>Pay League Fee</button>
-        </div>
+        <div className="contract-action-holder"></div>
       )
     } else {
       return (
@@ -223,11 +220,46 @@ class Office extends React.Component {
     }
   }
 
-  sendCreditsLink(contract) {
+  sendManagerCreditsLink(amount, managerUid, managerName, teamUid, teamName) {
     const receiver = encodeURIComponent('Tholme So')
-    const amount = 1000000
-    const communication = `Player Contract Fee | Contract ID: ${contract.contractUid} | Player ID: ${contract.playerUid}, Player Name: ${contract.playerName} | Team ID: ${contract.teamUid}, Team Name: ${contract.teamName} | Purchase Price: ${contract.purchasePrice}, Games: ${contract.games}`
+    const communication = `Shockball Team Deposit | Manager ID: ${managerUid} | Manager Name: ${managerName} | Team ID: ${teamUid}, Team Name: ${teamName}`
     window.open(`http://www.swcombine.com/members/credits/?receiver=${receiver}&amount=${amount}&communication=${communication}`, '_blank')
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if (!event.target.checkValidity()) {
+      return;
+    }
+    const form = event.target;
+    const data = new FormData(form);
+    const sanitizedAmount = parseFloat(data.get('amount'))
+    this.sendManagerCreditsLink(sanitizedAmount, this.props.store.currentUser.shockballPlayerUid, this.props.store.currentUser.name, this.props.store.currentUser.teamUid, this.props.store.currentUser.teamName)
+  }
+
+  showDepositForm() {
+    this.props.store.showModal(
+      <div className="contract-wrapper">
+        <div className="modal-title">Deposit Team Funds</div>
+        <div className="player-value">
+            <h3>Team:</h3>
+            <div>{this.props.store.currentUser.teamName}</div>
+        </div>
+        <div className="contract-offer">
+          <h3>Team Budget Transaction:</h3>
+          <form novalidate onSubmit={this.handleSubmit.bind(this)} id="deposit">
+            <p className="disclaimer">Disclaimer: because the actual payment is made via an external system (star wars combine), the Shockball application cannot validate that your payment was made. Processing your payment is a manual task
+              where our administrators check the payment events from Star Wars Combine, validate authenticity, and then update the ShockBall league to reflect your payment.  We try to be timely.
+            </p>
+            <p className="disclaimer">Once we manually update your Team Budgets with your deposit amount, you will then see it reflected on your Office account statement section.</p>
+            <label htmlFor="amount">Enter Deposit Amount</label>
+            <input id="amount" name="amount" type="number" data-parse="number" min="0" required />
+
+            <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    )
   }
 
   editContract(rowData) {
@@ -440,6 +472,7 @@ class Office extends React.Component {
             <div className="accounts-header">Potential Budget: <NumberFormat value={this.props.view.office.value.account.potentialBudget} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
             <div className="accounts-header">Available Budget: <NumberFormat value={this.props.view.office.value.account.availableBudget} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
             <div className="account-info">Last Modified: {moment(this.props.view.office.value.account.lastModified).format('LLL')}</div>
+            <div className="mb-4 btn btn-primary" onClick={() => {this.showDepositForm()}}>Deposit Team Funds</div>
           </div>
         </div>
       )
