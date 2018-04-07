@@ -17,29 +17,58 @@ class PlayerController {
 
   async list(req, res) {
     const validation = Joi.validate(req.params, PlayerSchema.listParams)
-    if (validation.error === null) {
-      try {
-        await this.players.get().then((snapshot) => {
-          let players = []
-          snapshot.forEach((doc) => {
-            players.push(doc.data())
-          })
-          if (players.length > -1) {
-            res.status(200).send(players)
-          } else {
-            throw {
-              name: 'NoPlayersExist',
-              message: 'There were no players found in the database for this query!'
+    if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+      if (validation.error === null) {
+        try {
+          await this.players.get().then((snapshot) => {
+            let players = []
+            snapshot.forEach((doc) => {
+              players.push(doc.data())
+            })
+            if (players.length > -1) {
+              res.status(200).send(players)
+            } else {
+              throw {
+                name: 'NoPlayersExist',
+                message: 'There were no players found in the database for this query!'
+              }
             }
-          }
-        })
-      } catch (error) {
-        this.logger.error(error)
-        res.status(400).send(error)
+          })
+        } catch (error) {
+          this.logger.error(error)
+          res.status(400).send(error)
+        }
+      } else {
+        this.logger.error('Joi validation error: ' + validation.error)
+        res.status(400).send(validation.error)
       }
     } else {
-      this.logger.error('Joi validation error: ' + validation.error)
-      res.status(400).send(validation.error)
+      //we are searching for players by criteria
+      const searchValidation = Joi.validate(req.query, PlayerSchema.listSearchParams)
+      if (searchValidation.error === null) {
+        try {
+          await this.players.where(req.query.queryProp, '==', req.query.queryVal).get().then((snapshot) => {
+            let players = []
+            snapshot.forEach((doc) => {
+              players.push(doc.data())
+            })
+            if (players.length > -1) {
+              res.status(200).send(players)
+            } else {
+              throw {
+                name: 'NoPlayersExist',
+                message: 'There were no players found in the database for this query!'
+              }
+            }
+          })
+        } catch (error) {
+          this.logger.error(error)
+          res.status(400).send(error)
+        }
+      } else {
+        this.logger.error('Joi validation error: ' + validation.error)
+        res.status(400).send(validation.error)
+      }
     }
   }
 

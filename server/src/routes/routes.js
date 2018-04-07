@@ -12,6 +12,7 @@ import FixtureController from '../controllers/fixtureController'
 import PlayerController from '../controllers/playerController'
 import AccountController from '../controllers/accountController'
 import ContractController from '../controllers/contractController'
+import EventController from '../controllers/eventController'
 
 export default (db, logger) => {
   const profileController = new ProfileController(db, logger)
@@ -22,6 +23,7 @@ export default (db, logger) => {
   const playerController = new PlayerController(db, logger)
   const accountController = new AccountController(db, logger)
   const contractController = new ContractController(db, logger)
+  const eventController = new EventController(db, logger)
 
   /**
    * @swagger
@@ -191,6 +193,21 @@ export default (db, logger) => {
    *     operationId: list
    *     produces:
    *       - application/json
+   *     parameters:
+   *       - queryProp: fixture property to query by
+   *         description: fixture property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
+   *       - queryVal: fixture property value to query by
+   *         description: fixture property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Fixture'
    *     responses:
    *       200:
    *         description: Success
@@ -239,6 +256,21 @@ export default (db, logger) => {
    *     operationId: list
    *     produces:
    *       - application/json
+   *     parameters:
+   *       - queryProp: player property to query by
+   *         description: player property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Player'
+   *       - queryVal: player property value to query by
+   *         description: player property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: false
+   *         schema:
+   *           $ref: '#/definitions/Player'
    *     responses:
    *       200:
    *         description: Success
@@ -550,6 +582,42 @@ export default (db, logger) => {
    */
   routes.put('/contracts/:id', authCheck, (req, res) => {
     contractController.update(req, res)
+  })
+
+  /**
+   * @swagger
+   * /api/events:
+   *   x-swagger-router-controller: ../controllers/eventController
+   *   get:
+   *     tags:
+   *       - Event
+   *     description: Search events
+   *     operationId: list
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - queryProp: event property to query by
+   *         description: event property to query by
+   *         in: query
+   *         name: queryProp
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Events'
+   *       - queryVal: event property value to query by
+   *         description: event property value to query by
+   *         in: query
+   *         name: queryVal
+   *         required: true
+   *         schema:
+   *           $ref: '#/definitions/Event'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         schema:
+   *           $ref: "#/definitions/Event"
+   */
+  routes.get('/events', authCheck, (req, res) => {
+    eventController.list(req, res)
   })
 
   return routes

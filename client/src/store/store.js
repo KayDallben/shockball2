@@ -146,11 +146,25 @@ class Store {
 
   @action showSquadPage(squadId) {
     ga.pageview()
-    const defaultSquad = squadId ? squadId : this.currentUser.teamUid 
-    this.currentView = {
-      name: 'squad',
-      squadId,
-      squad: fromPromise(this.http.genericFetch(hostUrl + 'api/teams/' + defaultSquad, this.accessToken))
+    if (squadId) {
+      // player went to another Team's squad page
+      this.currentView = {
+        name: 'squad',
+        squadId,
+        squad: fromPromise(this.http.fetchShockballSquad(squadId, this.accessToken))
+      }  
+    } else if (!squadId && this.currentUser.teamUid) {
+      // player went to own squad
+      this.currentView = {
+        name: 'squad',
+        squad: fromPromise(this.http.fetchShockballSquad(this.currentUser.teamUid, this.accessToken))
+      }  
+    } else if (!squadId && !this.currentUser.teamUid) {
+      // player went to own squad page but is a free agent
+      this.currentView = {
+        name: 'squad',
+        squad: fromPromise(Promise.resolve({ teamInfo: {}, teamPlayers: {}, teamEvents: {}}))
+      }
     }
   }
 

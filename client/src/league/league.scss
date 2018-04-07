@@ -50,9 +50,12 @@
                 a {
                     flex: 1;
                     text-decoration: none;
-                    color: #ffffff;
+                    color: #007bff;
                     &:visited {
-                        color: #ffffff;
+                        color: #007bff;
+                    }
+                    &:hover {
+                        cursor: pointer;
                     }
                     div {
                         padding:4px;

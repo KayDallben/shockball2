@@ -12,6 +12,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   listParams: _joi2.default.object().keys({}),
+  listSearchParams: _joi2.default.object().keys({
+    queryProp: _joi2.default.string().required(),
+    queryVal: _joi2.default.string().required()
+  }),
   listOneParams: _joi2.default.object().keys({
     id: _joi2.default.string().required()
   })

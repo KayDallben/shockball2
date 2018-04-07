@@ -115,10 +115,15 @@ class Transfers extends React.Component {
 
   createTeamLink = (row) => {
     const teamValue = row.dependentValues.teamName ? row.dependentValues.teamName : 'Free Agent'
-    return (
-      // <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.shockballPlayerUid)}>{row.dependentValues.name}</a>
-      <div>{teamValue}</div>
-    )
+    if (teamValue === 'Free Agent') {
+      return (
+        <div>{teamValue}</div>
+      )
+    } else {
+      return (
+        <a onClick={() => this.props.store.showSquadPage(row.dependentValues.teamUid)}>{row.dependentValues.teamName}</a>
+      )
+    }
   }
 
   rowGetter = (i) => {
