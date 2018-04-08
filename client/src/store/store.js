@@ -163,7 +163,7 @@ class Store {
       // player went to own squad page but is a free agent
       this.currentView = {
         name: 'squad',
-        squad: fromPromise(Promise.resolve({ teamInfo: {}, teamPlayers: {}, teamEvents: {}}))
+        squad: fromPromise(Promise.resolve({ teamInfo: {}, teamPlayers: [], teamEvents: [], teamFixtures: []}))
       }
     }
   }
