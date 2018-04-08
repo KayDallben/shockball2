@@ -50,12 +50,12 @@ var PlayerController = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                validation = _joi2.default.validate(req.params, _Player2.default.listParams);
-
-                if (!(Object.keys(req.query).length === 0 && req.query.constructor === Object)) {
+                if (!(!req.query.queryProp && !req.query.queryVal)) {
                   _context.next = 18;
                   break;
                 }
+
+                validation = _joi2.default.validate(req.params, _Player2.default.listParams);
 
                 if (!(validation.error === null)) {
                   _context.next = 14;
@@ -144,8 +144,8 @@ var PlayerController = function () {
                 break;
 
               case 31:
-                this.logger.error('Joi validation error: ' + validation.error);
-                res.status(400).send(validation.error);
+                this.logger.error('Joi validation error: ' + searchValidation.error);
+                res.status(400).send(searchValidation.error);
 
               case 33:
               case 'end':

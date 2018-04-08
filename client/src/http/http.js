@@ -268,8 +268,7 @@ function getAllFixtures(url, token) {
                 url: url,
                 params: {
                   queryProp: 'season',
-                  queryVal: '1',
-                  access_token: token
+                  queryVal: '1'
                 }
               }).then(response => {
                 if (response.data) {

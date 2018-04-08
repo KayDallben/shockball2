@@ -16,8 +16,8 @@ class PlayerController {
   }
 
   async list(req, res) {
-    const validation = Joi.validate(req.params, PlayerSchema.listParams)
-    if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+    if (!req.query.queryProp && !req.query.queryVal) {
+      const validation = Joi.validate(req.params, PlayerSchema.listParams)
       if (validation.error === null) {
         try {
           await this.players.get().then((snapshot) => {
@@ -66,8 +66,8 @@ class PlayerController {
           res.status(400).send(error)
         }
       } else {
-        this.logger.error('Joi validation error: ' + validation.error)
-        res.status(400).send(validation.error)
+        this.logger.error('Joi validation error: ' + searchValidation.error)
+        res.status(400).send(searchValidation.error)
       }
     }
   }
