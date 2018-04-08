@@ -13,7 +13,7 @@ class Squad extends React.Component {
   }
 
   renderTeamInfo() {
-
+    return null
   }
 
   render() {
