@@ -147,6 +147,44 @@ class Squad extends React.Component {
     }
   }
 
+  renderStartingPlayer(position) {
+    let playerDiv = {
+      name: 'BOT',
+      image: 'https://0x0800.github.io/2048-STARWARS/style/img/512.svg'
+    }
+    for (var i = 0; i < this.props.view.squad.value.teamPlayers.length; i++) {
+      if (this.props.view.squad.value.teamPlayers[i].lineupPosition === position) {
+        playerDiv = {
+          name: this.props.view.squad.value.teamPlayers[i].name,
+          image: this.props.view.squad.value.teamPlayers[i].image
+        }
+        break
+      }
+    }
+    return (
+      <div className="player-circle">
+        <div className="player-name-label">{playerDiv.name}</div>
+        <img className="player-image" src={playerDiv.image}/>
+      </div>
+    )
+  }
+
+  renderLineup() {
+    return (
+      <div className="lineup-wrapper">
+        <h4 className="team-players-title">Match Lineup</h4>
+        <div className="arena">
+          <div className="leftWing">{this.renderStartingPlayer('left')}</div>
+          <div className="center">{this.renderStartingPlayer('center')}</div>
+          <div className="rightWing">{this.renderStartingPlayer('right')}</div>
+          <div className="guard">{this.renderStartingPlayer('guard')}</div>
+          <div className="sub1">{this.renderStartingPlayer('sub1')}</div>
+          <div className="sub2">{this.renderStartingPlayer('sub2')}</div>
+        </div>
+      </div>
+    )
+  }
+
   renderPlayers() {
     return (
       <div className="team-players-wrapper">
@@ -156,7 +194,7 @@ class Squad extends React.Component {
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this.props.view.squad.value.teamPlayers.length}
-          minHeight={500} />
+          minHeight={200} />
       </div>
     )
   }
@@ -189,6 +227,7 @@ class Squad extends React.Component {
             </div>
           </div>
           {this.renderPlayers()}
+          {this.renderLineup()}
         </div>
       )
     } else {
