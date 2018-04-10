@@ -16,6 +16,7 @@ export default {
       value: Joi.string().required(),
       label: Joi.string().required()
     },
+    lineupPosition: Joi.string().allow(null).optional(),
     access_token: Joi.string().required()
   })
 }

@@ -216,6 +216,21 @@ class Store {
     return this.authCode !== null
   }
 
+  @action changePlayerLineupPosition = (originalPlayer, newPlayer) => {
+    ga.event('Lineup Change', 'clicked')
+    return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
+      if (!originalPlayer.shockballPlayerUid) {
+        //is a BOT so no need to write back to originalPlayer
+        this.updateNewPlayerSwitch(originalPlayer, newPlayer)
+      } else {
+        this.updateOriginalAndNewPlayerSwitch(originalPlayer, newPlayer)
+      }
+    }).catch(error => {
+        console.log('error getting refresh token')
+        console.log(error)
+    })
+  }
+
   @action setTrainingRegimen = (selectedOption) => {
     ga.event('Training Regimen', 'clicked')
     return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
@@ -349,6 +364,46 @@ class Store {
     if (!this.hasAccessToken) {
       this.sendToLoginPage()
     }
+  }
+
+  updateNewPlayerSwitch(originalPlayer, newPlayer) {
+    return axios({
+      method: 'PUT',
+      url: hostUrl + 'api/players/' + newPlayer.shockballPlayerUid,
+      params: {
+        access_token: this.accessToken,
+        lineupPosition: originalPlayer.lineupPosition
+      }
+    }).then(response => {
+      toast.success("Player lineup position updated!", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.showSquadPage(this.currentUser.teamManager)
+      this.closeModal()
+    }).catch(error => {
+      toast.error("SCHEISSE! Unable to update player lineup position :(", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.closeModal()
+    }) 
+  }
+
+  updateOriginalAndNewPlayerSwitch(originalPlayer, newPlayer) {
+    return axios({
+      method: 'PUT',
+      url: hostUrl + 'api/players/' + originalPlayer.shockballPlayerUid,
+      params: {
+        access_token: this.accessToken,
+        lineupPosition: 'null' //axios doesn't convert actual null to a param, so passing string null here and handling on api side
+      }
+    }).then(response => {
+      this.updateNewPlayerSwitch()
+    }).catch((error) => {
+      toast.error("SCHEISSE! Unable to update player lineup position :(", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.closeModal()
+    })
   }
 
 }

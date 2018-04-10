@@ -147,24 +147,45 @@ class Squad extends React.Component {
     }
   }
 
+  showPlayerSwapForm(originalPlayer) {
+    this.props.store.showModal(
+      <div className="contract-wrapper">
+        <div className="modal-title">Pick Player</div>
+        <div className="player-holder">
+          {this.renderSwapTeamPlayers(originalPlayer)}
+        </div>
+      </div>
+    )
+  }
+
+  renderSwapTeamPlayers(originalPlayer) {
+    const teamPlayers = this.props.view.squad.value.teamPlayers.map((player) => {
+      return (
+        <div className="player-circle" onClick={() => { this.props.store.changePlayerLineupPosition(originalPlayer, player)}}>
+          <div className="player-name-label">{player.name}</div>
+          <img className="player-image" src={player.image}/>
+        </div>
+      )
+    })
+    return teamPlayers
+  }
+
   renderStartingPlayer(position) {
-    let playerDiv = {
+    let player = {
       name: 'BOT',
-      image: 'https://0x0800.github.io/2048-STARWARS/style/img/512.svg'
+      image: 'https://0x0800.github.io/2048-STARWARS/style/img/512.svg',
+      lineupPosition: position
     }
     for (var i = 0; i < this.props.view.squad.value.teamPlayers.length; i++) {
       if (this.props.view.squad.value.teamPlayers[i].lineupPosition === position) {
-        playerDiv = {
-          name: this.props.view.squad.value.teamPlayers[i].name,
-          image: this.props.view.squad.value.teamPlayers[i].image
-        }
+        player = this.props.view.squad.value.teamPlayers[i]
         break
       }
     }
     return (
-      <div className="player-circle">
-        <div className="player-name-label">{playerDiv.name}</div>
-        <img className="player-image" src={playerDiv.image}/>
+      <div className="player-circle" onClick={() => { this.showPlayerSwapForm(player) }}>
+        <div className="player-name-label">{player.name}</div>
+        <img className="player-image" src={player.image}/>
       </div>
     )
   }
@@ -174,10 +195,14 @@ class Squad extends React.Component {
       <div className="lineup-wrapper">
         <h4 className="team-players-title">Match Lineup</h4>
         <div className="arena">
-          <div className="leftWing">{this.renderStartingPlayer('left')}</div>
-          <div className="center">{this.renderStartingPlayer('center')}</div>
-          <div className="rightWing">{this.renderStartingPlayer('right')}</div>
-          <div className="guard">{this.renderStartingPlayer('guard')}</div>
+          <div className="leftWing1">{this.renderStartingPlayer('left1')}</div>
+          <div className="leftWing2">{this.renderStartingPlayer('left2')}</div>
+          <div className="center1">{this.renderStartingPlayer('center1')}</div>
+          <div className="center2">{this.renderStartingPlayer('center2')}</div>
+          <div className="rightWing1">{this.renderStartingPlayer('right1')}</div>
+          <div className="rightWing2">{this.renderStartingPlayer('right2')}</div>
+          <div className="guard1">{this.renderStartingPlayer('guard1')}</div>
+          <div className="guard2">{this.renderStartingPlayer('guard2')}</div>
           <div className="sub1">{this.renderStartingPlayer('sub1')}</div>
           <div className="sub2">{this.renderStartingPlayer('sub2')}</div>
         </div>
@@ -244,7 +269,6 @@ class Squad extends React.Component {
       case "rejected":
           throw this.props.view.squad.reason
       case "fulfilled":
-        console.log(this.props.view.squad.value)
         return (
           <div className="squad-wrapper">
             {this.renderTeamInfo()}

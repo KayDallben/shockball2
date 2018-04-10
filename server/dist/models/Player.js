@@ -26,6 +26,7 @@ exports.default = {
       value: _joi2.default.string().required(),
       label: _joi2.default.string().required()
     },
+    lineupPosition: _joi2.default.string().allow(null).optional(),
     access_token: _joi2.default.string().required()
   })
 };
