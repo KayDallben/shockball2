@@ -176,15 +176,23 @@ var PlayerController = function () {
                 validation = _joi2.default.validate(req.query, _Player2.default.updateParams);
 
                 if (!(validation.error === null)) {
-                  _context3.next = 15;
+                  _context3.next = 16;
                   break;
                 }
 
                 _context3.prev = 3;
-                updateSet = {
-                  regimen: JSON.parse(req.query.regimen)
-                };
-                _context3.next = 7;
+                updateSet = {};
+
+                if (req.query.lineupPosition) {
+                  updateSet = {
+                    lineupPosition: req.query.lineupPosition === 'null' ? null : req.query.lineupPosition
+                  };
+                } else {
+                  updateSet = {
+                    regimen: JSON.parse(req.query.regimen)
+                  };
+                }
+                _context3.next = 8;
                 return this.players.doc(id).update(updateSet).then(function () {
                   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(doc) {
                     var errorMessage;
@@ -225,31 +233,31 @@ var PlayerController = function () {
                   };
                 }());
 
-              case 7:
-                _context3.next = 13;
+              case 8:
+                _context3.next = 14;
                 break;
 
-              case 9:
-                _context3.prev = 9;
+              case 10:
+                _context3.prev = 10;
                 _context3.t0 = _context3['catch'](3);
 
                 this.logger.error(_context3.t0);
                 res.status(400).send(_context3.t0);
 
-              case 13:
-                _context3.next = 17;
+              case 14:
+                _context3.next = 18;
                 break;
 
-              case 15:
+              case 16:
                 this.logger.error('Joi validation error: ' + validation.error);
                 res.status(400).send(validation.error);
 
-              case 17:
+              case 18:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[3, 9]]);
+        }, _callee3, this, [[3, 10]]);
       }));
 
       function update(_x3, _x4) {

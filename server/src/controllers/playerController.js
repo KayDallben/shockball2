@@ -77,8 +77,15 @@ class PlayerController {
     const validation = Joi.validate(req.query, PlayerSchema.updateParams)
     if (validation.error === null) {
       try {
-        const updateSet = {
-          regimen: JSON.parse(req.query.regimen)
+        let updateSet = {}
+        if (req.query.lineupPosition) {
+          updateSet = {
+            lineupPosition: req.query.lineupPosition === 'null' ? null : req.query.lineupPosition
+          }
+        } else {
+          updateSet = {
+            regimen: JSON.parse(req.query.regimen)
+          }
         }
         await this.players.doc(id).update(updateSet).then(async (doc) => {
           if (doc._writeTime) {
