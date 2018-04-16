@@ -110,43 +110,38 @@ var Main = function () {
       challenge.update(this.world);
       challenge.reset();
 
-      if (this.counter.toString() === '7') {
-        // this.stopSim = true
-        //simulating a player coming off the pitch
-        this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left' });
-      }
+      // **** simulating a player coming off the pitch
+      // if (this.counter.toString() === '7') {
+      //   this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left'})
+      // }
 
-      // simulating a player coming on the pitch
-      if (this.counter.toString() === '8') {
-        var examplePlayer = {
-          shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
-          name: 'Callisto Xaltir',
-          image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
-          teamUid: '4dt21p2M1q7WmjjwJHfw',
-          teamName: 'Abregado Gentlemen',
-          teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
-          lineupPosition: 'center1',
-          role: 'Center',
-          passing: 49.75,
-          toughness: 45.75,
-          throwing: 51.75,
-          fatigue: 14.024999999999995,
-          endurance: 46.75,
-          vision: 40.75,
-          blocking: 39.75
-        };
-        var playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left');
-        this.world.register(playerToAdd);
-        this.world.leftPlayers.push(playerToAdd);
-      }
-      // console.log('counter is: ' + this.counter )
+      // **** simulating a player coming on the pitch
+      // if (this.counter.toString() === '8') {
+      //   const examplePlayer = {
+      //     shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
+      //     name: 'Callisto Xaltir',
+      //     image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
+      //     teamUid: '4dt21p2M1q7WmjjwJHfw',
+      //     teamName: 'Abregado Gentlemen',
+      //     teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
+      //     lineupPosition: 'center1',
+      //     role: 'Center',
+      //     passing: 49.75,
+      //     toughness: 45.75,
+      //     throwing: 51.75,
+      //     fatigue: 14.024999999999995,
+      //     endurance: 46.75,
+      //     vision: 40.75,
+      //     blocking: 39.75
+      //   }
+      //   const playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left')
+      //   this.world.register(playerToAdd)
+      //   this.world.leftPlayers.push(playerToAdd)
+      // }
+
       if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
         this.stopSim = true;
-        console.log('###########################################RECORDS###################################');
-        console.log(this.record.records);
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@WORLD@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        console.log(this.world);
-        // this.writeMatchRecords(this.world)
+        this.writeMatchRecords(this.world);
       }
     }
   }, {
