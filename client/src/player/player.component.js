@@ -192,6 +192,10 @@ class Player extends React.Component {
                 label: 'Guard'
               },
               {
+                value: 'General',
+                label: 'General'
+              },
+              {
                 value: 'Rest',
                 label: 'Rest'
               }

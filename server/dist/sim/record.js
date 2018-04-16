@@ -15,6 +15,7 @@ var Record = function () {
     this.records = [];
     this.fixtureId = fixtureId;
     this.season = season;
+    this.counter = 0;
   }
 
   _createClass(Record, [{
