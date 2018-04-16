@@ -3,6 +3,7 @@ export default class Record {
     this.records = []
     this.fixtureId = fixtureId
     this.season = season
+    this.counter = 0
   }
 
   update() {

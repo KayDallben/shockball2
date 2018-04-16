@@ -77,80 +77,8 @@ var Main = function () {
         var ball = new this.Ball(pitch);
         this.world.register(ball);
 
-        // register home team players on left side
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this.matchData.homeTeam.players[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var player = _step.value;
-
-            var _playerToAdd2 = new this.Player(player, this.world, challenge, 'left');
-            this.world.register(_playerToAdd2);
-            this.world.leftPlayers.push(_playerToAdd2);
-          }
-
-          // register away team players on right side
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = this.matchData.awayTeam.players[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _player = _step2.value;
-
-            var _playerToAdd3 = new this.Player(_player, this.world, challenge, 'right');
-            this.world.register(_playerToAdd3);
-            this.world.rightPlayers.push(_playerToAdd3);
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
-
-        if (this.matchData.homeTeam.players.length < 4) {
-          for (var i = this.matchData.homeTeam.players.length; i < 4; i++) {
-            var bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl);
-            var playerToAdd = new this.Player(bot, this.world, challenge, 'left');
-            this.world.register(playerToAdd);
-            this.world.leftPlayers.push(playerToAdd);
-          }
-        }
-
-        if (this.matchData.awayTeam.players.length < 4) {
-          for (var i = this.matchData.awayTeam.players.length; i < 4; i++) {
-            var _bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl);
-            var _playerToAdd = new this.Player(_bot, this.world, challenge, 'right');
-            this.world.register(_playerToAdd);
-            this.world.rightPlayers.push(_playerToAdd);
-          }
-        }
+        this.createWorldHumanPlayers(this.world, challenge);
+        this.createWorldNpcPlayers(this.world, challenge);
 
         //start main game loop
         this.mainLoop();
@@ -177,17 +105,154 @@ var Main = function () {
   }, {
     key: 'update',
     value: function update() {
+      this.counter++;
       this.world.update();
       challenge.update(this.world);
       challenge.reset();
-      this.counter++;
-      if (this.counter.toString() === '5') {}
-      // this.stopSim = true
 
+      if (this.counter.toString() === '7') {
+        // this.stopSim = true
+        //simulating a player coming off the pitch
+        this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left' });
+      }
+
+      // simulating a player coming on the pitch
+      if (this.counter.toString() === '8') {
+        var examplePlayer = {
+          shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
+          name: 'Callisto Xaltir',
+          image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
+          teamUid: '4dt21p2M1q7WmjjwJHfw',
+          teamName: 'Abregado Gentlemen',
+          teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
+          lineupPosition: 'center1',
+          role: 'Center',
+          passing: 49.75,
+          toughness: 45.75,
+          throwing: 51.75,
+          fatigue: 14.024999999999995,
+          endurance: 46.75,
+          vision: 40.75,
+          blocking: 39.75
+        };
+        var playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left');
+        this.world.register(playerToAdd);
+        this.world.leftPlayers.push(playerToAdd);
+      }
       // console.log('counter is: ' + this.counter )
       if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
         this.stopSim = true;
-        this.writeMatchRecords(this.world);
+        console.log('###########################################RECORDS###################################');
+        console.log(this.record.records);
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@WORLD@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        console.log(this.world);
+        // this.writeMatchRecords(this.world)
+      }
+    }
+  }, {
+    key: 'createWorldHumanPlayers',
+    value: function createWorldHumanPlayers(world, challenge) {
+      // register home team players on left side
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.matchData.homeTeam.players[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var player = _step.value;
+
+          var playerToAdd = new this.Player(player, world, challenge, 'left');
+          if (playerToAdd.role !== undefined) {
+            if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
+              world.register(playerToAdd);
+              world.leftPlayers.push(playerToAdd);
+            } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
+              world.leftBench.push(playerToAdd);
+            }
+          }
+        }
+
+        // register away team players on right side
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this.matchData.awayTeam.players[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _player = _step2.value;
+
+          var _playerToAdd = new this.Player(_player, world, challenge, 'right');
+          if (_playerToAdd.role !== undefined) {
+            if (['center1', 'left1', 'right1', 'guard1'].indexOf(_playerToAdd.lineupPosition) >= 0) {
+              world.register(_playerToAdd);
+              world.rightPlayers.push(_playerToAdd);
+            } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(_playerToAdd.lineupPosition) >= 0) {
+              world.rightBench.push(_playerToAdd);
+            }
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'createWorldNpcPlayers',
+    value: function createWorldNpcPlayers(world, challenge) {
+      // create bots for teams lacking players
+      var totalHomeTeamSize = world.leftPlayers.length + world.leftBench.length;
+      var totalAwayTeamSize = world.rightPlayers.length + world.rightBench.length;
+      // if (this.matchData.homeTeam.players.length < 4) {
+      if (totalHomeTeamSize < 10) {
+        for (var i = totalHomeTeamSize; i < 10; i++) {
+          var bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl);
+          var playerToAdd = new this.Player(bot, world, challenge, 'left');
+          if (world.leftPlayers.length < 4) {
+            world.register(playerToAdd);
+            world.leftPlayers.push(playerToAdd);
+          } else if (world.leftBench.length < 6) {
+            world.leftBench.push(playerToAdd);
+          }
+        }
+      }
+
+      // create bots for teams lacking players
+      if (totalAwayTeamSize < 10) {
+        for (var i = totalAwayTeamSize; i < 10; i++) {
+          var _bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl);
+          var _playerToAdd2 = new this.Player(_bot, world, challenge, 'right');
+          if (world.rightPlayers.length < 4) {
+            world.register(_playerToAdd2);
+            world.rightPlayers.push(_playerToAdd2);
+          } else if (world.rightBench.length < 6) {
+            world.rightBench.push(_playerToAdd2);
+          }
+        }
       }
     }
   }, {

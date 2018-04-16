@@ -8,11 +8,12 @@ export default class Player {
     if (util.getType(playerStats) === '[object Object]') {
       this.shockballPlayerUid = playerStats.shockballPlayerUid
       this.name = playerStats.name
+      this.lineupPosition = playerStats.lineupPosition
       this.image = playerStats.image
       this.teamUid = playerStats.teamUid
       this.teamName = playerStats.teamName
       this.teamPicUrl = playerStats.teamPicUrl
-      this.role = playerStats.role
+      this.role = this.assignRoleFromLineup(playerStats.lineupPosition)
       this.passing = playerStats.passing
       this.toughness = playerStats.toughness
       this.throwing = playerStats.throwing
@@ -37,6 +38,20 @@ export default class Player {
     this.applyEffects()
     this.think() //should set player's perception of world model via player's skills
     this.takeAction()
+  }
+
+  assignRoleFromLineup(lineupPosition) {
+    if (lineupPosition) {
+      if (lineupPosition.indexOf('center') > -1) {
+        return 'Center'
+      } else if (lineupPosition.indexOf('left') > -1 || lineupPosition.indexOf('right') > -1) {
+        return 'Wing'
+      } else {
+        return 'Guard'
+      }
+    } else {
+      return undefined
+    }
   }
 
   applyEffects() {
@@ -143,6 +158,8 @@ export default class Player {
         }
       }
     } else if (pitch.state === 'play_on' && ball.possessedBy === null) {
+      console.log('ball has been fumbled and is free');
+      this.tryTackleBall()
       // Ball is has been fumbled during play and is free
     }
   }

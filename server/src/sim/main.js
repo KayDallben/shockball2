@@ -49,37 +49,8 @@ export default class Main {
       const ball = new this.Ball(pitch)
       this.world.register(ball)
 
-      // register home team players on left side
-      for (let player of this.matchData.homeTeam.players) {
-        const playerToAdd = new this.Player(player, this.world, challenge, 'left')
-        this.world.register(playerToAdd)
-        this.world.leftPlayers.push(playerToAdd)
-      }
-
-      // register away team players on right side
-      for (let player of this.matchData.awayTeam.players) {
-        const playerToAdd = new this.Player(player, this.world, challenge, 'right')
-        this.world.register(playerToAdd)
-        this.world.rightPlayers.push(playerToAdd)
-      }
-
-      if (this.matchData.homeTeam.players.length < 4) {
-        for (var i = this.matchData.homeTeam.players.length; i < 4; i++) {
-          const bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl)
-          const playerToAdd = new this.Player(bot, this.world, challenge, 'left')
-          this.world.register(playerToAdd)
-          this.world.leftPlayers.push(playerToAdd)
-        }
-      }
-
-      if (this.matchData.awayTeam.players.length < 4) {
-        for (var i = this.matchData.awayTeam.players.length; i < 4; i++) {
-          const bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl)
-          const playerToAdd = new this.Player(bot, this.world, challenge, 'right')
-          this.world.register(playerToAdd)
-          this.world.rightPlayers.push(playerToAdd)
-        }
-      }
+      this.createWorldHumanPlayers(this.world, challenge)
+      this.createWorldNpcPlayers(this.world, challenge)
 
       //start main game loop
       this.mainLoop()
@@ -104,17 +75,104 @@ export default class Main {
   }
 
   update() {
+    this.counter++
     this.world.update()
     challenge.update(this.world)
     challenge.reset()
-    this.counter++
-    if (this.counter.toString() === '5') {
-      // this.stopSim = true
-    }
-    // console.log('counter is: ' + this.counter )
+
+    // **** simulating a player coming off the pitch
+    // if (this.counter.toString() === '7') {
+    //   this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left'})
+    // }
+
+    // **** simulating a player coming on the pitch
+    // if (this.counter.toString() === '8') {
+    //   const examplePlayer = {
+    //     shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
+    //     name: 'Callisto Xaltir',
+    //     image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
+    //     teamUid: '4dt21p2M1q7WmjjwJHfw',
+    //     teamName: 'Abregado Gentlemen',
+    //     teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
+    //     lineupPosition: 'center1',
+    //     role: 'Center',
+    //     passing: 49.75,
+    //     toughness: 45.75,
+    //     throwing: 51.75,
+    //     fatigue: 14.024999999999995,
+    //     endurance: 46.75,
+    //     vision: 40.75,
+    //     blocking: 39.75
+    //   }
+    //   const playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left')
+    //   this.world.register(playerToAdd)
+    //   this.world.leftPlayers.push(playerToAdd)
+    // }
+    
     if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
       this.stopSim = true
       this.writeMatchRecords(this.world)
+    }
+  }
+
+  createWorldHumanPlayers(world, challenge) {
+    // register home team players on left side
+    for (let player of this.matchData.homeTeam.players) {
+      const playerToAdd = new this.Player(player, world, challenge, 'left')
+      if (playerToAdd.role !== undefined) {
+        if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
+          world.register(playerToAdd)
+          world.leftPlayers.push(playerToAdd)
+        } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
+          world.leftBench.push(playerToAdd)
+        }
+      }
+    }
+    
+    // register away team players on right side
+    for (let player of this.matchData.awayTeam.players) {
+      const playerToAdd = new this.Player(player, world, challenge, 'right')
+      if (playerToAdd.role !== undefined) {
+        if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
+          world.register(playerToAdd)
+          world.rightPlayers.push(playerToAdd)
+        } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
+          world.rightBench.push(playerToAdd)
+        }
+      }
+    }
+  }
+
+  createWorldNpcPlayers(world, challenge) {
+    // create bots for teams lacking players
+    const totalHomeTeamSize = world.leftPlayers.length + world.leftBench.length
+    const totalAwayTeamSize = world.rightPlayers.length + world.rightBench.length
+    // if (this.matchData.homeTeam.players.length < 4) {
+    if (totalHomeTeamSize < 10) {
+      for (var i = totalHomeTeamSize; i < 10; i++) {
+        const bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl)
+        const playerToAdd = new this.Player(bot, world, challenge, 'left')
+        if (world.leftPlayers.length < 4) {
+          world.register(playerToAdd)
+          world.leftPlayers.push(playerToAdd)
+        } else if (world.leftBench.length < 6) {
+          world.leftBench.push(playerToAdd)
+        }
+      }
+    }
+
+    // create bots for teams lacking players
+    if (totalAwayTeamSize < 10) {
+      for (var i = totalAwayTeamSize; i < 10; i++) {
+        const bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl)
+        const playerToAdd = new this.Player(bot, world, challenge, 'right')
+        if (world.rightPlayers.length < 4) {
+          world.register(playerToAdd)
+          world.rightPlayers.push(playerToAdd)
+        } else if (world.rightBench.length < 6) {
+          world.rightBench.push(playerToAdd)
+        }
+      }
     }
   }
 

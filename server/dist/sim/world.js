@@ -22,7 +22,9 @@ var World = function () {
 
     this.objects = [];
     this.leftPlayers = [];
+    this.leftBench = [];
     this.rightPlayers = [];
+    this.rightBench = [];
   }
 
   _createClass(World, [{
@@ -30,6 +32,22 @@ var World = function () {
     value: function register(object) {
       if (util.getType(object) === '[object Object]') {
         this.objects.push(object);
+      }
+    }
+  }, {
+    key: 'playerDeregister',
+    value: function playerDeregister(object) {
+      this.objects = this.objects.filter(function (worldObject) {
+        return worldObject.shockballPlayerUid !== object.shockballPlayerUid;
+      });
+      if (object.homeGoalSide === 'left') {
+        this.leftPlayers = this.leftPlayers.filter(function (leftPlayer) {
+          return leftPlayer.shockballPlayerUid !== object.shockballPlayerUid;
+        });
+      } else {
+        this.rightPlayers = this.rightPlayers.filter(function (rightPlayer) {
+          return rightPlayer.shockballPlayerUid !== object.shockballPlayerUid;
+        });
       }
     }
   }, {
@@ -66,9 +84,14 @@ var World = function () {
     key: 'switchSides',
     value: function switchSides() {
       var oldRightPlayers = this.rightPlayers;
+      var oldRightBench = this.rightBench;
       var oldLeftPlayers = this.leftPlayers;
+      var oldLeftBench = this.leftBench;
+
       this.rightPlayers = oldLeftPlayers;
+      this.rightBench = oldLeftBench;
       this.leftPlayers = oldRightPlayers;
+      this.leftBench = oldRightBench;
     }
   }]);
 

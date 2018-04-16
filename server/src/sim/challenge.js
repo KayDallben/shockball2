@@ -122,8 +122,12 @@ export default class Challenge {
     if (!shootingPlayer) {
       // if there is no shooting player then it could be because the ballhandler didn't actually try to shoot (thus isn't in the array) but a player THOUGHT
       // that he might based on their playerWorldModel understanding!  Basically he got it wrong.  :).  So we return out of this function altogether.
+      // if (this.pitch.state !== 'play_on') {
+      //   this.gameStateReset(theBall)
+      // }
       return
     }
+
     const attackingSide = shootingPlayer.homeGoalSide === 'left' ? 'right' : 'left'
     //this is the shot attempt, make a record
     this.record.add(shootingPlayer, 'shoots', this.board.gameTime)
@@ -224,11 +228,19 @@ export default class Challenge {
     shootingPlayer.opposingActorUid = opposingPlayer.shockballPlayerUid
     shootingPlayer.opposingActorName = opposingPlayer.name
     this.record.add(shootingPlayer, 'goal', this.board.gameTime)
+    this.addToScoreBoard(shootingPlayer)
+    this.gameStateReset(ball)
+  }
+
+  gameStateReset(ball) {
     ball.reset()
-    this.board.addScore(shootingPlayer.homeGoalSide)
-    this.pitch.lastGoalSide = shootingPlayer.homeGoalSide
     this.pitch.state = 'before_kickoff'
     ball.lastSideTouched = null
+  }
+
+  addToScoreBoard(shootingPlayer) {
+    this.board.addScore(shootingPlayer.homeGoalSide)
+    this.pitch.lastGoalSide = shootingPlayer.homeGoalSide
   }
 
   goalBlock(shootingPlayer, opposingPlayer, ball) {
