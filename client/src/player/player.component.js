@@ -256,7 +256,7 @@ class Player extends React.Component {
                     <h2>Modifiers</h2>
                     <div className="modifier">Leadership: {this.props.view.player.value.leadership}</div>
                     <div className="modifier">Morale: {this.props.view.player.value.morale}</div>
-                    <div className="modifier">Fatigue: {this.props.view.player.value.fatigue}</div>
+                    <div className="modifier">Energy: {this.props.view.player.value.energy}</div>
                     <div className="modifier">Aggression: {this.props.view.player.value.aggression}</div> 
                   </div>
                 </div>

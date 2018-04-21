@@ -28,7 +28,7 @@ chance.mixin({
       passing: chance.integer({ min: 0, max: 30 }),
       toughness: chance.integer({ min: 0, max: 30 }),
       throwing: chance.integer({ min: 0, max: 30 }),
-      fatigue: chance.integer({ min: 0, max: 30 }),
+      energy: chance.integer({ min: 50, max: 100 }),
       endurance: chance.integer({ min: 0, max: 100 }),
       vision: chance.integer({ min: 0, max: 30 }),
       blocking: chance.integer({ min: 0, max: 30 })

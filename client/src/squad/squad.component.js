@@ -69,8 +69,8 @@ class Squad extends React.Component {
         sortable: true
       },
       {
-        key: 'fatigue',
-        name: 'Fatigue',
+        key: 'energy',
+        name: 'Energy',
         width: 100,
         sortable: true
       },

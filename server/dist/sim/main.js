@@ -106,42 +106,22 @@ var Main = function () {
     key: 'update',
     value: function update() {
       this.counter++;
-      this.world.update();
+      try {
+        this.world.update(challenge);
+      } catch (error) {
+        console.log(error);
+      }
+
       challenge.update(this.world);
       challenge.reset();
 
-      // **** simulating a player coming off the pitch
-      // if (this.counter.toString() === '7') {
-      //   this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left'})
-      // }
-
-      // **** simulating a player coming on the pitch
-      // if (this.counter.toString() === '8') {
-      //   const examplePlayer = {
-      //     shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
-      //     name: 'Callisto Xaltir',
-      //     image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
-      //     teamUid: '4dt21p2M1q7WmjjwJHfw',
-      //     teamName: 'Abregado Gentlemen',
-      //     teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
-      //     lineupPosition: 'center1',
-      //     role: 'Center',
-      //     passing: 49.75,
-      //     toughness: 45.75,
-      //     throwing: 51.75,
-      //     fatigue: 14.024999999999995,
-      //     endurance: 46.75,
-      //     vision: 40.75,
-      //     blocking: 39.75
-      //   }
-      //   const playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left')
-      //   this.world.register(playerToAdd)
-      //   this.world.leftPlayers.push(playerToAdd)
-      // }
-
       if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
         this.stopSim = true;
-        this.writeMatchRecords(this.world);
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@RECORDS@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        console.log(this.record.records);
+        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$WORLD$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+        console.log(this.world);
+        // this.writeMatchRecords(this.world)
       }
     }
   }, {
@@ -160,9 +140,9 @@ var Main = function () {
           if (playerToAdd.role !== undefined) {
             if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
               world.register(playerToAdd);
-              world.leftPlayers.push(playerToAdd);
+              world.addToField('left', playerToAdd);
             } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
-              world.leftBench.push(playerToAdd);
+              world.addToBench('left', playerToAdd);
             }
           }
         }
@@ -195,9 +175,9 @@ var Main = function () {
           if (_playerToAdd.role !== undefined) {
             if (['center1', 'left1', 'right1', 'guard1'].indexOf(_playerToAdd.lineupPosition) >= 0) {
               world.register(_playerToAdd);
-              world.rightPlayers.push(_playerToAdd);
+              world.addToField('right', _playerToAdd);
             } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(_playerToAdd.lineupPosition) >= 0) {
-              world.rightBench.push(_playerToAdd);
+              world.addToBench('right', _playerToAdd);
             }
           }
         }
@@ -220,32 +200,42 @@ var Main = function () {
     key: 'createWorldNpcPlayers',
     value: function createWorldNpcPlayers(world, challenge) {
       // create bots for teams lacking players
-      var totalHomeTeamSize = world.leftPlayers.length + world.leftBench.length;
-      var totalAwayTeamSize = world.rightPlayers.length + world.rightBench.length;
+      var totalHomeTeamFieldSize = world.leftPlayers.length;
+      var totalHomeTeamBenchSize = world.leftBench.Center.length + world.leftBench.Wing.length + world.leftBench.Guard.length + world.leftBench.Sub.length;
+      var totalHomeTeamSize = totalHomeTeamFieldSize + totalHomeTeamBenchSize;
+
+      var totalAwayTeamFieldSize = world.rightPlayers.length;
+      var totalAwayTeamBenchSize = world.rightBench.Center.length + world.rightBench.Wing.length + world.rightBench.Guard.length + world.rightBench.Sub.length;
+      var totalAwayTeamSize = totalAwayTeamFieldSize + totalAwayTeamBenchSize;
+
       // if (this.matchData.homeTeam.players.length < 4) {
       if (totalHomeTeamSize < 10) {
         for (var i = totalHomeTeamSize; i < 10; i++) {
           var bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl);
           var playerToAdd = new this.Player(bot, world, challenge, 'left');
-          if (world.leftPlayers.length < 4) {
+          if (totalHomeTeamFieldSize < 4) {
             world.register(playerToAdd);
-            world.leftPlayers.push(playerToAdd);
-          } else if (world.leftBench.length < 6) {
-            world.leftBench.push(playerToAdd);
+            world.addToField('left', playerToAdd);
+            totalHomeTeamFieldSize++;
+          } else if (totalHomeTeamBenchSize < 6) {
+            world.addToBench('left', playerToAdd);
+            totalHomeTeamBenchSize++;
           }
         }
       }
 
       // create bots for teams lacking players
       if (totalAwayTeamSize < 10) {
-        for (var i = totalAwayTeamSize; i < 10; i++) {
+        for (var o = totalAwayTeamSize; o < 10; o++) {
           var _bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl);
           var _playerToAdd2 = new this.Player(_bot, world, challenge, 'right');
-          if (world.rightPlayers.length < 4) {
+          if (totalAwayTeamFieldSize < 4) {
             world.register(_playerToAdd2);
-            world.rightPlayers.push(_playerToAdd2);
-          } else if (world.rightBench.length < 6) {
-            world.rightBench.push(_playerToAdd2);
+            world.addToField('right', _playerToAdd2);
+            totalAwayTeamFieldSize++;
+          } else if (totalAwayTeamBenchSize < 6) {
+            world.addToBench('right', _playerToAdd2);
+            totalAwayTeamBenchSize++;
           }
         }
       }

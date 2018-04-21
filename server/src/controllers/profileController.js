@@ -71,7 +71,7 @@ class ProfileController {
         leadership: baseStats.leadership,
         aggression: baseStats.aggression,
         endurance: baseStats.endurance,
-        fatigue: baseStats.fatigue,
+        energy: baseStats.energy,
         marketValue: playerValue.marketValue,
         rating: playerValue.playerRating
       }
@@ -101,7 +101,7 @@ class ProfileController {
       morale: chance.integer({min:70, max:100}),
       leadership: chance.integer({min:10, max:80}),
       aggression: 0,
-      fatigue: 0
+      energy: chance.integer({min:70, max:100})
     }
     return baseStats
   }
