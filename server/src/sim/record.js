@@ -64,6 +64,9 @@ export default class Record {
       case 'pass blocked':
         return this.pickRandomPlayerPassBlocked(player)
         break;
+      case 'player rotation':
+        return this.rotatePlayer()
+        break;
       default:
         ''
         break;
@@ -88,6 +91,16 @@ export default class Record {
       `smashes ${player.opposingActorName} into the ground!`,
       `topples ${player.opposingActorName} cleanly to ground`,
       `wipes the floor with ${player.opposingActorName}`
+    ]
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  }
+
+  rotatePlayer() {
+    const phrases = [
+      'is getting tired and is being rotated out',
+      'can\'t keep up, time for a swap',
+      'is coming off the pitch',
+      'looks out of breath and needs to come off'
     ]
     return phrases[Math.floor(Math.random() * phrases.length)];
   }

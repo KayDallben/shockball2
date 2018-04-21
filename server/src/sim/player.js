@@ -17,7 +17,7 @@ export default class Player {
       this.passing = playerStats.passing
       this.toughness = playerStats.toughness
       this.throwing = playerStats.throwing
-      this.fatigue = playerStats.fatigue
+      this.energy = playerStats.energy
       this.endurance = playerStats.endurance
       this.vision = playerStats.vision
       this.blocking = playerStats.blocking
@@ -54,9 +54,24 @@ export default class Player {
     }
   }
 
+  updateEnergy() {
+    // decay energy over time
+    const isFielded = this.realWorldModel[this.homeGoalSide + 'Players'].filter((player) => {
+      player.shockballPlayerUid === this.shockballPlayerUid
+    })
+    // do isFielded check just in case player is still in the world model but not on the field - should NOT happen!
+    if (isFielded) {
+      if (this.energy - (2 + (this.endurance / 100)) > 0) {
+        this.energy -= 2 - (this.endurance / 100)
+      } else {
+        this.energy = 0
+      }
+    }
+  }
+
   applyEffects() {
-    // let's increase fatigue according to endurance stat
-    this.fatigue += (this.endurance / 100)
+    // let's decrease energy according to endurance stat
+    this.updateEnergy()
     // high morale should equal a small netBuff
     // high aggro should equal a small netBuff but also increase chance of injury
   }

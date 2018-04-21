@@ -76,38 +76,14 @@ export default class Main {
 
   update() {
     this.counter++
-    this.world.update()
+    try {
+      this.world.update(challenge)
+    } catch (error) {
+      console.log(error)
+    }
+    
     challenge.update(this.world)
     challenge.reset()
-
-    // **** simulating a player coming off the pitch
-    // if (this.counter.toString() === '7') {
-    //   this.world.playerDeregister({ shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU', homeGoalSide: 'left'})
-    // }
-
-    // **** simulating a player coming on the pitch
-    // if (this.counter.toString() === '8') {
-    //   const examplePlayer = {
-    //     shockballPlayerUid: 'F6FknRwa6SPEbF1azKYU',
-    //     name: 'Callisto Xaltir',
-    //     image: 'http://custom.swcombine.com/static/1/1232616-100-100.jpg?1328204107',
-    //     teamUid: '4dt21p2M1q7WmjjwJHfw',
-    //     teamName: 'Abregado Gentlemen',
-    //     teamPicUrl: 'https://i.pinimg.com/736x/3a/55/2f/3a552f7be8e2675a16f3e4effa6d075a--bulldog-mascot-mascot-design.jpg',
-    //     lineupPosition: 'center1',
-    //     role: 'Center',
-    //     passing: 49.75,
-    //     toughness: 45.75,
-    //     throwing: 51.75,
-    //     fatigue: 14.024999999999995,
-    //     endurance: 46.75,
-    //     vision: 40.75,
-    //     blocking: 39.75
-    //   }
-    //   const playerToAdd = new this.Player(examplePlayer, this.world, challenge, 'left')
-    //   this.world.register(playerToAdd)
-    //   this.world.leftPlayers.push(playerToAdd)
-    // }
     
     if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
       this.stopSim = true
@@ -122,9 +98,9 @@ export default class Main {
       if (playerToAdd.role !== undefined) {
         if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
           world.register(playerToAdd)
-          world.leftPlayers.push(playerToAdd)
+          world.addToField('left', playerToAdd)
         } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
-          world.leftBench.push(playerToAdd)
+          world.addToBench('left', playerToAdd)
         }
       }
     }
@@ -135,9 +111,9 @@ export default class Main {
       if (playerToAdd.role !== undefined) {
         if (['center1', 'left1', 'right1', 'guard1'].indexOf(playerToAdd.lineupPosition) >= 0) {
           world.register(playerToAdd)
-          world.rightPlayers.push(playerToAdd)
+          world.addToField('right', playerToAdd)
         } else if (['center2', 'left2', 'right2', 'guard2', 'sub1', 'sub2'].indexOf(playerToAdd.lineupPosition) >= 0) {
-          world.rightBench.push(playerToAdd)
+          world.addToBench('right', playerToAdd)
         }
       }
     }
@@ -145,32 +121,42 @@ export default class Main {
 
   createWorldNpcPlayers(world, challenge) {
     // create bots for teams lacking players
-    const totalHomeTeamSize = world.leftPlayers.length + world.leftBench.length
-    const totalAwayTeamSize = world.rightPlayers.length + world.rightBench.length
+    let totalHomeTeamFieldSize = world.leftPlayers.length
+    let totalHomeTeamBenchSize = world.leftBench.Center.length + world.leftBench.Wing.length + world.leftBench.Guard.length + world.leftBench.Sub.length
+    const totalHomeTeamSize = totalHomeTeamFieldSize + totalHomeTeamBenchSize
+
+    let totalAwayTeamFieldSize = world.rightPlayers.length
+    let totalAwayTeamBenchSize = world.rightBench.Center.length + world.rightBench.Wing.length + world.rightBench.Guard.length + world.rightBench.Sub.length
+    const totalAwayTeamSize = totalAwayTeamFieldSize + totalAwayTeamBenchSize
+
     // if (this.matchData.homeTeam.players.length < 4) {
     if (totalHomeTeamSize < 10) {
       for (var i = totalHomeTeamSize; i < 10; i++) {
         const bot = botGenerator.create(this.matchData.homeTeam.id, this.matchData.homeTeam.teamName, this.matchData.homeTeam.teamPicUrl)
         const playerToAdd = new this.Player(bot, world, challenge, 'left')
-        if (world.leftPlayers.length < 4) {
+        if (totalHomeTeamFieldSize < 4) {
           world.register(playerToAdd)
-          world.leftPlayers.push(playerToAdd)
-        } else if (world.leftBench.length < 6) {
-          world.leftBench.push(playerToAdd)
+          world.addToField('left', playerToAdd)
+          totalHomeTeamFieldSize++
+        } else if (totalHomeTeamBenchSize < 6) {
+          world.addToBench('left', playerToAdd)
+          totalHomeTeamBenchSize++
         }
       }
     }
 
     // create bots for teams lacking players
     if (totalAwayTeamSize < 10) {
-      for (var i = totalAwayTeamSize; i < 10; i++) {
+      for (var o = totalAwayTeamSize; o < 10; o++) {
         const bot = botGenerator.create(this.matchData.awayTeam.id, this.matchData.awayTeam.teamName, this.matchData.awayTeam.teamPicUrl)
         const playerToAdd = new this.Player(bot, world, challenge, 'right')
-        if (world.rightPlayers.length < 4) {
+        if (totalAwayTeamFieldSize < 4) {
           world.register(playerToAdd)
-          world.rightPlayers.push(playerToAdd)
-        } else if (world.rightBench.length < 6) {
-          world.rightBench.push(playerToAdd)
+          world.addToField('right', playerToAdd)
+          totalAwayTeamFieldSize++
+        } else if (totalAwayTeamBenchSize < 6) {
+          world.addToBench('right', playerToAdd)
+          totalAwayTeamBenchSize++
         }
       }
     }
