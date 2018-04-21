@@ -38,6 +38,7 @@ async function init() {
         const endTime = new Date().getTime()
         await recordCron('trained players', startTime, endTime)
     } catch (error) {
+        console.log(error)
         const endTime = new Date().getTime()
         await recordCron('failed trained players', startTime, endTime, error)
     }
@@ -122,6 +123,12 @@ function increment(valueToChange, amount, cap) {
 
 function trainPlayer(player) {
     //check for training regimen
+    if (!player.regimen) {
+        player.regimen = {
+            value: 'none',
+            label: 'Please select'
+        }
+    }
     if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance and throwing
         player.blocking = decrement(player.blocking, .25, player.blockingCap)
