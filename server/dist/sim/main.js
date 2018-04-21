@@ -117,11 +117,7 @@ var Main = function () {
 
       if (this.world.objects[1]['gameTime'] === this.maxGameTime) {
         this.stopSim = true;
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@RECORDS@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        console.log(this.record.records);
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$WORLD$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-        console.log(this.world);
-        // this.writeMatchRecords(this.world)
+        this.writeMatchRecords(this.world);
       }
     }
   }, {
