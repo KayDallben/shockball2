@@ -73,19 +73,18 @@ class ContractForm extends React.Component {
             position: toast.POSITION.TOP_CENTER
           })
         } else {
-          this.saveContract(purchasePrice, data.get('games'))
+          this.saveContract(purchasePrice, data.get('season'))
         }
       }
 
     }
 
-    saveContract(purchasePrice, games) {
+    saveContract(purchasePrice, season) {
       const newContract = {
         playerName: this.props.signingPlayer.name,
         playerUid: this.props.signingPlayer.shockballPlayerUid,
         purchasePrice: parseInt(purchasePrice),
-        games: parseInt(games),
-        salary: Math.floor(purchasePrice / games),
+        season: parseInt(season),
         status: 'pending',
         teamName: this.props.signingTeam.teamName,
         teamUid: this.props.signingTeam.teamUid,
@@ -124,8 +123,8 @@ class ContractForm extends React.Component {
           <label htmlFor="purchasePrice">Enter Purchase Price</label>
           <input id="purchasePrice" name="purchasePrice" type="number" data-parse="number" min={this.props.signingPlayer.marketValue} required />
 
-          <label htmlFor="games">Number Games</label>
-          <input id="games" name="games" type="number" data-parse="number" min="0" required />
+          <label htmlFor="season">Pick Season</label>
+          <input id="season" name="season" type="number" data-parse="number" min="1" max="1" value="1" required />
 
           <button type="submit" className="mb-4 btn btn-primary">Send Contract</button>
         </form>

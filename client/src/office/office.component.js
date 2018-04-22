@@ -197,8 +197,8 @@ class Office extends React.Component {
             <div className="item-value"><NumberFormat value={contract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
           </div>
           <div className="contract-item">
-            <div className="label">Number Games</div>
-            <div className="item-value">{contract.games}</div>
+            <div className="label">Pick Season</div>
+            <div className="item-value">{contract.season}</div>
           </div>
         </div>
       )
@@ -433,7 +433,7 @@ class Office extends React.Component {
             <div className="contract-header">Active Contract</div>
             <div className="accounts-header">Team: {playerContract.teamName}</div>
             <div className="accounts-header">Purchase Price: <NumberFormat value={playerContract.purchasePrice} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
-            <div className="accounts-header">Games Committed: {playerContract.games}</div>
+            <div className="accounts-header">Season Committed: {playerContract.season}</div>
             <div className="accounts-header">Signed: {moment(playerContract.lastModified).format('L')}</div>
           </div>
         </div>

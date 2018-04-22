@@ -1,0 +1,170 @@
+#!/usr/bin/env node
+
+const admin = require('firebase-admin')
+const FieldValue = admin.firestore.FieldValue
+
+let serviceAccount
+if (!process.env.FIREBASE_DATABASE_URL) {
+    serviceAccount = require('../firebase-security.json')
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: 'https://swc-shockball3.firebaseio.com/'
+    })
+} else {
+    admin.initializeApp({
+        credential: admin.credential.cert({
+            'projectId': process.env.FIREBASE_PROJECT_ID,
+            'clientEmail': process.env.FIREBASE_CLIENT_EMAIL,
+            'privateKey': process.env.FIREBASE_PRIVATE_KEY,
+        }),
+        databaseURL: process.env.FIREBASE_DATABASE_URL
+    })
+}
+
+let db = admin.firestore()
+
+async function init() {
+    const startTime = new Date().getTime()
+    try {
+        const globalConfig = await getConfig()
+        const contracts = await getContracts(globalConfig)
+        for(const contract of contracts) {
+            const needsExpire = determineContractNeedsExpiring(contract, globalConfig)
+            if (needsExpire) {
+                await expireContract(contract)
+            } else {
+                await ensureActive(contract, globalConfig)
+            }
+        }
+        const endTime = new Date().getTime()
+        await recordCron('updated player contracts', startTime, endTime)
+    } catch (error) {
+        console.log(error)
+        const endTime = new Date().getTime()
+        await recordCron('failed to update player contracts', startTime, endTime, error)
+    }
+
+}
+
+function determineContractNeedsExpiring(contract, globalConfig) {
+    if (contract.season !== globalConfig.currentSeason && contract.status === 'active') {
+        return true
+    }
+}
+
+async function ensureActive(contract, globalConfig) {
+    const playerToUpdate = await getPlayer(contract.playerUid)
+    const isAlreadyActive = checkIsActive(contract, globalConfig, playerToUpdate)
+    if (isAlreadyActive) {
+        return Promise.resolve()
+    } else {
+        return await makeContractActive(contract, playerToUpdate)
+    }
+}
+
+async function expireContract(contract) {
+    const playerToUpdate = await getPlayer(contract.playerUid)
+    await updateContract({
+        contractUid: contract.contractUid,
+        status: 'expired'
+    })
+    await updatePlayer({
+        shockballPlayerUid: playerToUpdate.shockballPlayerUid,
+        teamUid: null,
+        teamName: null,
+        lineupPosition: null,
+        contractUid: null
+    })
+    await notifyPlayerAndTeamOfExpiration(contract)
+}
+
+function checkIsActive(contract, globalConfig, player) {
+    let isActive = false
+    if (contract.season === globalConfig.currentSeason) {
+        if (player.teamName && player.teamUid && player.contractUid) {
+            isActive = true
+        }
+    }
+    return isActive
+}
+
+async function makeContractActive(contract, player) {
+    await updateContract({
+        contractUid: contract.contractUid,
+        status: 'active'
+    })
+    await updatePlayer({
+        shockballPlayerUid: player.shockballPlayerUid,
+        teamUid: contract.teamUid,
+        teamName: contract.teamName,
+        contractUid: contract.contractUid,
+        lastUpdated: FieldValue.serverTimestamp()
+    })
+    await notifyPlayerandTeamOfSystemActivation(contract)
+}
+
+async function notifyPlayerAndTeamOfExpiration(contract) {
+    await db.collection('accounts').doc(contract.playerUid).collection('transactions').add({
+        activityType: `ADMIN- ${contract.playerName}'s contract with ${contract.teamName} has expired`,
+        amount: contract.purchasePrice,
+        timestamp: FieldValue.serverTimestamp()
+    })
+    await db.collection('accounts').doc(contract.teamUid).collection('transactions').add({
+        activityType: `ADMIN- ${contract.playerName}'s contract with ${contract.teamName} has expired`,
+        amount: contract.purchasePrice,
+        timestamp: FieldValue.serverTimestamp()
+    })
+}
+
+async function notifyPlayerandTeamOfSystemActivation(contract) {
+    await db.collection('accounts').doc(contract.playerUid).collection('transactions').add({
+        activityType: `ADMIN- ${contract.playerName}'s contract is active for ${contract.teamName}!`,
+        amount: contract.purchasePrice,
+        timestamp: FieldValue.serverTimestamp()
+    })
+    await db.collection('accounts').doc(contract.teamUid).collection('transactions').add({
+        activityType: `ADMIN- ${contract.playerName}'s contract is active for ${contract.teamName}!`,
+        amount: contract.purchasePrice,
+        timestamp: FieldValue.serverTimestamp()
+    })
+}
+
+async function getContracts(globalConfig) {
+    return db.collection('contracts').get().then((snapshot) => {
+        let contracts = []
+        snapshot.forEach((doc) => {
+            contracts.push(doc.data())
+        })
+        return contracts
+    })
+}
+
+async function getConfig() {
+    return db.collection('config').doc('global').get().then((doc) => {
+        return doc.data()
+    })
+}
+
+async function getPlayer(id) {
+    return db.collection('players').doc(id).get().then((doc) => { return doc.data() })
+}
+
+async function updatePlayer(player) {
+    return db.collection('players').doc(player.shockballPlayerUid).update(player)
+}
+
+async function updateContract(contract) {
+    return db.collection('contracts').doc(contract.contractUid).update(contract)
+}
+
+function recordCron(type, startTime, endTime, error) {
+    return db.collection('cronHistory').add({
+        completed: FieldValue.serverTimestamp(),
+        taskStartTime: new Date(startTime),
+        taskEndTime: new Date(endTime),
+        type: type,
+        error: error ? JSON.stringify(error) : null
+    })
+}
+
+init()
