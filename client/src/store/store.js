@@ -172,7 +172,7 @@ class Store {
     ga.pageview()
     this.currentView = {
       name: 'league',
-      fixtures: fromPromise(this.http.getAllFixtures(hostUrl + 'api/fixtures', this.accessToken))
+      leagueModel: fromPromise(this.http.getLeagueInfo(this.accessToken))
     }
   }
 

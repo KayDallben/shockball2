@@ -260,6 +260,47 @@ function getSingleFixture(url, token) {
     })
 }
 
+function getLeagueInfo(token) {
+    return ensureFreshToken(token).then((currentToken) => {
+        let leagueModel = {}
+        return new Promise((resolve,reject) => {
+            axios({
+                method: 'GET',
+                url: hostUrl + 'api/fixtures',
+                params: {
+                  queryProp: 'season',
+                  queryVal: '1'
+                }
+              }).then(response => {
+                if (response.data) {
+                  let fixtures = response.data
+                  for (let fixture of fixtures) {
+                    fixture.gameDate = moment(fixture.gameDate).format('L')
+                  }
+                  fixtures.sort(function(a,b){
+                    return new Date(a.gameDate) - new Date(b.gameDate);
+                  });
+                  leagueModel.fixtures = fixtures
+                //   resolve(fixtures)
+                  axios({
+                      method: 'GET',
+                      url: hostUrl + 'api/teams'
+                  }).then(response => {
+                      leagueModel.teams = response.data
+                      console.log(leagueModel)
+                      resolve(leagueModel)
+                  }).catch(reject)
+                } else {
+                    reject(response)
+                }
+            }).catch(reject)
+        })
+    }).catch(error => {
+        console.log('error with refresh token call')
+        console.log(error)
+    })
+}
+
 function getAllFixtures(url, token) {
     return ensureFreshToken(token).then((currentToken) => {
         return new Promise((resolve,reject) => {
@@ -346,6 +387,7 @@ function createStats(events) {
 export default {
     ensureFreshToken,
     genericFetch,
+    getLeagueInfo,
     fetchShockballAdmin,
     fetchShockballSquad,
     fetchTeamAdmin,
