@@ -96,7 +96,7 @@ export default class World {
       //we only sub if there is a player on the bench to sub in!
       this.subOutPlayer(player)
       this.subInPlayer(playerToSub)
-      challenge.record.add(player, 'player rotation', gameTime)
+      challenge.record.add(player, 'player rotation', gameTime, this.objects[2].goalProximity)
     }
   }
 

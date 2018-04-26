@@ -14,7 +14,7 @@ export default class Record {
     //send the records to the database!
   }
 
-  add(player, gameEvent, gameTime) {
+  add(player, gameEvent, gameTime, goalProximity) {
 
     player.opposingActorUid = player.opposingActorUid ? player.opposingActorUid : 'somebody'
     player.opposingActorName = player.opposingActorName ? player.opposingActorName : 'somebody'
@@ -28,10 +28,11 @@ export default class Record {
       teamUid: player.teamUid,
       teamName: player.teamName,
       teamPicUrl: player.teamPicUrl,
-      recordRealTime: new Date().toString(),
+      recordRealTime: new Date().getTime(),
       recordGameTime: gameTime,
       recordPitchSide: player.homeGoalSide,
       recordType: gameEvent,
+      goalProximity: goalProximity,
       recordCommentator: this.getCommentatorText(player, gameEvent),
       fixtureId: this.fixtureId,
       season: this.season

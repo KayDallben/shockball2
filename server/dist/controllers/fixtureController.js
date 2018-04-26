@@ -178,7 +178,7 @@ var FixtureController = function () {
 
               case 6:
                 _context2.next = 8;
-                return this.events.where('fixtureId', '==', req.params.id).get().then(function (snapshot) {
+                return this.events.where('fixtureId', '==', req.params.id).orderBy('recordRealTime').get().then(function (snapshot) {
                   var events = [];
                   snapshot.forEach(function (doc) {
                     events.push(doc.data());

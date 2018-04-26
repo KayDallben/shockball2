@@ -7,4 +7,65 @@
     border: 1px solid rgba(0,0,0,.2);
     color: #fff;
     padding: 20px;
+    .play-by-play {
+        width:500px;
+        .head-section {
+            height: 200px;
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(010,010,010,0.7);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            img {
+                height: 100px;
+                width:100px;
+                border-radius: 50%;
+            }
+            .element-title {
+                position: absolute;
+                top: 5px;
+                font-weight: 700;
+            }
+            .right-side, .left-side {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+            .center {
+                position: absolute;
+                width: 100%;
+                display: flex;
+                text-align: center;
+                .inner-wrap {
+                    flex: 1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    .left-score {
+                        padding-right: 40px;
+                        font-size: 3em;
+                    }
+                    .right-score {
+                        font-size:3em;
+                    }
+                    .game-time {
+                        position: absolute;
+                        bottom: -35px;
+                    }
+                }
+            }
+        }
+        .event-holder {
+            background: rgba(010,010,010,0.7);
+            border-top: 1px solid #000000;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            padding: 5px;
+        }
+    }
 }

@@ -357,6 +357,7 @@ function createStats(events) {
     for (let event of events) {
       if (event.teamName !== firstTeam) {
         secondTeam = event.teamName
+        break;
       }
     }
     const stats = {

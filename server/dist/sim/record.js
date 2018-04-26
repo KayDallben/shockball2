@@ -28,7 +28,7 @@ var Record = function () {
     }
   }, {
     key: 'add',
-    value: function add(player, gameEvent, gameTime) {
+    value: function add(player, gameEvent, gameTime, goalProximity) {
 
       player.opposingActorUid = player.opposingActorUid ? player.opposingActorUid : 'somebody';
       player.opposingActorName = player.opposingActorName ? player.opposingActorName : 'somebody';
@@ -42,10 +42,11 @@ var Record = function () {
         teamUid: player.teamUid,
         teamName: player.teamName,
         teamPicUrl: player.teamPicUrl,
-        recordRealTime: new Date().toString(),
+        recordRealTime: new Date().getTime(),
         recordGameTime: gameTime,
         recordPitchSide: player.homeGoalSide,
         recordType: gameEvent,
+        goalProximity: goalProximity,
         recordCommentator: this.getCommentatorText(player, gameEvent),
         fixtureId: this.fixtureId,
         season: this.season
