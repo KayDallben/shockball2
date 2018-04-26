@@ -105,7 +105,7 @@ var Challenge = function () {
       var winningPlayer = this.tackleBall.find(function (player) {
         return player.tackleScore === highestTackleScore;
       });
-      this.record.add(winningPlayer, 'tackles ball', this.board.gameTime);
+      this.record.add(winningPlayer, 'tackles ball', this.board.gameTime, this.ball.goalProximity);
       this.ball.possess(winningPlayer.shockballPlayerUid);
       this.ball.lastSideTouched = winningPlayer.homeGoalSide;
       this.ball.lastPlayerTouched = winningPlayer.shockballPlayerUid;
@@ -157,7 +157,7 @@ var Challenge = function () {
 
       var attackingSide = shootingPlayer.homeGoalSide === 'left' ? 'right' : 'left';
       //this is the shot attempt, make a record
-      this.record.add(shootingPlayer, 'shoots', this.board.gameTime);
+      this.record.add(shootingPlayer, 'shoots', this.board.gameTime, theBall.goalProximity);
       //we now need to calculate if he scored or missed/was blocked
       // we do a blanket probability of 60/30/10 for blocking by Guard then Wing and then Center.
       var probability = Math.random();
@@ -255,7 +255,7 @@ var Challenge = function () {
     value: function score(shootingPlayer, opposingPlayer, ball) {
       shootingPlayer.opposingActorUid = opposingPlayer.shockballPlayerUid;
       shootingPlayer.opposingActorName = opposingPlayer.name;
-      this.record.add(shootingPlayer, 'goal', this.board.gameTime);
+      this.record.add(shootingPlayer, 'goal', this.board.gameTime, ball.goalProximity);
       this.addToScoreBoard(shootingPlayer);
       this.gameStateReset(ball);
     }
@@ -277,7 +277,7 @@ var Challenge = function () {
     value: function goalBlock(shootingPlayer, opposingPlayer, ball) {
       opposingPlayer.opposingActorUid = shootingPlayer.shockballPlayerUid;
       opposingPlayer.opposingActorName = shootingPlayer.name;
-      this.record.add(opposingPlayer, 'goal blocked', this.board.gameTime);
+      this.record.add(opposingPlayer, 'goal blocked', this.board.gameTime, ball.goalProximity);
       ball.possessedBy = opposingPlayer.shockballPlayerUid;
       ball.lastSideTouched = opposingPlayer.homeGoalSide;
     }
@@ -286,12 +286,12 @@ var Challenge = function () {
     value: function runForward(runningPlayer) {
       if (Math.abs(this.ball.goalProximity) < Math.abs(this.pitch.goalPit[runningPlayer.homeGoalSide])) {
         if (runningPlayer.homeGoalSide === 'right') {
-          this.record.add(runningPlayer, 'runs ball', this.board.gameTime);
+          this.record.add(runningPlayer, 'runs ball', this.board.gameTime, this.ball.goalProximity);
           if (this.pitch.goalPit.left < this.ball.goalProximity) {
             this.ball.goalProximity--;
           }
         } else if (runningPlayer.homeGoalSide === 'left') {
-          this.record.add(runningPlayer, 'runs ball', this.board.gameTime);
+          this.record.add(runningPlayer, 'runs ball', this.board.gameTime, this.ball.goalProximity);
           if (this.pitch.goalPit.right > this.ball.goalProximity) {
             this.ball.goalProximity++;
           }
@@ -308,7 +308,7 @@ var Challenge = function () {
           return player.shockballPlayerUid !== passingPlayer.shockballPlayerUid;
         });
         var playerToWinPossession = chance.pickone(availableTeammates, 1);
-        this.record.add(passingPlayer, 'passes ball', this.board.gameTime);
+        this.record.add(passingPlayer, 'passes ball', this.board.gameTime, ball.goalProximity);
         if (this.pitch.goalPit.left < ball.goalProximity) {
           ball.goalProximity--;
         }
@@ -318,7 +318,7 @@ var Challenge = function () {
           return player.shockballPlayerUid !== passingPlayer.shockballPlayerUid;
         });
         var _playerToWinPossession = chance.pickone(_availableTeammates, 1);
-        this.record.add(passingPlayer, 'passes ball', this.board.gameTime);
+        this.record.add(passingPlayer, 'passes ball', this.board.gameTime, ball.goalProximity);
         if (this.pitch.goalPit.right > ball.goalProximity) {
           ball.goalProximity++;
         }
@@ -328,7 +328,7 @@ var Challenge = function () {
   }, {
     key: 'passBlock',
     value: function passBlock(opposingPlayer, ball) {
-      this.record.add(opposingPlayer, 'pass blocked', this.board.gameTime);
+      this.record.add(opposingPlayer, 'pass blocked', this.board.gameTime, ball.goalProximity);
       ball.lastSideTouched = opposingPlayer.homeGoalSide;
       ball.possessedBy = opposingPlayer.shockballPlayerUid;
     }
@@ -337,7 +337,7 @@ var Challenge = function () {
     value: function getsTackled(runningPlayer, randomTackler, ball) {
       randomTackler.opposingActorUid = runningPlayer.shockballPlayerUid;
       randomTackler.opposingActorName = runningPlayer.name;
-      this.record.add(randomTackler, 'tackles', this.board.gameTime);
+      this.record.add(randomTackler, 'tackles', this.board.gameTime, ball.goalProximity);
       ball.possess(randomTackler.shockballPlayerUid);
       ball.lastSideTouched = randomTackler.homeGoalSide;
       ball.lastPlayerTouched = randomTackler.shockballPlayerUid;

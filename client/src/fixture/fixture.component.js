@@ -21,6 +21,7 @@ class Fixture extends React.Component {
   }
 
   allEvents() {
+    console.log(this.props.view.fixture.value)
     let events = this.props.view.fixture.value.events.map((event) => {
         return (
           <div className="event">
@@ -40,7 +41,33 @@ class Fixture extends React.Component {
       case "fulfilled":
           return (
             <div className="fixture-wrapper">
-              {this.allEvents()}
+              <div className="play-by-play">
+                <div className="head-section">
+                  <div className="element-title">PLAY-BY-PLAY</div>
+                  <div className="left-side">
+                    <div className="team-logo">
+                      <img src={this.props.view.fixture.value.fixtureInfo.homeTeamLogo}/>
+                    </div>
+                    <div className="team-name">{this.props.view.fixture.value.fixtureInfo.homeTeamName}</div>
+                  </div>
+                  <div className="center">
+                    <div className="inner-wrap">
+                      <div className="left-score">{this.props.view.fixture.value.fixtureInfo.homeTeamScore}</div>
+                      <div className="game-time">46'</div>
+                      <div className="right-score">{this.props.view.fixture.value.fixtureInfo.awayTeamScore}</div>
+                    </div>
+                  </div>
+                  <div className="right-side">
+                    <div className="team-logo">
+                      <img src={this.props.view.fixture.value.fixtureInfo.awayTeamLogo}/>
+                    </div>
+                    <div className="team-name">{this.props.view.fixture.value.fixtureInfo.awayTeamName}</div>
+                  </div>
+                </div>
+                <div className="event-holder">
+                  {this.allEvents()}
+                </div>
+              </div>
             </div>
           )
     }

@@ -77,7 +77,7 @@ class FixtureController {
         await this.fixtures.doc(req.params.id).get().then((doc) => {
           fixtureData.fixtureInfo = doc.data()
         })
-        await this.events.where('fixtureId', '==', req.params.id).get().then((snapshot) => {
+        await this.events.where('fixtureId', '==', req.params.id).orderBy('recordRealTime').get().then((snapshot) => {
           let events = []
           snapshot.forEach((doc) => {
             events.push(doc.data())
