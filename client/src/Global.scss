@@ -353,143 +353,143 @@ li.left .eventTime {
   margin-top: -10px;
 }
 
-.shot:before {
-  content: "\f111";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  color: #212531;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
+// .shot:before {
+//   content: "\f111";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   color: #212531;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
 
-.pass:before {
-  content: "\f178";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.run:before {
-  content: "\f176";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.tackleBall:before {
-  content: "\f0e7";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.tacklePlayer:before {
-  content: "\f255";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.passBlocked:before {
-  content: "\f256";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.goalBlocked:before {
-  content: "\f1cd";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.goal:before {
-  content: "\f091";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
-.sub:before {
-  content: "\f111";
-  font-family: "FontAwesome";
-  position: absolute;
-  top: 74px;
-  z-index: 2;
-  left: -22px;
-  border: 3px solid #60CA82;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-}
+// .pass:before {
+//   content: "\f178";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .run:before {
+//   content: "\f176";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .tackleBall:before {
+//   content: "\f0e7";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .tacklePlayer:before {
+//   content: "\f255";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .passBlocked:before {
+//   content: "\f256";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .goalBlocked:before {
+//   content: "\f1cd";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .goal:before {
+//   content: "\f091";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
+// .sub:before {
+//   content: "\f111";
+//   font-family: "FontAwesome";
+//   position: absolute;
+//   top: 74px;
+//   z-index: 2;
+//   left: -22px;
+//   border: 3px solid #60CA82;
+//   border-radius: 50%;
+//   width: 40px;
+//   height: 40px;
+//   text-align: center;
+//   line-height: 40px;
+//   background-color: #ffffff;
+// }
 .ball-position {
   width: 100%;
   box-sizing: border-box;

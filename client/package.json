@@ -59,6 +59,7 @@
     "react-select": "^1.2.1",
     "react-spinkit": "^3.0.0",
     "react-toastify": "^3.4.3",
+    "react-vertical-timeline-component": "^2.0.6",
     "sass-loader": "^6.0.6",
     "simple-react-modal": "^0.5.1",
     "style-loader": "0.19.0",
