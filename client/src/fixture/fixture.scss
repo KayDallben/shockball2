@@ -1,3 +1,5 @@
+@import "../Global";
+
 .fixture-wrapper {
     z-index: 1;
     position: relative;
@@ -9,6 +11,11 @@
     padding: 20px;
     .play-by-play {
         width:500px;
+        display: block;
+        margin: 0 auto;
+        @include mobile {
+            width: 100%;
+        }
         .head-section {
             height: 200px;
             position: relative;
@@ -49,9 +56,16 @@
                     .left-score {
                         padding-right: 40px;
                         font-size: 3em;
+                        @include mobile {
+                            padding-right:10px;
+                            font-size: 2em;
+                        }
                     }
                     .right-score {
                         font-size:3em;
+                        @include mobile {
+                            font-size: 2em;
+                        }
                     }
                     .game-time {
                         position: absolute;
@@ -66,6 +80,384 @@
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
             padding: 5px;
+            max-height: 500px;
+            overflow: auto;
+            overflow-x: hidden;
+        }
+        .vertical-timeline {
+            @include mobile {
+                margin:0;
+                width:100%;
+            }
+            &:before {
+                background:#e1e1e1;
+            }
+        }
+        img {
+            width:100px;
+            height:100px;
+            display: block;
+            margin: 0 auto;
+        }
+        .vertical-timeline-element-date {
+            position: absolute;
+            width: 25px;
+            left: 118%;
+            top: 27px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+        .vertical-timeline-element-content {
+            padding: 10px;
+            background-color: #e1e1e1;
+            box-shadow:0 3px 0 #e1e1e1;
+            &:before {
+                border-left-color: #e1e1e1;
+            }
+        }
+        .vertical-timeline-element-title {
+            color: #000000;
+            padding-top:7px;
+            padding-bottom:7px;
+            margin: 0;
+        }
+        p {
+            margin: 0;
+            opacity:0.8;
+        }
+        .vertical-timeline-element-icon {
+            background: #e1e1e1;
+            box-shadow:none;
+            &:before { 
+                font-family: "Font Awesome 5 free";
+                font-weight: 900;
+                position: absolute;
+                top: 14px;
+                left: 20px;
+                font-size:1.2em;
+            }
+        }
+        .tackles-ball {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f0e7";
+                    left: 23px;
+                }
+            }
+        }
+        .tackles {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f255"
+                }
+            }
+        }
+        .runs-ball {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f222";
+                    left: 23px;
+                }
+            }
+        }
+        .shoots {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f111";
+                }
+            }
+        }
+        .passes-ball {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f256";
+                }
+            }
+        }
+        .pass-blocked {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f192";
+                }
+            }
+        }
+        .goal {
+            .vertical-timeline-element-icon {
+                border: 3px solid #60CA82;
+                &:before {
+                    content: "\f091";
+                    left:16px;
+                    top: 9px;
+                    color: #60CA82;
+                }
+            }
+        }
+        .goal-blocked {
+            .vertical-timeline-element-icon {
+                &:before {
+                    content: "\f1cd";
+                }
+            }
+        }
+        .player-rotation {
+            .vertical-timeline-element-icon {
+                border: 3px solid #f1c40f;
+                &:before {
+                    content: "\f021";
+                    color: #f1c40f;
+                    left: 17px;
+                    top: 9px;
+                }
+            }
+        }
+    }
+    .match-results {
+        width: 100%;
+        padding: 20px;
+        background: rgba(0,0,0,.5);
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .result-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width:100%;
+            > div {
+                flex:1;
+                text-align:center;
+            }
+            .left-team-logo img {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+            }
+            .right-team-logo img {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+            }
+            .label {
+                font-size:3em;
+                font-weight: 900;
+            }
+            .stat-label {
+                font-size: 1.1em;
+            }
+        }
+        .info-row {
+            margin-bottom:25px;
+            .left-team-name {
+                font-size: 1.5em;
+            }
+            .right-team-name {
+                font-size: 1.5em;
+            }
+        }
+        .scorers-row {
+            display: flex;
+            align-items:flex-start;
+            margin-top:25px;
+            .stat-label {
+                font-size: 1.3em;
+            }
+        }
+    }
+    @include tablet {
+        .vertical-timeline-element{
+            margin:4em 0
+        }
+        .vertical-timeline-element:first-child{
+            margin-top:0
+        }
+        .vertical-timeline-element:last-child{
+            margin-bottom:0
+        }
+        .vertical-timeline-element-icon{
+            width:60px;
+            height:60px;
+            left:50%;
+            margin-left:-30px;
+            -webkit-transform:translateZ(0);
+            -webkit-backface-visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-icon.is-hidden{
+            visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-icon.bounce-in{
+            visibility:visible;
+            -webkit-animation:cd-bounce-1 .6s;
+            -moz-animation:cd-bounce-1 .6s;
+            animation:cd-bounce-1 .6s
+        }
+        .vertical-timeline{
+            margin-top:3em;
+            margin-bottom:3em;
+            width:90%
+        }
+        .vertical-timeline:before{
+            left:50%;
+            margin-left:-2px
+        }
+        .vertical-timeline-element-content h2{
+            font-size:20px;
+            font-size:1.25rem
+        }
+        .vertical-timeline-element-content p{
+            font-size:16px;
+            font-size:1rem
+        }
+        .vertical-timeline-element-content .vertical-timeline-element-date{
+            font-size:14px;
+            font-size:.875rem
+        }
+        .vertical-timeline-element-content{
+            margin-left:0;
+            padding:1.5em;
+            width:40%
+        }
+        .vertical-timeline-element-content::before{
+            top:24px;
+            left:100%;
+            border-color:transparent;
+            border-left-color:#fff
+        }
+        .vertical-timeline-element-content .vertical-timeline-element-date{
+            position:absolute;
+            width:100%;
+            left:124%;
+            top:6px;
+            font-size:16px;
+            font-size:1rem
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content{
+            float:right
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content::before,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content::before{
+            top:24px;
+            left:auto;
+            right:100%;
+            border-color:transparent;
+            border-right-color:#fff
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content .vertical-timeline-element-date,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content .vertical-timeline-element-date{
+            left:auto;
+            right:124%;
+            text-align:right
+        }
+        .vertical-timeline--animate .vertical-timeline-element-content.is-hidden{
+            visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-content.bounce-in{
+            visibility:visible;
+            -webkit-animation:cd-bounce-2 .6s;
+            -moz-animation:cd-bounce-2 .6s;
+            animation:cd-bounce-2 .6s
+        }
+        .vertical-timeline--animate .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content.bounce-in,.vertical-timeline--animate .vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content.bounce-in{
+            -webkit-animation:cd-bounce-2-inverse .6s;
+            -moz-animation:cd-bounce-2-inverse .6s;
+            animation:cd-bounce-2-inverse .6s
+        }
+    }
+    @include mobile {
+        .vertical-timeline-element{
+            margin:4em 0
+        }
+        .vertical-timeline-element:first-child{
+            margin-top:0
+        }
+        .vertical-timeline-element:last-child{
+            margin-bottom:0
+        }
+        .vertical-timeline-element-icon{
+            width:60px;
+            height:60px;
+            left:50%;
+            margin-left:-30px;
+            -webkit-transform:translateZ(0);
+            -webkit-backface-visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-icon.is-hidden{
+            visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-icon.bounce-in{
+            visibility:visible;
+            -webkit-animation:cd-bounce-1 .6s;
+            -moz-animation:cd-bounce-1 .6s;
+            animation:cd-bounce-1 .6s
+        }
+        .vertical-timeline{
+            margin-top:3em;
+            margin-bottom:3em;
+            width:90%
+        }
+        .vertical-timeline:before{
+            left:50%;
+            margin-left:-2px
+        }
+        .vertical-timeline-element-content h2{
+            font-size:20px;
+            font-size:1.25rem
+        }
+        .vertical-timeline-element-content p{
+            font-size:16px;
+            font-size:1rem
+        }
+        .vertical-timeline-element-content .vertical-timeline-element-date{
+            font-size:14px;
+            font-size:.875rem
+        }
+        .vertical-timeline-element-content{
+            margin-left:0;
+            padding:1.5em;
+            width:40%
+        }
+        .vertical-timeline-element-content::before{
+            top:24px;
+            left:100%;
+            border-color:transparent;
+            border-left-color:#fff
+        }
+        .vertical-timeline-element-content .vertical-timeline-element-date{
+            position:absolute;
+            width:100%;
+            left:124%;
+            top:6px;
+            font-size:16px;
+            font-size:1rem
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content{
+            float:right
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content::before,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content::before{
+            top:24px;
+            left:auto;
+            right:100%;
+            border-color:transparent;
+            border-right-color:#fff
+        }
+        .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content .vertical-timeline-element-date,.vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content .vertical-timeline-element-date{
+            left:auto;
+            right:124%;
+            text-align:right
+        }
+        .vertical-timeline--animate .vertical-timeline-element-content.is-hidden{
+            visibility:hidden
+        }
+        .vertical-timeline--animate .vertical-timeline-element-content.bounce-in{
+            visibility:visible;
+            -webkit-animation:cd-bounce-2 .6s;
+            -moz-animation:cd-bounce-2 .6s;
+            animation:cd-bounce-2 .6s
+        }
+        .vertical-timeline--animate .vertical-timeline-element.vertical-timeline-element--right .vertical-timeline-element-content.bounce-in,.vertical-timeline--animate .vertical-timeline-element:nth-child(even):not(.vertical-timeline-element--left) .vertical-timeline-element-content.bounce-in{
+            -webkit-animation:cd-bounce-2-inverse .6s;
+            -moz-animation:cd-bounce-2-inverse .6s;
+            animation:cd-bounce-2-inverse .6s
         }
     }
 }

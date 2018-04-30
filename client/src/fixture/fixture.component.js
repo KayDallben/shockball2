@@ -1,5 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
 
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
@@ -21,23 +23,22 @@ class Fixture extends React.Component {
       gameTime: 0
     }
     this.tempEventsHolder = []
+    this.stats = {
+      homePasses: 0,
+      awayPasses: 0,
+      homeTackles: 0,
+      awayTackles: 0,
+      homePossession: 0,
+      awayPossession: 0,
+      homeScorers: [],
+      awayScorers: []
+    }
     this.gameStarted = false
     this.matchInterval = null
   }
 
   getIdFromRoute() {
       return window.location.href.split('/').pop()
-  }
-
-  allEvents() {
-    let events = this.state.gameEvents.map((event) => {
-      return (
-        <div className="event">
-            <div>{event.recordGameTime} - {event.actorName} - {event.recordType}</div>
-        </div>
-      )
-    })
-    return events
   }
 
   incrementIfHomeGoal(event) {
@@ -80,6 +81,131 @@ class Fixture extends React.Component {
     window.clearInterval(this.matchInterval)
   }
 
+  setIconClass(event) {
+    let className = 'generic'
+    switch(event.recordType) {
+      case 'goal':
+        //
+        className = 'goal'
+        break;
+      case 'goal blocked':
+        //
+        className = 'goal-blocked'
+        break;
+      case 'shoots':
+        //
+        className = 'shoots'
+        break;
+      case 'passes ball':
+        //
+        className = 'passes-ball'
+        break;
+      case 'pass blocked':
+        //
+        className = 'pass-blocked'
+        break;
+      case 'tackles ball':
+        //
+        className = 'tackles-ball'
+        break;
+      case 'tackles':
+        //
+        className = 'tackles'
+        break;
+      case 'runs ball':
+        //
+        className = 'runs-ball'
+        break;
+      case 'player rotation':
+        //
+        className = 'player-rotation'
+        break;
+      default:
+        //
+    }
+    return className
+  }
+
+  calculateStats() {
+    const totalEventsCount = this.props.view.fixture.value.events.length
+    let homeEventsCount = 0
+    let awayEventsCount = 0
+    for (let event of this.props.view.fixture.value.events) {
+      if (event.recordPitchSide === 'left') {
+        //homeTeam
+        homeEventsCount++
+        if (event.recordType === 'passes ball') {
+          this.stats.homePasses++
+        }
+        if (event.recordType === 'tackles') {
+          this.stats.homeTackles++
+        }
+        if (event.recordType === 'goal') {
+          this.stats.homeScorers.push(event)
+        }
+      } else {
+        //awayTeam
+        awayEventsCount++
+        if (event.recordType === 'passes ball') {
+          this.stats.awayPasses++
+        }
+        if (event.recordType === 'tackles') {
+          this.stats.awayTackles++
+        }
+        if (event.recordType === 'goal') {
+          this.stats.awayScorers.push(event)
+        }
+      }
+    }
+    this.stats.homePossession = Math.round((homeEventsCount / totalEventsCount) * 100)
+    this.stats.awayPossession = 100 - this.stats.homePossession
+  }
+
+  renderScorers(side) {
+    if (side === 'home') {
+      let homeScorers = null
+      if (this.stats.homeScorers.length > 0) {
+        homeScorers = this.stats.homeScorers.map((event) => {
+          return (
+            <div className="scorer">{event.actorName} - {event.recordGameTime + '\''}</div>
+          )
+        })
+      }
+      return homeScorers
+    } else {
+      let awayScorers = null
+      if (this.stats.awayScorers.length > 0) {
+        awayScorers = this.stats.awayScorers.map((event) => {
+          return (
+            <div className="scorer">{event.actorName} - {event.recordGameTime + '\''}</div>
+          )
+        })
+      }
+      return awayScorers
+    }
+  }
+
+  allEvents() {
+    let events = this.state.gameEvents.map((event) => {
+      return (
+        <VerticalTimelineElement
+          className={this.setIconClass(event)}
+          iconStyle={{ background: 'rgba(255,255,255)', color: '#000000'}}
+          date={event.recordGameTime + '\''}
+          position={event.recordPitchSide === 'left' ? 'left': 'right'}
+        >
+          <img src={event.actorPicUrl} />
+          <h4 className="vertical-timeline-element-title">{event.actorName}</h4>
+          <p>
+            {event.recordCommentator}
+          </p>
+        </VerticalTimelineElement>
+      )
+    })
+    events.reverse()
+    return events
+  }
+
   render() {
     switch (this.props.view.fixture.state) {
       case "pending":
@@ -89,6 +215,7 @@ class Fixture extends React.Component {
       case "fulfilled":
         if (!this.gameStarted) {
           this.gameStarted = true;
+          this.calculateStats()
           this.startMatchEvents()
           this.tempEventsHolder = this.props.view.fixture.value.events
         }
@@ -118,7 +245,51 @@ class Fixture extends React.Component {
                 </div>
               </div>
               <div className="event-holder">
-                {this.allEvents()}
+                <VerticalTimeline animate={false}>
+                  {this.allEvents()}
+                </VerticalTimeline>
+              </div>
+            </div>
+            <div className="match-results">
+              <div className="result-row info-row">
+                <div className="left-team">
+                  <div className="left-team-logo">
+                    <img src={this.props.view.fixture.value.fixtureInfo.homeTeamLogo}/>
+                  </div>
+                  <div className="left-team-name">{this.props.view.fixture.value.fixtureInfo.homeTeamName}</div>
+                </div>
+                <div className="label">Match Results</div>
+                <div className="right-team">
+                  <div className="right-team-logo">
+                    <img src={this.props.view.fixture.value.fixtureInfo.awayTeamLogo}/>
+                  </div>
+                  <div className="away-team-name">{this.props.view.fixture.value.fixtureInfo.awayTeamName}</div>
+                </div>
+              </div>
+              <div className="result-row">
+                <div className="left-stat">{this.props.view.fixture.value.fixtureInfo.homeTeamScore}</div>
+                <div className="stat-label">Goals</div>
+                <div className="right-stat">{this.props.view.fixture.value.fixtureInfo.awayTeamScore}</div>
+              </div>
+              <div className="result-row">
+                <div className="left-stat">{this.stats.homePasses}</div>
+                <div className="stat-label">Passes</div>
+                <div className="right-stat">{this.stats.awayPasses}</div>
+              </div>
+              <div className="result-row">
+                <div className="left-stat">{this.stats.homeTackles}</div>
+                <div className="stat-label">Tackles</div>
+                <div className="right-stat">{this.stats.awayTackles}</div>
+              </div>
+              <div className="result-row">
+                <div className="left-stat">{this.stats.homePossession + '%'}</div>
+                <div className="stat-label">Possession</div>
+                <div className="right-stat">{this.stats.awayPossession + '%'}</div>
+              </div>
+              <div className="result-row scorers-row">
+                <div className="left-stat">{this.renderScorers('home')}</div>
+                <div className="stat-label">Scoring</div>
+                <div className="right-stat">{this.renderScorers('away')}</div>
               </div>
             </div>
           </div>
