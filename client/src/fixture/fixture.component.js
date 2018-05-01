@@ -127,38 +127,60 @@ class Fixture extends React.Component {
   }
 
   calculateStats() {
-    const totalEventsCount = this.props.view.fixture.value.events.length
-    let homeEventsCount = 0
-    let awayEventsCount = 0
-    for (let event of this.props.view.fixture.value.events) {
+    // const totalEventsCount = this.props.view.fixture.value.events.length
+    const totalEventsCount = this.state.gameEvents.length
+    let tickStats = {
+      homeEventsCount: 0,
+      awayEventsCount: 0,
+      homePasses: 0,
+      awayPasses: 0,
+      homeGoals: 0,
+      awayGoals: 0,
+      homeTackles: 0,
+      awayTackles: 0,
+      homeScorers: [],
+      awayScorers: []
+    }
+    // for (let event of this.props.view.fixture.value.events) {
+    for (let event of this.state.gameEvents) {
       if (event.recordPitchSide === 'left') {
         //homeTeam
-        homeEventsCount++
+        tickStats.homeEventsCount++
         if (event.recordType === 'passes ball') {
-          this.stats.homePasses++
+          tickStats.homePasses++
         }
         if (event.recordType === 'tackles') {
-          this.stats.homeTackles++
+          tickStats.homeTackles++
         }
         if (event.recordType === 'goal') {
-          this.stats.homeScorers.push(event)
+          tickStats.homeGoals++
+          tickStats.homeScorers.push(event)
         }
       } else {
         //awayTeam
-        awayEventsCount++
+        tickStats.awayEventsCount++
         if (event.recordType === 'passes ball') {
-          this.stats.awayPasses++
+          tickStats.awayPasses++
         }
         if (event.recordType === 'tackles') {
-          this.stats.awayTackles++
+          tickStats.awayTackles++
         }
         if (event.recordType === 'goal') {
-          this.stats.awayScorers.push(event)
+          tickStats.awayGoals++
+          tickStats.awayScorers.push(event)
         }
       }
     }
-    this.stats.homePossession = Math.round((homeEventsCount / totalEventsCount) * 100)
+    this.stats.homePossession = Math.round((tickStats.homeEventsCount / totalEventsCount) * 100)
     this.stats.awayPossession = 100 - this.stats.homePossession
+    this.stats.homeGoals = tickStats.homeGoals
+    this.stats.awayGoals = tickStats.awayGoals
+    this.stats.homeTackles = tickStats.homeTackles
+    this.stats.awayTackles = tickStats.awayTackles
+    this.stats.homePasses = tickStats.homePasses
+    this.stats.awayPasses = tickStats.awayPasses
+    this.stats.homeScorers = tickStats.homeScorers
+    this.stats.awayScorers = tickStats.awayScorers
   }
 
   renderScorers(side) {
@@ -206,6 +228,101 @@ class Fixture extends React.Component {
     return events
   }
 
+  renderMatchResults() {
+    return (
+      <div className="match-results">
+        <div className="result-row info-row">
+          <div className="left-team">
+            <div className="left-team-logo">
+              <img src={this.props.view.fixture.value.fixtureInfo.homeTeamLogo}/>
+            </div>
+            <div className="left-team-name">{this.props.view.fixture.value.fixtureInfo.homeTeamName}</div>
+          </div>
+          <div className="label">Match Results</div>
+          <div className="right-team">
+            <div className="right-team-logo">
+              <img src={this.props.view.fixture.value.fixtureInfo.awayTeamLogo}/>
+            </div>
+            <div className="away-team-name">{this.props.view.fixture.value.fixtureInfo.awayTeamName}</div>
+          </div>
+        </div>
+        <div className="result-row">
+          <div className="left-stat">{this.stats.homeGoals}</div>
+          <div className="stat-label">Goals</div>
+          <div className="right-stat">{this.stats.awayGoals}</div>
+        </div>
+        <div className="result-row">
+          <div className="left-stat">{this.stats.homePasses}</div>
+          <div className="stat-label">Passes</div>
+          <div className="right-stat">{this.stats.awayPasses}</div>
+        </div>
+        <div className="result-row">
+          <div className="left-stat">{this.stats.homeTackles}</div>
+          <div className="stat-label">Tackles</div>
+          <div className="right-stat">{this.stats.awayTackles}</div>
+        </div>
+        <div className="result-row">
+          <div className="left-stat">{this.stats.homePossession + '%'}</div>
+          <div className="stat-label">Possession</div>
+          <div className="right-stat">{this.stats.awayPossession + '%'}</div>
+        </div>
+        <div className="result-row scorers-row">
+          <div className="left-stat">{this.renderScorers('home')}</div>
+          <div className="stat-label">Scoring</div>
+          <div className="right-stat">{this.renderScorers('away')}</div>
+        </div>
+      </div>
+    )
+  }
+
+  renderTeamPlayers() {
+    return (
+      <div className="team-players">
+        <div className="home-players">
+          {this.getHomePlayers()}
+        </div>
+        <div className="away-players">
+          {this.getAwayPlayers()}
+        </div>
+      </div>
+    )
+  }
+
+  getHomePlayers() {
+    let homePlayers = this.props.view.fixture.value.homeTeamPlayers.map((player) => {
+      return (
+        <div className="player-holder">
+          <img src={player.image} />
+          <div className="name">{player.name}</div>
+        </div>
+      )
+    })
+    return homePlayers
+  }
+
+  getAwayPlayers() {
+    let awayPlayers = this.props.view.fixture.value.awayTeamPlayers.map((player) => {
+      return (
+        <div className="player-holder">
+          <img src={player.image} />
+          <div className="name">{player.name}</div>
+        </div>
+      )
+    })
+    return awayPlayers
+  }
+
+  renderVenue() {
+    return (
+      <div className="venue-wrapper">
+        <div className="venue-image">
+          <img src={this.props.view.fixture.value.fixtureInfo.homeTeamVenueImage} />
+          <div className="venue-name">{this.props.view.fixture.value.fixtureInfo.homeTeamVenue}</div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     switch (this.props.view.fixture.state) {
       case "pending":
@@ -215,10 +332,10 @@ class Fixture extends React.Component {
       case "fulfilled":
         if (!this.gameStarted) {
           this.gameStarted = true;
-          this.calculateStats()
           this.startMatchEvents()
           this.tempEventsHolder = this.props.view.fixture.value.events
         }
+        this.calculateStats()
         return (
           <div className="fixture-wrapper">
             <div className="play-by-play">
@@ -250,48 +367,9 @@ class Fixture extends React.Component {
                 </VerticalTimeline>
               </div>
             </div>
-            <div className="match-results">
-              <div className="result-row info-row">
-                <div className="left-team">
-                  <div className="left-team-logo">
-                    <img src={this.props.view.fixture.value.fixtureInfo.homeTeamLogo}/>
-                  </div>
-                  <div className="left-team-name">{this.props.view.fixture.value.fixtureInfo.homeTeamName}</div>
-                </div>
-                <div className="label">Match Results</div>
-                <div className="right-team">
-                  <div className="right-team-logo">
-                    <img src={this.props.view.fixture.value.fixtureInfo.awayTeamLogo}/>
-                  </div>
-                  <div className="away-team-name">{this.props.view.fixture.value.fixtureInfo.awayTeamName}</div>
-                </div>
-              </div>
-              <div className="result-row">
-                <div className="left-stat">{this.props.view.fixture.value.fixtureInfo.homeTeamScore}</div>
-                <div className="stat-label">Goals</div>
-                <div className="right-stat">{this.props.view.fixture.value.fixtureInfo.awayTeamScore}</div>
-              </div>
-              <div className="result-row">
-                <div className="left-stat">{this.stats.homePasses}</div>
-                <div className="stat-label">Passes</div>
-                <div className="right-stat">{this.stats.awayPasses}</div>
-              </div>
-              <div className="result-row">
-                <div className="left-stat">{this.stats.homeTackles}</div>
-                <div className="stat-label">Tackles</div>
-                <div className="right-stat">{this.stats.awayTackles}</div>
-              </div>
-              <div className="result-row">
-                <div className="left-stat">{this.stats.homePossession + '%'}</div>
-                <div className="stat-label">Possession</div>
-                <div className="right-stat">{this.stats.awayPossession + '%'}</div>
-              </div>
-              <div className="result-row scorers-row">
-                <div className="left-stat">{this.renderScorers('home')}</div>
-                <div className="stat-label">Scoring</div>
-                <div className="right-stat">{this.renderScorers('away')}</div>
-              </div>
-            </div>
+            {this.renderMatchResults()}
+            {/* {this.renderVenue()}
+            {this.renderTeamPlayers()} */}
           </div>
         )
     }
