@@ -32,7 +32,7 @@ class ProfileController {
           res.status(200).send(player)
         } else {
           //we need to create a new player
-          const newPlayer = await this.createNewPlayer(req.uid, req.swcToken)
+          const newPlayer = await this.createNewPlayer(req.uid, req.swcToken, false)
           await this.decoratePlayer(newPlayer)
           if (newPlayer) {
             res.status(201).send(newPlayer)
@@ -50,11 +50,18 @@ class ProfileController {
     }
   }
 
-  async createNewPlayer(uid, accessToken) {
+  async createNewPlayer(uid, accessToken, isNpc) {
     try {
       const baseStats = this.rollBaseStats()
       const playerValue = util.calculatePlayerValue(baseStats)
-      const swcCharacter = await this.getCharacterInfo(uid, accessToken)
+      let swcCharacter = null
+      if (!isNpc) {
+        swcCharacter = await this.getCharacterInfo(uid, accessToken)
+      } else {
+        swcCharacter = {
+          character: this.generateNpcCharacter()
+        }
+      }
       const playerEntity = {
         name: swcCharacter.character.name,
         image: swcCharacter.character.image,
@@ -88,6 +95,16 @@ class ProfileController {
       this.logger.error(error)
       return false
     }
+  }
+
+  generateNpcCharacter() {
+    let npc = {
+      name: 'Billy Joe Bobby Jones',
+      image: 'http://i736.photobucket.com/albums/xx4/bpkennedy/norringtonfreelance.jpg',
+      gender: 'male',
+      race: 'human'
+    }
+    return npc
   }
 
   rollBaseStats() {
