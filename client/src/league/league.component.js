@@ -161,45 +161,47 @@ class League extends React.Component {
     for (let fixture of this.props.view.leagueModel.value.fixtures) {
       const homeTeamScore = fixture.homeTeamScore
       const awayTeamScore = fixture.awayTeamScore
-      if (homeTeamScore > awayTeamScore) {
-        if (fixture.homeTeamName === teamName) {
-          results.played++
-          results.wins++
-          results.goalsFor += fixture.homeTeamScore
-          results.goalsAgainst += fixture.awayTeamScore
-          results.points += 3
-        } else if (fixture.awayTeamName === teamName) {
-          results.played++
-          results.losses++
-          results.goalsFor += fixture.awayTeamScore
-          results.goalsAgainst += fixture.homeTeamScore
-        }
-      } else if (homeTeamScore < awayTeamScore) {
-        if (fixture.awayTeamName === teamName) {
-          results.played++
-          results.wins++
-          results.goalsFor += fixture.awayTeamScore
-          results.goalsAgainst += fixture.homeTeamScore
-          results.points += 3
-        } else if (fixture.homeTeamName === teamName) {
-          results.played++
-          results.losses++
-          results.goalsFor += fixture.homeTeamScore
-          results.goalsAgainst += fixture.awayTeamScore
-        }
-      } else if (homeTeamScore === awayTeamScore) {
-        if (fixture.homeTeamName === teamName) {
-          results.played++
-          results.draws++
-          results.goalsFor += fixture.homeTeamScore
-          results.goalsAgainst += fixture.awayTeamScore
-          results.points += 1
-        } else if (fixture.awayTeamName === teamName) {
-          results.played++
-          results.draws++
-          results.goalsFor += fixture.awayTeamScore
-          results.goalsAgainst += fixture.homeTeamScore
-          results.points += 1
+      if (fixture.status === 'complete') {
+        if (homeTeamScore > awayTeamScore) {
+          if (fixture.homeTeamName === teamName) {
+            results.played++
+            results.wins++
+            results.goalsFor += fixture.homeTeamScore
+            results.goalsAgainst += fixture.awayTeamScore
+            results.points += 3
+          } else if (fixture.awayTeamName === teamName) {
+            results.played++
+            results.losses++
+            results.goalsFor += fixture.awayTeamScore
+            results.goalsAgainst += fixture.homeTeamScore
+          }
+        } else if (homeTeamScore < awayTeamScore) {
+          if (fixture.awayTeamName === teamName) {
+            results.played++
+            results.wins++
+            results.goalsFor += fixture.awayTeamScore
+            results.goalsAgainst += fixture.homeTeamScore
+            results.points += 3
+          } else if (fixture.homeTeamName === teamName) {
+            results.played++
+            results.losses++
+            results.goalsFor += fixture.homeTeamScore
+            results.goalsAgainst += fixture.awayTeamScore
+          }
+        } else if (homeTeamScore === awayTeamScore) {
+          if (fixture.homeTeamName === teamName) {
+            results.played++
+            results.draws++
+            results.goalsFor += fixture.homeTeamScore
+            results.goalsAgainst += fixture.awayTeamScore
+            results.points += 1
+          } else if (fixture.awayTeamName === teamName) {
+            results.played++
+            results.draws++
+            results.goalsFor += fixture.awayTeamScore
+            results.goalsAgainst += fixture.homeTeamScore
+            results.points += 1
+          }
         }
       }
     }

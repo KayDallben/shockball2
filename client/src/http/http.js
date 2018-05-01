@@ -248,7 +248,11 @@ function getSingleFixture(url, token) {
                         return parseInt(a.recordGameTime) - parseInt(b.recordGameTime)
                     })
                     fixture.matchStats = createStats(fixture.events)
-                    resolve(fixture)
+                    axios.all([getTeamPlayers(fixture.fixtureInfo.homeTeam), getTeamPlayers(fixture.fixtureInfo.awayTeam)]).then(axios.spread(function (homeTeamPlayers, awayTeamPlayers) {
+                        fixture.homeTeamPlayers = homeTeamPlayers.data
+                        fixture.awayTeamPlayers = awayTeamPlayers.data
+                        resolve(fixture)
+                    }))
                 } else {
                     reject(response)
                 }
