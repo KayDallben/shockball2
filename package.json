@@ -47,6 +47,7 @@
     "eslint": "^3.19.0",
     "eslint-plugin-babel": "^4.1.2",
     "express": "^4.16.2",
+    "fantasy-names": "^2.0.0",
     "firebase": "^4.9.0",
     "firebase-admin": "^5.8.1",
     "helmet": "^3.9.0",
@@ -63,6 +64,7 @@
     "serve-favicon": "^2.4.5",
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^1.9.7",
+    "uuid": "^3.2.1",
     "winston": "^2.4.0"
   }
 }

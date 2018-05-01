@@ -92,7 +92,7 @@ var ProfileController = function () {
 
               case 10:
                 _context.next = 12;
-                return this.createNewPlayer(req.uid, req.swcToken);
+                return this.createNewPlayer(req.uid, req.swcToken, false);
 
               case 12:
                 newPlayer = _context.sent;
@@ -142,7 +142,7 @@ var ProfileController = function () {
   }, {
     key: 'createNewPlayer',
     value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(uid, accessToken) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(uid, accessToken, isNpc) {
         var baseStats, playerValue, swcCharacter, playerEntity, newPlayer;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -151,11 +151,27 @@ var ProfileController = function () {
                 _context2.prev = 0;
                 baseStats = this.rollBaseStats();
                 playerValue = util.calculatePlayerValue(baseStats);
-                _context2.next = 5;
+                swcCharacter = null;
+
+                if (isNpc) {
+                  _context2.next = 10;
+                  break;
+                }
+
+                _context2.next = 7;
                 return this.getCharacterInfo(uid, accessToken);
 
-              case 5:
+              case 7:
                 swcCharacter = _context2.sent;
+                _context2.next = 11;
+                break;
+
+              case 10:
+                swcCharacter = {
+                  character: this.generateNpcCharacter()
+                };
+
+              case 11:
                 playerEntity = {
                   name: swcCharacter.character.name,
                   image: swcCharacter.character.image,
@@ -176,54 +192,66 @@ var ProfileController = function () {
                   marketValue: playerValue.marketValue,
                   rating: playerValue.playerRating
                 };
-                _context2.next = 9;
+                _context2.next = 14;
                 return this.players.add(playerEntity);
 
-              case 9:
+              case 14:
                 newPlayer = _context2.sent;
-                _context2.next = 12;
+                _context2.next = 17;
                 return this.players.doc(newPlayer.id).update({
                   shockballPlayerUid: newPlayer.id
                 });
 
-              case 12:
-                _context2.next = 14;
+              case 17:
+                _context2.next = 19;
                 return this.createPlayerStatCaps(newPlayer.id);
 
-              case 14:
-                _context2.next = 16;
+              case 19:
+                _context2.next = 21;
                 return this.createPlayerAccount(newPlayer.id, playerEntity);
 
-              case 16:
-                _context2.next = 18;
+              case 21:
+                _context2.next = 23;
                 return this.players.doc(newPlayer.id).get().then(function (doc) {
                   return doc.data();
                 });
 
-              case 18:
+              case 23:
                 return _context2.abrupt('return', _context2.sent);
 
-              case 21:
-                _context2.prev = 21;
+              case 26:
+                _context2.prev = 26;
                 _context2.t0 = _context2['catch'](0);
 
                 this.logger.error(_context2.t0);
                 return _context2.abrupt('return', false);
 
-              case 25:
+              case 30:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 21]]);
+        }, _callee2, this, [[0, 26]]);
       }));
 
-      function createNewPlayer(_x3, _x4) {
+      function createNewPlayer(_x3, _x4, _x5) {
         return _ref2.apply(this, arguments);
       }
 
       return createNewPlayer;
     }()
+  }, {
+    key: 'generateNpcCharacter',
+    value: function generateNpcCharacter() {
+      var npc = {
+        name: 'Billy Joe Bobby Jones',
+        image: 'http://i736.photobucket.com/albums/xx4/bpkennedy/norringtonfreelance.jpg',
+        gender: 'male',
+        race: 'human'
+      };
+
+      return npc;
+    }
   }, {
     key: 'rollBaseStats',
     value: function rollBaseStats() {
@@ -274,7 +302,7 @@ var ProfileController = function () {
         }, _callee3, this);
       }));
 
-      function createPlayerAccount(_x5, _x6) {
+      function createPlayerAccount(_x6, _x7) {
         return _ref3.apply(this, arguments);
       }
 
@@ -313,7 +341,7 @@ var ProfileController = function () {
         }, _callee4, this);
       }));
 
-      function createPlayerStatCaps(_x7) {
+      function createPlayerStatCaps(_x8) {
         return _ref4.apply(this, arguments);
       }
 
@@ -405,7 +433,7 @@ var ProfileController = function () {
         }, _callee5, this, [[9, 15]]);
       }));
 
-      function decoratePlayer(_x8) {
+      function decoratePlayer(_x9) {
         return _ref5.apply(this, arguments);
       }
 
@@ -468,7 +496,7 @@ var ProfileController = function () {
           }, _callee6, _this, [[4, 11]]);
         }));
 
-        return function (_x9) {
+        return function (_x10) {
           return _ref6.apply(this, arguments);
         };
       }());

@@ -85,7 +85,7 @@ class ContractForm extends React.Component {
         playerUid: this.props.signingPlayer.shockballPlayerUid,
         purchasePrice: parseInt(purchasePrice),
         season: parseInt(season),
-        status: 'pending',
+        status: this.props.signingPlayer.npc ? 'accepted' : 'pending',
         teamName: this.props.signingTeam.teamName,
         teamUid: this.props.signingTeam.teamUid,
         isFeePaid: false
