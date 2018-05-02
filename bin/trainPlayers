@@ -121,7 +121,7 @@ function increment(valueToChange, amount, cap) {
     }
 }
 
-function trainPlayer(player) {
+function determineRegimen(player) {
     //check for training regimen
     if (!player.regimen) {
         player.regimen = {
@@ -129,6 +129,18 @@ function trainPlayer(player) {
             label: 'Please select'
         }
     }
+    if (player.npc) {
+        player.regimen = {
+            value: 'General',
+            label: 'General'
+        }
+    }
+    return player
+}
+
+function trainPlayer(player) {
+    const player = determineRegimen(player)
+    
     if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance and throwing
         player.blocking = decrement(player.blocking, .25, player.blockingCap)

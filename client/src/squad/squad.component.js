@@ -148,14 +148,16 @@ class Squad extends React.Component {
   }
 
   showPlayerSwapForm(originalPlayer) {
-    this.props.store.showModal(
-      <div className="contract-wrapper">
-        <div className="modal-title">Pick Player</div>
-        <div className="player-holder">
-          {this.renderSwapTeamPlayers(originalPlayer)}
+    if (this.props.store.currentUser.teamManager && this.props.store.currentUser.teamUid === this.props.view.squad.value.teamInfo.teamUid) {
+      this.props.store.showModal(
+        <div className="contract-wrapper">
+          <div className="modal-title">Pick Player</div>
+          <div className="player-holder">
+            {this.renderSwapTeamPlayers(originalPlayer)}
+          </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 
   renderSwapTeamPlayers(originalPlayer) {
