@@ -249,7 +249,6 @@ var ProfileController = function () {
         gender: 'male',
         race: 'human'
       };
-
       return npc;
     }
   }, {
