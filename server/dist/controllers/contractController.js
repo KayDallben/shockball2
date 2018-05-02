@@ -606,7 +606,7 @@ var ContractController = function () {
                 });
 
               case 5:
-                _context13.next = 27;
+                _context13.next = 25;
                 break;
 
               case 7:
@@ -635,12 +635,12 @@ var ContractController = function () {
                 return this.refundTeamAvailableBudget(newContract);
 
               case 14:
-                _context13.next = 27;
+                _context13.next = 25;
                 break;
 
               case 16:
                 if (!(newContract.status === 'active')) {
-                  _context13.next = 27;
+                  _context13.next = 25;
                   break;
                 }
 
@@ -661,17 +661,13 @@ var ContractController = function () {
 
               case 21:
                 _context13.next = 23;
-                return this.addPlayerSigningBonus(newContract);
+                return this.transferCredits(newContract);
 
               case 23:
                 _context13.next = 25;
                 return this.updatePlayerEntityWithContract(newContract);
 
               case 25:
-                _context13.next = 27;
-                return this.deductTeamPotentialBudget(newContract);
-
-              case 27:
               case 'end':
                 return _context13.stop();
             }
@@ -686,19 +682,34 @@ var ContractController = function () {
       return notifyPartiesAboutContractAccept;
     }()
   }, {
-    key: 'addPlayerSigningBonus',
+    key: 'transferCredits',
     value: function () {
       var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(newContract) {
+        var purchasePrice, playerSigningBonus, commissionerBonus, leagueAmount;
         return regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                _context14.next = 2;
-                return this.accounts.doc(newContract.playerUid).update({
-                  totalBalance: newContract.purchasePrice * .2
-                });
+                purchasePrice = newContract.purchasePrice;
+                playerSigningBonus = purchasePrice * .2;
+                commissionerBonus = purchasePrice * .1;
+                leagueAmount = purchasePrice - (playerSigningBonus + commissionerBonus);
+                _context14.next = 6;
+                return this.addPlayerSigningBonus(newContract.playerUid, playerSigningBonus);
 
-              case 2:
+              case 6:
+                _context14.next = 8;
+                return this.addCommissionerBonus(newContract, commissionerBonus);
+
+              case 8:
+                _context14.next = 10;
+                return this.addLeagueFee(newContract, leagueAmount);
+
+              case 10:
+                _context14.next = 12;
+                return this.deductTeamPotentialBudget(newContract.teamUid, purchasePrice);
+
+              case 12:
               case 'end':
                 return _context14.stop();
             }
@@ -706,34 +717,42 @@ var ContractController = function () {
         }, _callee14, this);
       }));
 
-      function addPlayerSigningBonus(_x21) {
+      function transferCredits(_x21) {
         return _ref14.apply(this, arguments);
       }
 
-      return addPlayerSigningBonus;
+      return transferCredits;
     }()
   }, {
-    key: 'refundTeamAvailableBudget',
+    key: 'addCommissionerBonus',
     value: function () {
-      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(newContract) {
-        var teamAccount;
+      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(contract, bonusAmount) {
+        var account;
         return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
             switch (_context15.prev = _context15.next) {
               case 0:
                 _context15.next = 2;
-                return this.accounts.doc(newContract.teamUid).get().then(function (doc) {
-                  return doc.data();
+                return this.accounts.doc('commissioner').collection('transactions').add({
+                  activityType: 'Player ' + contract.playerName + ' for team ' + contract.teamName + ' fee',
+                  timestamp: FieldValue.serverTimestamp(),
+                  amount: bonusAmount
                 });
 
               case 2:
-                teamAccount = _context15.sent;
-                _context15.next = 5;
-                return this.accounts.doc(newContract.teamUid).update({
-                  availableBudget: teamAccount.availableBudget + newContract.purchasePrice
+                _context15.next = 4;
+                return this.accounts.doc('commissioner').get().then(function (doc) {
+                  return doc.data();
                 });
 
-              case 5:
+              case 4:
+                account = _context15.sent;
+                _context15.next = 7;
+                return this.accounts.doc('commissioner').update({
+                  totalBalance: account.totalBalance + bonusAmount
+                });
+
+              case 7:
               case 'end':
                 return _context15.stop();
             }
@@ -741,34 +760,42 @@ var ContractController = function () {
         }, _callee15, this);
       }));
 
-      function refundTeamAvailableBudget(_x22) {
+      function addCommissionerBonus(_x22, _x23) {
         return _ref15.apply(this, arguments);
       }
 
-      return refundTeamAvailableBudget;
+      return addCommissionerBonus;
     }()
   }, {
-    key: 'deductTeamPotentialBudget',
+    key: 'addLeagueFee',
     value: function () {
-      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(newContract) {
-        var teamAccount;
+      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(contract, bonusAmount) {
+        var account;
         return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
                 _context16.next = 2;
-                return this.accounts.doc(newContract.teamUid).get().then(function (doc) {
-                  return doc.data();
+                return this.accounts.doc('league').collection('transactions').add({
+                  activityType: 'Player ' + contract.playerName + ' for team ' + contract.teamName + ' fee',
+                  timestamp: FieldValue.serverTimestamp(),
+                  amount: bonusAmount
                 });
 
               case 2:
-                teamAccount = _context16.sent;
-                _context16.next = 5;
-                return this.accounts.doc(newContract.teamUid).update({
-                  potentialBudget: teamAccount.potentialBudget - newContract.purchasePrice
+                _context16.next = 4;
+                return this.accounts.doc('league').get().then(function (doc) {
+                  return doc.data();
                 });
 
-              case 5:
+              case 4:
+                account = _context16.sent;
+                _context16.next = 7;
+                return this.accounts.doc('league').update({
+                  totalBalance: account.totalBalance + bonusAmount
+                });
+
+              case 7:
               case 'end':
                 return _context16.stop();
             }
@@ -776,8 +803,113 @@ var ContractController = function () {
         }, _callee16, this);
       }));
 
-      function deductTeamPotentialBudget(_x23) {
+      function addLeagueFee(_x24, _x25) {
         return _ref16.apply(this, arguments);
+      }
+
+      return addLeagueFee;
+    }()
+  }, {
+    key: 'addPlayerSigningBonus',
+    value: function () {
+      var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(playerId, bonusAmount) {
+        var account;
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                _context17.next = 2;
+                return this.accounts.doc(playerId).get().then(function (doc) {
+                  return doc.data();
+                });
+
+              case 2:
+                account = _context17.sent;
+                _context17.next = 5;
+                return this.accounts.doc(playerId).update({
+                  totalBalance: account.totalBalance + bonusAmount
+                });
+
+              case 5:
+              case 'end':
+                return _context17.stop();
+            }
+          }
+        }, _callee17, this);
+      }));
+
+      function addPlayerSigningBonus(_x26, _x27) {
+        return _ref17.apply(this, arguments);
+      }
+
+      return addPlayerSigningBonus;
+    }()
+  }, {
+    key: 'refundTeamAvailableBudget',
+    value: function () {
+      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(newContract) {
+        var teamAccount;
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                _context18.next = 2;
+                return this.accounts.doc(newContract.teamUid).get().then(function (doc) {
+                  return doc.data();
+                });
+
+              case 2:
+                teamAccount = _context18.sent;
+                _context18.next = 5;
+                return this.accounts.doc(newContract.teamUid).update({
+                  availableBudget: teamAccount.availableBudget + newContract.purchasePrice
+                });
+
+              case 5:
+              case 'end':
+                return _context18.stop();
+            }
+          }
+        }, _callee18, this);
+      }));
+
+      function refundTeamAvailableBudget(_x28) {
+        return _ref18.apply(this, arguments);
+      }
+
+      return refundTeamAvailableBudget;
+    }()
+  }, {
+    key: 'deductTeamPotentialBudget',
+    value: function () {
+      var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(teamUid, purchasePrice) {
+        var teamAccount;
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+          while (1) {
+            switch (_context19.prev = _context19.next) {
+              case 0:
+                _context19.next = 2;
+                return this.accounts.doc(teamUid).get().then(function (doc) {
+                  return doc.data();
+                });
+
+              case 2:
+                teamAccount = _context19.sent;
+                _context19.next = 5;
+                return this.accounts.doc(teamUid).update({
+                  potentialBudget: teamAccount.potentialBudget - purchasePrice
+                });
+
+              case 5:
+              case 'end':
+                return _context19.stop();
+            }
+          }
+        }, _callee19, this);
+      }));
+
+      function deductTeamPotentialBudget(_x29, _x30) {
+        return _ref19.apply(this, arguments);
       }
 
       return deductTeamPotentialBudget;
@@ -785,13 +917,13 @@ var ContractController = function () {
   }, {
     key: 'updatePlayerTransactions',
     value: function () {
-      var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(playerUid, contract) {
-        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(playerUid, contract) {
+        return regeneratorRuntime.wrap(function _callee20$(_context20) {
           while (1) {
-            switch (_context17.prev = _context17.next) {
+            switch (_context20.prev = _context20.next) {
               case 0:
-                _context17.prev = 0;
-                _context17.next = 3;
+                _context20.prev = 0;
+                _context20.next = 3;
                 return this.accounts.doc(playerUid).collection('transactions').add({
                   activityType: 'Contract bid from ' + contract.teamName + ' was deleted by admin',
                   amount: 0,
@@ -799,25 +931,25 @@ var ContractController = function () {
                 });
 
               case 3:
-                _context17.next = 8;
+                _context20.next = 8;
                 break;
 
               case 5:
-                _context17.prev = 5;
-                _context17.t0 = _context17['catch'](0);
+                _context20.prev = 5;
+                _context20.t0 = _context20['catch'](0);
 
-                this.logger.error(_context17.t0);
+                this.logger.error(_context20.t0);
 
               case 8:
               case 'end':
-                return _context17.stop();
+                return _context20.stop();
             }
           }
-        }, _callee17, this, [[0, 5]]);
+        }, _callee20, this, [[0, 5]]);
       }));
 
-      function updatePlayerTransactions(_x24, _x25) {
-        return _ref17.apply(this, arguments);
+      function updatePlayerTransactions(_x31, _x32) {
+        return _ref20.apply(this, arguments);
       }
 
       return updatePlayerTransactions;
@@ -825,12 +957,12 @@ var ContractController = function () {
   }, {
     key: 'updatePlayerEntityWithContract',
     value: function () {
-      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(newContract) {
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+      var _ref21 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(newContract) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context21.prev = _context21.next) {
               case 0:
-                _context18.next = 2;
+                _context21.next = 2;
                 return this.players.doc(newContract.playerUid).update({
                   contractUid: newContract.contractUid,
                   teamUid: newContract.teamUid,
@@ -839,14 +971,14 @@ var ContractController = function () {
 
               case 2:
               case 'end':
-                return _context18.stop();
+                return _context21.stop();
             }
           }
-        }, _callee18, this);
+        }, _callee21, this);
       }));
 
-      function updatePlayerEntityWithContract(_x26) {
-        return _ref18.apply(this, arguments);
+      function updatePlayerEntityWithContract(_x33) {
+        return _ref21.apply(this, arguments);
       }
 
       return updatePlayerEntityWithContract;
@@ -854,13 +986,13 @@ var ContractController = function () {
   }, {
     key: 'updateTeamAccountTransactions',
     value: function () {
-      var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(teamUid, contract) {
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+      var _ref22 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(teamUid, contract) {
+        return regeneratorRuntime.wrap(function _callee22$(_context22) {
           while (1) {
-            switch (_context19.prev = _context19.next) {
+            switch (_context22.prev = _context22.next) {
               case 0:
-                _context19.prev = 0;
-                _context19.next = 3;
+                _context22.prev = 0;
+                _context22.next = 3;
                 return this.accounts.doc(teamUid).collection('transactions').add({
                   activityType: 'Contract bid to ' + contract.playerName + ' was deleted by admin',
                   amount: 0,
@@ -868,7 +1000,7 @@ var ContractController = function () {
                 });
 
               case 3:
-                _context19.next = 5;
+                _context22.next = 5;
                 return this.accounts.doc(teamUid).collection('transactions').add({
                   activityType: 'Funds for ' + contract.playerName + ' failed contract bid returned to Available budget',
                   amount: contract.purchasePrice,
@@ -876,25 +1008,25 @@ var ContractController = function () {
                 });
 
               case 5:
-                _context19.next = 10;
+                _context22.next = 10;
                 break;
 
               case 7:
-                _context19.prev = 7;
-                _context19.t0 = _context19['catch'](0);
+                _context22.prev = 7;
+                _context22.t0 = _context22['catch'](0);
 
-                this.logger.error(_context19.t0);
+                this.logger.error(_context22.t0);
 
               case 10:
               case 'end':
-                return _context19.stop();
+                return _context22.stop();
             }
           }
-        }, _callee19, this, [[0, 7]]);
+        }, _callee22, this, [[0, 7]]);
       }));
 
-      function updateTeamAccountTransactions(_x27, _x28) {
-        return _ref19.apply(this, arguments);
+      function updateTeamAccountTransactions(_x34, _x35) {
+        return _ref22.apply(this, arguments);
       }
 
       return updateTeamAccountTransactions;

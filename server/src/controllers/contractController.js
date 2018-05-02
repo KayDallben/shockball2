@@ -205,15 +205,56 @@ class ContractController {
         amount: newContract.purchasePrice,
         timestamp: FieldValue.serverTimestamp()
       })
-      await this.addPlayerSigningBonus(newContract)
+      await this.transferCredits(newContract)
       await this.updatePlayerEntityWithContract(newContract)
-      await this.deductTeamPotentialBudget(newContract)
     }
   }
 
-  async addPlayerSigningBonus(newContract) {
-    await this.accounts.doc(newContract.playerUid).update({
-      totalBalance: newContract.purchasePrice * .2
+  async transferCredits(newContract) {
+    const purchasePrice = newContract.purchasePrice
+    const playerSigningBonus = purchasePrice * .2
+    const commissionerBonus = purchasePrice * .1
+    const leagueAmount = purchasePrice - (playerSigningBonus + commissionerBonus)
+    await this.addPlayerSigningBonus(newContract.playerUid, playerSigningBonus)
+    await this.addCommissionerBonus(newContract, commissionerBonus)
+    await this.addLeagueFee(newContract, leagueAmount)
+    await this.deductTeamPotentialBudget(newContract.teamUid, purchasePrice)
+  }
+
+  async addCommissionerBonus(contract, bonusAmount) {
+    await this.accounts.doc('commissioner').collection('transactions').add({
+      activityType: `Player ${contract.playerName} for team ${contract.teamName} fee`,
+      timestamp: FieldValue.serverTimestamp(),
+      amount: bonusAmount
+    })
+    const account = await this.accounts.doc('commissioner').get().then((doc) => {
+      return doc.data()
+    })
+    await this.accounts.doc('commissioner').update({
+      totalBalance: account.totalBalance + bonusAmount
+    })
+  }
+
+  async addLeagueFee(contract, bonusAmount) {
+    await this.accounts.doc('league').collection('transactions').add({
+      activityType: `Player ${contract.playerName} for team ${contract.teamName} fee`,
+      timestamp: FieldValue.serverTimestamp(),
+      amount: bonusAmount
+    })
+    const account = await this.accounts.doc('league').get().then((doc) => {
+      return doc.data()
+    })
+    await this.accounts.doc('league').update({
+      totalBalance: account.totalBalance + bonusAmount
+    })
+  }
+
+  async addPlayerSigningBonus(playerId, bonusAmount) {
+    const account = await this.accounts.doc(playerId).get().then((doc) => {
+      return doc.data()
+    })
+    await this.accounts.doc(playerId).update({
+      totalBalance: account.totalBalance + bonusAmount
     })
   }
 
@@ -226,12 +267,12 @@ class ContractController {
     })
   }
 
-  async deductTeamPotentialBudget(newContract) {
-    const teamAccount = await this.accounts.doc(newContract.teamUid).get().then((doc) => {
+  async deductTeamPotentialBudget(teamUid, purchasePrice) {
+    const teamAccount = await this.accounts.doc(teamUid).get().then((doc) => {
       return doc.data()
     })
-    await this.accounts.doc(newContract.teamUid).update({
-      potentialBudget: teamAccount.potentialBudget - newContract.purchasePrice
+    await this.accounts.doc(teamUid).update({
+      potentialBudget: teamAccount.potentialBudget - purchasePrice
     })
   }
 
