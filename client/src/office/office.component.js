@@ -221,7 +221,7 @@ class Office extends React.Component {
   }
 
   sendManagerCreditsLink(amount, managerUid, managerName, teamUid, teamName) {
-    const receiver = encodeURIComponent('Tholme So')
+    const receiver = encodeURIComponent('Alpha Medical Corporation')
     const communication = `Shockball Team Deposit | Manager ID: ${managerUid} | Manager Name: ${managerName} | Team ID: ${teamUid}, Team Name: ${teamName}`
     window.open(`http://www.swcombine.com/members/credits/?receiver=${receiver}&amount=${amount}&communication=${communication}`, '_blank')
   }
