@@ -213,8 +213,12 @@ var Player = function () {
       var ballCarrier = opposingPlayers.find(function (player) {
         return player.shockballPlayerUid === ball.possessedBy;
       });
-      if (ballCarrier.throwing + ballCarrier.passing > ballCarrier.toughness + chance.rpg('1d12', { sum: true })) {
-        return 'throw';
+      if (ballCarrier) {
+        if (ballCarrier.throwing + ballCarrier.passing > ballCarrier.toughness + chance.rpg('1d12', { sum: true })) {
+          return 'throw';
+        } else {
+          return 'run';
+        }
       } else {
         return 'run';
       }
