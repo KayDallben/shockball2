@@ -1,5 +1,10 @@
 Star Wars Combine: Galactic Shockball League
 ================
+Shockball is a star wars-themed sports management simulation game built for web browsers. It's also an extension of the [Star Wars Combine MMORPG web game](http://swcombine.com) and requires authentication via a valid SWCombine account.
+
+The front-end is React for the view layer, Mobx for state management, and SASS. There is a RESTful api backend built on Node and Express with Swagger interactive documentation. The database is the Firebase (FireStore) cloud service. The web application is hosted on the Heroku cloud service.
+
+The development setup involves setting up a connection to a non-production database (below).
 
 ## Install
 * `git clone https://github.com/bpkennedy/shockball2.git`
@@ -30,5 +35,5 @@ You want to build before you create your PR. I did have Heroku setup to run buil
 * add the bundle files/modifications produced from this task to your branch/PR.
 
 ### Secret API keys for Firebase and SWC API
-There are two .json files with sensitive information in them - the `dev-firebase-security.json` and the `dev-swc-security.json`. You need to reach out to the project maintainer (bpkennedy) for how to get these files if you need to develop locally.
+There are two .json files with sensitive information in them - the `dev-firebase-security.json` and the `dev-swc-security.json`. You need to reach out to the project maintainer (bpkennedy) for how to get these files, as this is how you'll connect to the development database and authenticate to star wars combine.
 
