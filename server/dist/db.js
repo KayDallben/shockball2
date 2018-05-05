@@ -12,7 +12,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 var serviceAccount = void 0;
 if (!process.env.FIREBASE_DATABASE_URL) {
-  serviceAccount = require('../../firebase-security.json');
+  serviceAccount = require('../../dev-firebase-security.json');
 }
 
 exports.default = function (app, callback) {
@@ -20,7 +20,7 @@ exports.default = function (app, callback) {
   if (app.get('env') === 'development') {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      databaseURL: 'https://swc-shockball3.firebaseio.com/'
+      databaseURL: 'https://swc-shockball.firebaseio.com/'
     });
   } else if (app.get('env') === 'production') {
     admin.initializeApp({

@@ -71,4 +71,6 @@ package-lock.json
 .DS_Store
 /coverage
 firebase-security.json
+dev-firebase-security.json
 swc-security.json
+dev-swc-security.json
