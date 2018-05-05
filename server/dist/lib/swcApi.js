@@ -17,11 +17,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 //third party
 if (!process.env.FIREBASE_DATABASE_URL) {
-  var serviceAccount = require('../../../firebase-security.json'); //eslint-disable-line no-unused-vars
+  var serviceAccount = require('../../../dev-firebase-security.json'); //eslint-disable-line no-unused-vars
 }
 
 if (!process.env.SWC_CLIENT_SECRET) {
-  var swcSecurity = require('../../../swc-security.json');
+  var swcSecurity = require('../../../dev-swc-security.json');
   process.env.SWC_CLIENT_SECRET = swcSecurity.SWC_CLIENT_SECRET;
   process.env.SWC_CLIENT_ID = swcSecurity.SWC_CLIENT_ID;
   process.env.SWC_REDIRECT_URI = swcSecurity.SWC_REDIRECT_URI;

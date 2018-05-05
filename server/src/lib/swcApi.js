@@ -3,11 +3,11 @@ import axios from 'axios'
 import qs from 'qs'
 
 if (!process.env.FIREBASE_DATABASE_URL) {
-  const serviceAccount = require('../../../firebase-security.json') //eslint-disable-line no-unused-vars
+  const serviceAccount = require('../../../dev-firebase-security.json') //eslint-disable-line no-unused-vars
 }
 
 if (!process.env.SWC_CLIENT_SECRET) {
-  const swcSecurity = require('../../../swc-security.json')
+  const swcSecurity = require('../../../dev-swc-security.json')
   process.env.SWC_CLIENT_SECRET = swcSecurity.SWC_CLIENT_SECRET
   process.env.SWC_CLIENT_ID = swcSecurity.SWC_CLIENT_ID
   process.env.SWC_REDIRECT_URI = swcSecurity.SWC_REDIRECT_URI
