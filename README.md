@@ -11,10 +11,12 @@ Star Wars Combine: Galactic Shockball League
 
 ## Develop locally
 After ensuring you have `npm install`'d everything, you can build and serve the react front-end by doing:
-`npm run dev`
+* `npm run dev`
+
 For just changes to the api, you can do:
 * `npm run buildServer`
 * `npm run startServer`
+
 However, if you need the entire frontend + api built and served you can do:
 * `npm run build`
 * `npm run startServer`
