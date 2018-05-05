@@ -4,7 +4,7 @@ Shockball is a star wars-themed sports management simulation game built for web 
 
 Visit the [live Shockball app](https://shockball2.herokuapp.com). Also consider joining the ongoing conversation in the [Discord server](https://discord.gg/ePU9Svy).
 
-The front-end is React for the view layer, Mobx for state management, and SASS. There is a RESTful api backend built on Node and Express with Swagger interactive documentation. The database is the Firebase (FireStore) cloud service. The web application is hosted on the Heroku cloud service.
+The front-end is [React](https://reactjs.org/) for the view layer, [Mobx](https://github.com/mobxjs/mobx) for state management, and [SASS](https://sass-lang.com/). There is a RESTful api backend built on [Node](https://nodejs.org/en/) and [Express](https://expressjs.com/) with [Swagger](https://swagger.io/) interactive documentation. The database is the [Firebase](https://firebase.google.com/) (FireStore) cloud service. The web application is hosted on the [Heroku](https://www.heroku.com/) cloud service.
 
 The development setup involves setting up a connection to a non-production database (below).
 
