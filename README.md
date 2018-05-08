@@ -39,3 +39,9 @@ You want to build before you create your PR. I did have Heroku setup to run buil
 ### Secret API keys for Firebase and SWC API
 There are two .json files with sensitive information in them - the `dev-firebase-security.json` and the `dev-swc-security.json`. You need to reach out to the project maintainer (bpkennedy) for how to get these files, as this is how you'll connect to the development database and authenticate to star wars combine.
 
+### Refresh with PROD data
+We are using npm `firestore-backup-restore` CLI tool to perform backups and restores between the firebase databases. As long as you have both the dev and prod firebase-security.json files, you can do this.
+
+* First ensure that the CLI tool is installed globally via `npm install -g firestore-backup-restore`
+* Backup PROD command: `cd server && firestore-backup-restore --accountCredentials ../firebase-security.json --backupPath ./backups/shockbalProd`
+* Restore to DEV command: `cd server && firestore-backup-restore --backupPath ./backups/shockballProd --restoreAccountCredentials ../dev-firebase-security.json`
