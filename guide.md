@@ -8,7 +8,7 @@ Shockball Guide
 * As Player:
   1. [How to sign up as a player](#how-to-sign-up-as-a-player)
   2. [How to train your player](#how-to-train-your-player)
-  3. [What skills change when I train](#what-skills-change-when-I-train)
+  3. [What skills change when I train](#what-skills-change-when-i-train)
   4. [How to accept or reject a contract](#how-to-accept-or-reject-a-contract)
 * As Team Owner:
   1. [How to create a Team](#how-to-create-a-team)
