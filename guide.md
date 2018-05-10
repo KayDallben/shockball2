@@ -31,7 +31,7 @@ Each day, you may select a training regimen for your player. Every 24 hours your
 2. Select the **Training Regimen** drop-down and pick your preference.
 3. You should see a onscreen confirmation of your selection.
 
-### What skills change when I train?
+### What skills change when I train
 ```javascript
 if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance and throwing
