@@ -101,6 +101,8 @@ class League extends React.Component {
   }
 
   createTeamLinkUrl = (row) => {
+    console.log('dependent values of row are')
+    console.log(row.dependentValues)
     return (
       <a onClick={() => this.props.store.showSquadPage(row.dependentValues.teamUid)}>{row.dependentValues.teamName}</a>
     )
@@ -122,7 +124,7 @@ class League extends React.Component {
 
   calculateStandings() {
     for(let team of this.props.view.leagueModel.value.teams) {
-      this.standings.push({ teamName: team.teamName })
+      this.standings.push({ teamName: team.teamName, teamUid: team.teamUid })
     }
     for(let row of this.standings) {
       const results = this.countResults(row.teamName)

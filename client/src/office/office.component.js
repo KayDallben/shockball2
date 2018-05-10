@@ -180,7 +180,7 @@ class Office extends React.Component {
   }
 
   renderContractFields(contract) {
-    if (contract.status === 'accepted' && !contract.isFeePaid) {
+    if (contract.status === 'awaiting admin' && !contract.isFeePaid) {
       return (
         <div className="inner-contract-fields">
           <div className="fee-title">League Fee Required: <NumberFormat value={1000000} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
@@ -206,7 +206,7 @@ class Office extends React.Component {
   }
 
   renderContractActions(contract) {
-    if (contract.status === 'accepted' && !contract.isFeePaid) {
+    if (contract.status === 'awaiting admin' && !contract.isFeePaid) {
       return (
         <div className="contract-action-holder"></div>
       )
@@ -287,7 +287,7 @@ class Office extends React.Component {
   }
 
   acceptContract(playerContract) {
-    this.props.store.updateContractState(playerContract.contractUid, 'accepted', 'office').then(() => {
+    this.props.store.updateContractState(playerContract.contractUid, 'awaiting admin', 'office').then(() => {
       toast.success("Contract accepted!", {
         position: toast.POSITION.TOP_CENTER
       })

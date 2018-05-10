@@ -133,7 +133,10 @@ async function getContracts(globalConfig) {
     return db.collection('contracts').get().then((snapshot) => {
         let contracts = []
         snapshot.forEach((doc) => {
-            contracts.push(doc.data())
+            const contract = doc.data()
+            if (contract.status !== 'pending') {
+                contracts.push(doc.data())
+            }
         })
         return contracts
     })

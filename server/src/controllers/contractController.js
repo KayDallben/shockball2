@@ -171,7 +171,7 @@ class ContractController {
 
   async notifyPartiesAboutContractAccept(newContract) {
     // if accepted, then write to team and player transactions
-    if (newContract.status === 'accepted') {
+    if (newContract.status === 'awaiting admin') {
       await this.accounts.doc(newContract.playerUid).collection('transactions').add({
         activityType: `${newContract.playerName} accepted a contract bid from ${newContract.teamName}`,
         amount: newContract.purchasePrice,
