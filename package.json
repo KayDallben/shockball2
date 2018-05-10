@@ -1,6 +1,6 @@
 {
   "name": "shockball2",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "node": "8.9.4"
   },
