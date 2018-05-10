@@ -399,8 +399,9 @@ class Store {
         lineupPosition: 'null' //axios doesn't convert actual null to a param, so passing string null here and handling on api side
       }
     }).then(response => {
-      this.updateNewPlayerSwitch()
+      this.updateNewPlayerSwitch(originalPlayer, newPlayer)
     }).catch((error) => {
+      console.log(error);
       toast.error("SCHEISSE! Unable to update player lineup position :(", {
         position: toast.POSITION.TOP_CENTER
       })

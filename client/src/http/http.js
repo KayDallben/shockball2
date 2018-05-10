@@ -131,7 +131,7 @@ function fetchShockballAdmin(uid, token) {
                 url: hostUrl + 'api/contracts',
                 params: {
                     queryProp: 'status',
-                    queryVal: 'accepted',
+                    queryVal: 'awaiting admin',
                     access_token: token
                 }
             }).then(response => {

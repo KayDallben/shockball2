@@ -31,8 +31,8 @@ async function init() {
         const players = await getPlayers()
         const playerCaps = await getPlayerCaps()
         const playersWithCaps = mapDataAndCaps(players, playerCaps)
-        for(const player of playersWithCaps) {
-            const playerToSave = trainPlayer(player)
+        for(let playerWithCaps of playersWithCaps) {
+            const playerToSave = trainPlayer(playerWithCaps)
             await updatePlayer(playerToSave)
         }
         const endTime = new Date().getTime()
@@ -77,11 +77,11 @@ async function getPlayerCaps() {
 
 function mapDataAndCaps(players, playerCaps) {
     let playersPlusCaps = []
-    for (var player of players) {
+    for (let playerWithoutCaps of players) {
         let playerWithCaps = {}
-        Object.assign(playerWithCaps, player)
+        Object.assign(playerWithCaps, playerWithoutCaps)
         for (var playerCap of playerCaps) {
-            if (player.shockballPlayerUid === playerCap.shockballPlayerUid) {
+            if (playerWithoutCaps.shockballPlayerUid === playerCap.shockballPlayerUid) {
                 playerWithCaps.blockingCap = playerCap.blocking
                 playerWithCaps.throwingCap = playerCap.throwing
                 playerWithCaps.passingCap = playerCap.passing
@@ -138,8 +138,8 @@ function determineRegimen(player) {
     return player
 }
 
-function trainPlayer(player) {
-    const player = determineRegimen(player)
+function trainPlayer(playerObject) {
+    let player = determineRegimen(playerObject)
     
     if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance and throwing

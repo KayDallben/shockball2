@@ -585,7 +585,7 @@ var ContractController = function () {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                if (!(newContract.status === 'accepted')) {
+                if (!(newContract.status === 'awaiting admin')) {
                   _context13.next = 7;
                   break;
                 }
