@@ -8,7 +8,8 @@ Shockball Guide
 * As Player:
   1. [How to sign up as a player](#how-to-sign-up-as-a-player)
   2. [How to train your player](#how-to-train-your-player)
-  3. [How to accept or reject a contract](#how-to-accept-or-reject-a-contract)
+  3. [What skills change when I train](#what-skills-change-when-I-train)
+  4. [How to accept or reject a contract](#how-to-accept-or-reject-a-contract)
 * As Team Owner:
   1. [How to create a Team](#how-to-create-a-team)
   2. [How to offer a player a contract](#how-to-offer-a-player-a-contract)
@@ -29,6 +30,78 @@ Each day, you may select a training regimen for your player. Every 24 hours your
 1. Go to your **Me** page (the default when you visit the website)
 2. Select the **Training Regimen** drop-down and pick your preference.
 3. You should see a onscreen confirmation of your selection.
+
+### What skills change when I train?
+```javascript
+if (player.regimen.value === 'Wing') {
+        // primary skill passing, secondary endurance and throwing
+        player.blocking = decrement(player.blocking, .25, player.blockingCap)
+        player.throwing = increment(player.throwing, .5, player.throwingCap)
+        player.passing = increment(player.passing, 1, player.passingCap)
+        player.endurance = increment(player.endurance, .5, player.enduranceCap)
+        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
+        player.vision = decrement(player.vision, .25, player.visionCap)
+        player.morale = increment(player.morale, 1)
+        player.energy = decrement(player.energy, 5)
+        player.leadership = increment(player.leadership, .25)
+    } else if (player.regimen.value === 'Guard') {
+        // primary skill blocking, secondary vision and throwing
+        player.blocking = increment(player.blocking, 1.5, player.blockingCap)
+        player.throwing = increment(player.throwing, .25, player.throwingCap)
+        player.passing = decrement(player.passing, .25, player.passingCap)
+        player.endurance = decrement(player.endurance, .25, player.enduranceCap)
+        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
+        player.vision = increment(player.vision, .25, player.visionCap)
+        player.morale = increment(player.morale, 1)
+        player.energy = decrement(player.energy, 5)
+        player.leadership = increment(player.leadership, .25)
+    } else if (player.regimen.value === 'Center') {
+        // primary skill vision, secondary toughness and endurance
+        player.blocking = decrement(player.blocking, .25, player.blockingCap) 
+        player.throwing = decrement(player.throwing, .25, player.throwingCap)
+        player.passing = decrement(player.passing, .25, player.passingCap)
+        player.endurance = increment(player.endurance, .5, player.enduranceCap)
+        player.toughness = increment(player.toughness, 1, player.toughnessCap)
+        player.vision = increment(player.vision, .5, player.visionCap)
+        player.morale = increment(player.morale, 1)
+        player.energy = decrement(player.energy, 5)
+		player.leadership = increment(player.leadership, .25)
+    } else if (player.regimen.value === 'General') {
+        // all skills unchanged with a slow energy recovery
+        player.blocking = increment(player.blocking, .0, player.blockingCap) 
+        player.throwing = increment(player.throwing, 0, player.throwingCap)
+        player.passing = increment(player.passing, .0, player.passingCap)
+        player.endurance = increment(player.endurance, .0, player.enduranceCap)
+        player.toughness = increment(player.toughness, .0, player.toughnessCap)
+        player.vision = increment(player.vision, .0, player.visionCap)
+        player.morale = increment(player.morale, 1)
+        player.energy = increment(player.energy, 2)
+		player.leadership = increment(player.leadership, .25)
+    } else if (player.regimen.value === 'Rest') {
+        // all skills suffer .25 decay with a fast energy recovery
+        player.blocking = decrement(player.blocking, .25, player.blockingCap) 
+        player.throwing = decrement(player.throwing, 25, player.throwingCap)
+        player.passing = decrement(player.passing, .25, player.passingCap)
+        player.endurance = decrement(player.endurance, .25, player.enduranceCap)
+        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
+        player.vision = decrement(player.vision, .25, player.visionCap)
+        player.morale = increment(player.morale, 5)
+        player.energy = increment(player.energy, 10)
+        player.leadership = increment(player.leadership, .25)
+    } else {
+        // no training selected
+        // all skills suffer .25 decay with a slow energy recovery
+        player.blocking = decrement(player.blocking, .25, player.blockingCap) 
+        player.throwing = decrement(player.throwing, .25, player.throwingCap)
+        player.passing = decrement(player.passing, .25, player.passingCap)
+        player.endurance = decrement(player.endurance, .25, player.enduranceCap)
+        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
+        player.vision = decrement(player.vision, .25, player.visionCap)
+        player.morale = decrement(player.morale, .25)
+        player.energy = increment(player.energy, 2)
+        player.leadership = decrement(player.leadership, 1)
+    }
+```
 
 ### How to accept or reject a contract
 In order to play on a team, a player must have an **active** contract with that team. Contracts are issued by the team’s owner and are for a single Season. Players receive a 20% signing bonus in their GSL account.  At the end of the season, players may “cash out” their account on request (i.e they will be sent the credits via combine).
