@@ -64,6 +64,12 @@ class TopBar extends React.Component {
     }
   }
 
+  clickGuide() {
+    console.log('clicked clickGuide')
+    const link = window.open('https://github.com/bpkennedy/shockball2/blob/master/guide.md', "shockballguide")
+    link.focus()
+  }
+
   render() {
     switch (this.props.store.topBarView.currentUserTeam.state) {
       case "pending":
@@ -84,24 +90,14 @@ class TopBar extends React.Component {
                 {this.renderTeamImage()}
                 <div className="team-longname">
                   <div className="team-name">{this.renderTeamName()}</div>
-                  {/* <div className="team-edit button">Edit</div> */}
                 </div>
               </div>
               <div className="shockball-logo-holder">
                 <div className="shockball-logo" style={this.setBackgroundImage(shockballLogo, '1')}></div>
                 <div className="shockball-title">Shockball</div>
               </div>
-              <div className="upcoming-match-holder">
-                <div className="header">
-                  <div>Upcoming Match</div>
-                </div>
-                <div className="upcoming-content">
-                  <div className="upcoming-team">
-                    <div className="upcoming-team-logo" style={this.setBackgroundImage(this.state.upcomingMatch.teamLogo, '1')}></div>
-                    <div className="upcoming-team-name">{this.state.upcomingMatch.teamName}</div>
-                  </div>
-                  <div className="countdown">{this.state.countdown}</div>
-                </div>
+              <div className="shockball-guide" onClick={() => {this.clickGuide()}}>
+                <div className="guide-link btn btn-outline-secondary">How to Play</div>
               </div>
             </div>
           </div>
