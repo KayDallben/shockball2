@@ -105,8 +105,10 @@
         align-items: center;
         justify-content: center;
         width: 200px;
+        flex-direction: column;
         .guide-link {
           color: #ffffff;
+          margin-bottom:10px;
         }
       }
       .upcoming-match-holder {

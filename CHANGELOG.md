@@ -11,10 +11,13 @@
 
 **Fixed bugs:**
 
+- Remove or make upcoming match work [\#135](https://github.com/bpkennedy/shockball2/issues/135)
 - Can't send contract [\#122](https://github.com/bpkennedy/shockball2/issues/122)
 
 **Merged pull requests:**
 
+- changing upcomingMatch to be a how-to-play control [\#144](https://github.com/bpkennedy/shockball2/pull/144) ([bpkennedy](https://github.com/bpkennedy))
+- changelog [\#143](https://github.com/bpkennedy/shockball2/pull/143) ([bpkennedy](https://github.com/bpkennedy))
 - Team manager link [\#142](https://github.com/bpkennedy/shockball2/pull/142) ([bpkennedy](https://github.com/bpkennedy))
 - fixed generation of matches [\#141](https://github.com/bpkennedy/shockball2/pull/141) ([bpkennedy](https://github.com/bpkennedy))
 - fixing fixture generation when empty teamVenue and teamVenueImage [\#140](https://github.com/bpkennedy/shockball2/pull/140) ([bpkennedy](https://github.com/bpkennedy))
