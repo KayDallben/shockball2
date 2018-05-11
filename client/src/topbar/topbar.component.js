@@ -65,8 +65,12 @@ class TopBar extends React.Component {
   }
 
   clickGuide() {
-    console.log('clicked clickGuide')
     const link = window.open('https://github.com/bpkennedy/shockball2/blob/master/guide.md', "shockballguide")
+    link.focus()
+  }
+
+  clickChangelog() {
+    const link = window.open('https://github.com/bpkennedy/shockball2/blob/master/CHANGELOG.md', "shockballchglog")
     link.focus()
   }
 
@@ -96,8 +100,9 @@ class TopBar extends React.Component {
                 <div className="shockball-logo" style={this.setBackgroundImage(shockballLogo, '1')}></div>
                 <div className="shockball-title">Shockball</div>
               </div>
-              <div className="shockball-guide" onClick={() => {this.clickGuide()}}>
-                <div className="guide-link btn btn-outline-secondary">How to Play</div>
+              <div className="shockball-guide">
+                <div className="guide-link btn btn-outline-secondary" onClick={() => {this.clickGuide()}}>How to Play</div>
+                <div className="guide-link btn btn-outline-secondary" onClick={() => {this.clickChangelog()}}>Changelog</div>
               </div>
             </div>
           </div>
