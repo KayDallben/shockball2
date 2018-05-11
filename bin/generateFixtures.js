@@ -34,7 +34,7 @@ const leagueSeason = args[2] ? args[2].toString() : '1'
 async function init() {
   try {
     const allFixtures = await generateFixtures()
-    console.log(allFixtures)
+    await writeFixtures(allFixtures)
   } catch (error) {
     console.log(error)
   }
@@ -42,81 +42,71 @@ async function init() {
 
 async function generateFixtures() {
   const teams = await getAllTeams()
-  let allTeamsFixtures = fixture(teams.length)
-  let sortedFixtures = []
-  let startingDate = moment(new Date()).add(numberDaysBetweenGames, 'days')
-  for (var i=0;i < teams.length;i++) {
-    for (var i=0;i < allTeamsFixtures.length;i++) {
-      for (var y=0;y < allTeamsFixtures[i].matches.length;y++) {
-        const opponentTeamIndex = allTeamsFixtures[i].matches[y].split('_')[1]
-        sortedFixtures.push(await createFixture(teams[i], teams[opponentTeamIndex], startingDate))
-        startingDate.add(numberDaysBetweenGames, 'days')
-      }
-      // startingDate = moment(new Date())
+  let allTeamsFixtures = makeFixtures(teams)
+  return allTeamsFixtures
+}
+
+function makeFixtures(teams) {
+  let allTeams = teams
+  let fixtures = []
+  let halfWayThough = Math.floor(allTeams.length / 2)
+  let arrayFirstHalf = allTeams.slice(0, halfWayThough)
+  let arraySecondHalf = allTeams.slice(halfWayThough, allTeams.length)
+  arraySecondHalf.reverse()
+  fixtures = createMatchups(arrayFirstHalf, arraySecondHalf)
+  return fixtures
+}
+
+function createMatchups(leftHalf, rightHalf) {
+  let dynamicOrderLeftHalf = JSON.parse(JSON.stringify(leftHalf))
+  let dynamicOrderRightHalf = JSON.parse(JSON.stringify(rightHalf))
+  let allMatches = []
+  for (var i=0;i < ((dynamicOrderLeftHalf.length + dynamicOrderRightHalf.length) * 2);i++) {
+    for (var y=0; y < dynamicOrderLeftHalf.length;y++) {
+      allMatches.push(newMatch(dynamicOrderLeftHalf[y],dynamicOrderRightHalf[y], i+1))
+    }
+    let rightZeroIndex = dynamicOrderRightHalf.shift()
+    dynamicOrderLeftHalf.splice(1, 0, rightZeroIndex)
+    let leftEndIndex = dynamicOrderLeftHalf.pop()
+    dynamicOrderRightHalf.push(leftEndIndex)
+    if (i === (dynamicOrderLeftHalf.length + dynamicOrderRightHalf.length)) {
+      const tempLeftHalf = JSON.parse(JSON.stringify(dynamicOrderLeftHalf))
+      const tempRightHalf = JSON.parse(JSON.stringify(dynamicOrderRightHalf))
+      dynamicOrderLeftHalf = tempRightHalf
+      dynamicOrderRightHalf = tempLeftHalf
     }
   }
-  sortedFixtures = shuffle(sortedFixtures)
-  return sortedFixtures
+  return allMatches
 }
 
-// Schedule single round `j` for 'n' teams:
-function round(n, j) {
-  let m = n - 1;
-  let round = Array.from({length: n}, (_, i) => (m + j - i) % m); // circular shift
-  round[round[m] = j * (n >> 1) % m] = m; // swapping self-match
-  return round;
-}
-
-// Schedule matches of 'n' teams:
-function fixture(n) {
-  let rounds = Array.from({length: n - 1}, (_, j) => round(n, j));
-  return Array.from({length: n}, (_, i) => ({
-    id: "Team_" + i,
-    matches: rounds.map(round => "Team_" + round[i])
-  }));
-}
-
-async function createFixture(homeTeam, awayTeam, gameDate) {
-  let fixture = {
-    homeTeam: homeTeam.teamUid,
-    homeTeamName: homeTeam.teamName,
-    homeTeamLogo: homeTeam.teamPicUrl,
-    awayTeam: awayTeam.teamUid,
-    awayTeamName: awayTeam.teamName,
-    awayTeamLogo: awayTeam.teamPicUrl,
-    homeTeamVenue: homeTeam.teamVenue ? homeTeam.teamVenue : '',
-    homeTeamVenueImage: homeTeam.teamVenueImage ? homeTeam.teamVenueImage : '',
+function newMatch(leftTeam, rightTeam, dayMultiplier) {
+  let gameDate = moment(new Date()).add(numberDaysBetweenGames * dayMultiplier, 'days')
+  let match = {
+    homeTeam: leftTeam.teamUid,
+    homeTeamName: leftTeam.teamName,
+    homeTeamLogo: leftTeam.teamPicUrl,
+    awayTeam: rightTeam.teamUid,
+    awayTeamName: rightTeam.teamName,
+    awayTeamLogo: rightTeam.teamPicUrl,
+    homeTeamVenue: leftTeam.teamVenue ? leftTeam.teamVenue : '',
+    homeTeamVenueImage: leftTeam.teamVenueImage ? leftTeam.teamVenueImage : '',
     gameDate: gameDate.toDate(),
     status: 'pending',
     startTime: gameDate.toDate(),
     season: leagueSeason
   }
-  await db.collection('fixtures').add(fixture).then(async (ref) => {
-    await db.collection('fixtures').doc(ref.id).update({
-      fixtureId: ref.id,
-      lastUpdated: FieldValue.serverTimestamp()
-    })
-  });
-  return fixture
+  return match
 }
 
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
+async function writeFixtures(allFixtures) {
+  for (let fixture of allFixtures) {
+    await db.collection('fixtures').add(fixture).then(async (ref) => {
+      await db.collection('fixtures').doc(ref.id).update({
+        fixtureId: ref.id,
+        lastUpdated: FieldValue.serverTimestamp()
+      })
+    })
   }
-
-  return array;
 }
 
 async function getAllTeams() {
