@@ -38,7 +38,7 @@ if (player.regimen.value === 'Wing') {
         // primary skill passing, secondary endurance and throwing
         player.blocking = decrement(player.blocking, .25, player.blockingCap)
         player.throwing = increment(player.throwing, .5, player.throwingCap)
-        player.passing = increment(player.passing, 1, player.passingCap)
+        player.passing = increment(player.passing, 1.5, player.passingCap)
         player.endurance = increment(player.endurance, .5, player.enduranceCap)
         player.toughness = decrement(player.toughness, .25, player.toughnessCap)
         player.vision = decrement(player.vision, .25, player.visionCap)
@@ -46,23 +46,23 @@ if (player.regimen.value === 'Wing') {
         player.energy = decrement(player.energy, 5)
         player.leadership = increment(player.leadership, .25)
     } else if (player.regimen.value === 'Guard') {
-        // primary skill blocking, secondary vision and throwing
+        // primary skill blocking, secondary toughness and throwing
         player.blocking = increment(player.blocking, 1.5, player.blockingCap)
-        player.throwing = increment(player.throwing, .25, player.throwingCap)
+        player.throwing = increment(player.throwing, .5, player.throwingCap)
         player.passing = decrement(player.passing, .25, player.passingCap)
         player.endurance = decrement(player.endurance, .25, player.enduranceCap)
-        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
-        player.vision = increment(player.vision, .25, player.visionCap)
+        player.toughness = increment(player.toughness, .5, player.toughnessCap)
+        player.vision = decrement(player.vision, .25, player.visionCap)
         player.morale = increment(player.morale, 1)
         player.energy = decrement(player.energy, 5)
         player.leadership = increment(player.leadership, .25)
     } else if (player.regimen.value === 'Center') {
-        // primary skill vision, secondary toughness and endurance
+        // primary skill throwing, secondary vision and endurance
         player.blocking = decrement(player.blocking, .25, player.blockingCap) 
-        player.throwing = decrement(player.throwing, .25, player.throwingCap)
+        player.throwing = increment(player.throwing, 1.5, player.throwingCap)
         player.passing = decrement(player.passing, .25, player.passingCap)
         player.endurance = increment(player.endurance, .5, player.enduranceCap)
-        player.toughness = increment(player.toughness, 1, player.toughnessCap)
+        player.toughness = decrement(player.toughness, .25, player.toughnessCap)
         player.vision = increment(player.vision, .5, player.visionCap)
         player.morale = increment(player.morale, 1)
         player.energy = decrement(player.energy, 5)
