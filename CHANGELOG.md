@@ -1,5 +1,25 @@
 # Change Log
 
+## [Unreleased](https://github.com/bpkennedy/shockball2/tree/HEAD)
+
+[Full Changelog](https://github.com/bpkennedy/shockball2/compare/1.0.0...HEAD)
+
+**Implemented enhancements:**
+
+- Create DM link to Team Manager [\#139](https://github.com/bpkennedy/shockball2/issues/139)
+- Allow revoke Pre-Active contracts [\#137](https://github.com/bpkennedy/shockball2/issues/137)
+
+**Fixed bugs:**
+
+- Can't send contract [\#122](https://github.com/bpkennedy/shockball2/issues/122)
+
+**Merged pull requests:**
+
+- Team manager link [\#142](https://github.com/bpkennedy/shockball2/pull/142) ([bpkennedy](https://github.com/bpkennedy))
+- fixed generation of matches [\#141](https://github.com/bpkennedy/shockball2/pull/141) ([bpkennedy](https://github.com/bpkennedy))
+- fixing fixture generation when empty teamVenue and teamVenueImage [\#140](https://github.com/bpkennedy/shockball2/pull/140) ([bpkennedy](https://github.com/bpkennedy))
+- adding changelog [\#134](https://github.com/bpkennedy/shockball2/pull/134) ([bpkennedy](https://github.com/bpkennedy))
+
 ## [1.0.0](https://github.com/bpkennedy/shockball2/tree/1.0.0) (2018-05-10)
 **Closed issues:**
 
