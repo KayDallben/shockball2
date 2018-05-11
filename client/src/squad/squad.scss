@@ -84,6 +84,23 @@
                     display: block;
                     margin: 0 auto;
                 }
+                .contract-offer {
+                    border: 1px solid #026AAD;
+                    padding: 8px;
+                    border-radius: 4px;
+                    background: #026AAD;
+                    color: #f1f1f1;
+                    margin: 0 auto;
+                    margin-bottom: 57px;
+                    margin-top: 15px;
+                    text-align: center;
+                    width: 100px;
+                    &:hover {
+                        background: #0C93EB;
+                        color: #ffffff;
+                        cursor: pointer;
+                    }
+                }
             }
         }
         .team-players-wrapper {

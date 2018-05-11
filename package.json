@@ -1,6 +1,6 @@
 {
   "name": "shockball2",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "node": "8.9.4"
   },
@@ -18,7 +18,8 @@
     "copyClientBuild": "ncp client/build public",
     "startClient": "cd client && npm run start",
     "buildServer": "babel server/src -s -D -d server/dist --presets es2015,stage-0 --ignore server/src/**/*.test.js",
-    "startServer": "nodemon -w server/src --exec \"babel-node server/src --presets es2015,stage-0\""
+    "startServer": "nodemon -w server/src --exec \"babel-node server/src --presets es2015,stage-0\"",
+    "changelog": "github_changelog_generator bpkennedy/shockball2 --token CHANGELOG_GITHUB_TOKEN"
   },
   "babel": {
     "presets": [

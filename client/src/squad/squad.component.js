@@ -93,6 +93,14 @@ class Squad extends React.Component {
     return teamManager
   }
 
+  sendManagerDM() {
+    const manager = this.getTeamManager()
+    const receiver = encodeURIComponent(manager.name)
+    const message = `Greetings, I am interested in joining your Shockball Team, the ${manager.teamName}. Would you offer me a contract?`
+    const communication = message.split(' ').join('+')
+    window.open(`http://www.swcombine.com/members/messages/msgframe.php?mode=dialog&tHand=${receiver}&communication=${communication}`, '_blank')
+  }
+
   createPlayerLink = (row) => {
     return (
       <a onClick={() => this.props.store.showPlayerPage(row.dependentValues.shockballPlayerUid)}>{row.dependentValues.name}</a>
@@ -251,6 +259,7 @@ class Squad extends React.Component {
               <div className="label">Team Manager:</div>
               <div className="manager-name">{this.getTeamManager().name}</div>
               <img className="manager-image" src={this.getTeamManager().image}/>
+              <div className="contract-offer" onClick={() => { this.sendManagerDM()}}>Contact</div>
             </div>
           </div>
           {this.renderPlayers()}

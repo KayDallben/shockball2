@@ -276,7 +276,7 @@ class Store {
     })
   }
 
-  @action deleteContract = (contractUid) => {
+  @action deleteContract = (contractUid, viewRefresh) => {
     ga.event('Contract Deleted')
     return this.http.ensureFreshToken(this.accessToken).then((currentToken) => {
       return axios({
@@ -287,7 +287,11 @@ class Store {
           swcUid: this.currentUser.swcPlayerUid
         }
       }).then(() => {
-        this.showAdminPage()
+        if (viewRefresh === 'office') {
+          this.showOfficePage()
+        } else if (viewRefresh === 'admin') {
+          this.showAdminPage()
+        }
       })
     }).catch(error => {
         console.log('error getting refresh token')

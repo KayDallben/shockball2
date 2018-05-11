@@ -1002,7 +1002,7 @@ var ContractController = function () {
               case 3:
                 _context22.next = 5;
                 return this.accounts.doc(teamUid).collection('transactions').add({
-                  activityType: 'Funds for ' + contract.playerName + ' failed contract bid returned to Available budget',
+                  activityType: 'Funds for ' + contract.playerName + ' failed. Contract bid returned to Available budget',
                   amount: contract.purchasePrice,
                   timestamp: FieldValue.serverTimestamp()
                 });

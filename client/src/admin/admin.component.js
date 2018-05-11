@@ -181,7 +181,7 @@ class Admin extends React.Component {
   }
 
   deleteContract(playerContract) {
-    this.props.store.deleteContract(playerContract.contractUid).then(() => {
+    this.props.store.deleteContract(playerContract.contractUid, 'admin').then(() => {
       toast.success("Contract deleted!", {
         position: toast.POSITION.TOP_CENTER
       })
