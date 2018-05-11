@@ -173,9 +173,16 @@ class Office extends React.Component {
       )
     } else {
       // current user has no contract and is a manager - so is a team manager
-      return (
-        <div></div>
-      )
+      if (row.dependentValues.status === 'active') {
+        return (
+          <div></div>
+        )
+      } else {
+        return (
+          <div className="btn btn-secondary" onClick={() => {this.revokeContractAction(row)}}>Revoke</div>
+        )
+      }
+      
     }
   }
 
@@ -260,6 +267,69 @@ class Office extends React.Component {
         </div>
       </div>
     )
+  }
+
+  revokeContractAction(rowData) {
+    const playerContract = rowData.dependentValues
+    this.props.store.showModal(
+      <div className="contract-wrapper">
+        <div className="modal-title">Revoke Contract</div>
+        <div className="player-value">
+            <h3>Player:</h3>
+            <div className="player-photo">
+              <img src={this.props.store.currentUser.image}/>
+            </div>
+            <div className="total-value">
+              <div>Market Value:</div>
+              <NumberFormat value={this.props.store.currentUser.marketValue} displayType={'text'} thousandSeparator={true} prefix={'$'} /></div>
+        </div>
+        <div className="contract-offer">
+          {this.renderRevokeActions(playerContract)}
+        </div>
+      </div>
+    )
+  }
+
+  renderRevokeActions(contract) {
+    return (
+      <div>
+        <div className="inner-contract-fields">
+          <p className="disclaimer">Hold up!: Are you sure you want to revoke this contract? This will cancel and delete the contract and your funds will be refunded to your availableBudget.</p>
+        </div>
+        <div className="contract-action-holder">
+          <button type="submit" className="mb-4 btn btn-danger" onClick={() => {this.revokeContract(contract)}}>Revoke</button>
+          <button type="submit" className="mb-4 btn btn-default" onClick={() => {this.props.store.closeModal()}}>Cancel</button>
+        </div>
+      </div>
+    )
+  }
+
+  revokeContract(contract) {
+    this.props.store.deleteContract(contract.contractUid, 'office').then(() => {
+      toast.success("Contract revoked!", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    }).catch(() => {
+      toast.error("Sheeeeit, problem revoking contract.", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    })
+  }
+
+  acceptContract(playerContract) {
+    this.props.store.updateContractState(playerContract.contractUid, 'awaiting admin', 'office').then(() => {
+      toast.success("Contract accepted!", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    }).catch(() => {
+      toast.error("Sheeeeit, problem accepting contract.", {
+        position: toast.POSITION.TOP_CENTER
+      })
+      this.props.store.closeModal()
+    })
   }
 
   editContract(rowData) {
